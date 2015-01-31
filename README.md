@@ -1,7 +1,7 @@
 # ProjectSolarus
 1501 Term Assignment
 
-by:
-  Connor Clysdale 100976216 
-  Alif Islam      100967488 
-  Matt Mayer      100969802 
+by:\n
+  - Connor Clysdale 100976216\n 
+  - Alif Islam      100967488\n
+  - Matt Mayer      100969802\n
