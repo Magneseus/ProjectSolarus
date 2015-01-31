@@ -1,4 +1,4 @@
-# ProjectSolarus
+# Project Solarus
 1501 Term Assignment
 
 by:
