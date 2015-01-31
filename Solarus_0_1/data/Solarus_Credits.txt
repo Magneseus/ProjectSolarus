@@ -1,0 +1,21 @@
+SOLARUS
+
+Game Designers:
+Matt Mayer
+Connor Clysdale
+Alif Islam
+
+Music:
+"Title Theme"
+by Metroid Prime 3: 
+Corruption
+
+ClipArt:
+www.clipartsfree.net
+
+Programmed in Processing
+
+Created for COMP 1501: 
+Introduction to Game Design
+Carleton University
+January 2015
