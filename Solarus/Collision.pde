@@ -2,14 +2,18 @@
 //Abstract class to represent hit boxes
 interface Shape
 {
-    boolean collide();
+    boolean collide(Shape s);
     int type();
     
     static final int SRECT = 0;
     static final int SCIRC = 1;
 }
 
+
+
+
 //Some small classes for convienience
+
 class Rect implements Shape
 {
     PVector tl, br;
@@ -27,6 +31,7 @@ class Rect implements Shape
         radius = d.mag();
     }
     
+    //Collisions
     boolean collide(Shape s)
     {
         boolean isColliding = false;
@@ -85,6 +90,7 @@ class Circ implements Shape
         this.radius = radius;
     }
     
+    //Simple collisions and then more complex
     boolean collide(Shape s)
     {
         boolean isColliding = false;
@@ -92,12 +98,12 @@ class Circ implements Shape
         //If rect-circ collision
         if (s.type() == Shape.SRECT)
         {
-            
+            Rect r = (Rect)s;
         }
         //If circ-circ collision
         else if (s.type() == Shape.SCIRC)
         {
-            Circ c = s;
+            Circ c = (Circ)s;
             
             //If the distance is less than the sum of the radii, colliding
             if (dist(pos.x, pos.y, c.pos.x, c.pos.y) < (radius + c.radius))
