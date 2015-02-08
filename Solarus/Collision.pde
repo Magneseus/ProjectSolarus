@@ -1,5 +1,10 @@
 
-//Abstract class to represent hit boxes
+class Collision
+{
+    
+}
+
+//Abstract interface to represent Shapes
 interface Shape
 {
     boolean collide(Shape s);
@@ -9,14 +14,11 @@ interface Shape
     static final int SCIRC = 1;
 }
 
-
-
-
 //Some small classes for convienience
 
-class Rect implements Shape
+class Rect implements Shape //BROKEN FOR NOW
 {
-    PVector tl, br;
+    PVector tl, tr, bl, br;
     float radius;
     final int type = Shape.SRECT;
     
@@ -27,8 +29,22 @@ class Rect implements Shape
         this.tl = tl;
         this.br = br;
         
+        this.tr = new PVector(br.x, tl.y);
+        this.bl = new PVector(tl.x, br.y);
+        
         PVector d = PVector.sub(br, tl);
         radius = d.mag();
+    }
+    
+    Rect(PVector tl, PVector tr, PVector br, PVector bl)
+    {
+        this.tl = tl;
+        this.tr = tr;
+        this.br = br;
+        this.bl = bl;
+        
+        PVector d = PVector.sub(br, tl);
+        radius = d.mag()/2;
     }
     
     //Collisions
@@ -39,13 +55,41 @@ class Rect implements Shape
         return isColliding;
     }
     
+    
+    
+    
+    
+    //     GETTERS & SETTERS     //
+    
+    //Return the position (center)
+    PVector getPos()
+    {
+        PVector pos = new PVector(br.x, br.y);
+        return pos;
+    }
+    
     //Use this to move the rectangle
     void setPos(PVector newPos)
     {
-        PVector d = PVector.sub(tl, newPos);
-        tl = new PVector(newPos.x, newPos.y);
+        PVector tPos = PVector.div(newPos, 2);
+        PVector d = PVector.sub(tl, tPos);
+        tl = new PVector(tPos.x, tPos.y);
         
         br.add(d);
+    }
+    
+    //Use this to move the rectangle (top left)
+    void setPos(PVector newPos, boolean oc)
+    {
+        if (oc)
+        {
+            PVector d = PVector.sub(tl, newPos);
+            tl = new PVector(newPos.x, newPos.y);
+        
+            br.add(d);
+        }
+        else
+            setPos(newPos);
     }
     
     //Use this to change vector, to account
@@ -64,10 +108,19 @@ class Rect implements Shape
         calcRad();
     }
     
-    void calcRad()
+    //Calculate the new "radius"
+    private void calcRad()
     {
         PVector d = PVector.sub(br, tl);
-        radius = d.mag();
+        radius = d.mag() / 2;
+    }
+    
+    //Returns the "radius", the distance between
+    //the top left and the bottom right points
+    float getRad()
+    {
+        calcRad();
+        return radius;
     }
     
     int type()
