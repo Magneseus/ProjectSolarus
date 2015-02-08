@@ -1,6 +1,31 @@
 
 class Collision
 {
+    ArrayList<Shape> hitBox;
+    
+    Collision(ArrayList<Shape> hbox)
+    {
+        hitBox = hbox;
+    }
+    
+    boolean collide(Collision c)
+    {
+        boolean isColliding = false;
+        
+        for (int i = 0; i < hitBox.size(); i++)
+        {
+            for (int j = 0; j < c.hitBox.size(); j++)
+            {
+                if (hitBox.get(i).collide(c.hitBox.get(i)))
+                {
+                    isColliding = true;
+                    break;
+                }
+            }
+        }
+        
+        return isColliding;
+    }
     
 }
 
