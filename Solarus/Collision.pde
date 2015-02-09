@@ -2,8 +2,10 @@
 class Collision
 {
     ArrayList<Shape> hitBox;
+    PVector center;
     
-    Collision(ArrayList<Shape> hbox)
+    //The center being based off of the local coordinates
+    Collision(ArrayList<Shape> hbox, PVector center)
     {
         hitBox = hbox;
     }
