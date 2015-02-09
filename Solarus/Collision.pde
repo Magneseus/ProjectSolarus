@@ -45,8 +45,8 @@ interface Shape
 
 class Rect implements Shape //BROKEN FOR NOW
 {
-    PVector tl, tr, bl, br;
-    float radius;
+    PVector tl, tr, bl, br, ct;
+    float radius, angle;
     final int type = Shape.SRECT;
     
     //Assumes tl is the top left coord,
@@ -59,8 +59,14 @@ class Rect implements Shape //BROKEN FOR NOW
         this.tr = new PVector(br.x, tl.y);
         this.bl = new PVector(tl.x, br.y);
         
+        //Angle in radians
+        angle = 0;
+        
         PVector d = PVector.sub(br, tl);
         radius = d.mag();
+        
+        d.div(2);
+        ct = PVector.add(tl, d);
     }
     
     Rect(PVector tl, PVector tr, PVector br, PVector bl)
@@ -70,8 +76,14 @@ class Rect implements Shape //BROKEN FOR NOW
         this.br = br;
         this.bl = bl;
         
+        //Angle in radians
+        angle = 0;
+        
         PVector d = PVector.sub(br, tl);
         radius = d.mag()/2;
+        
+        d.div(2);
+        ct = PVector.add(tl, d);
     }
     
     //Collisions
@@ -82,7 +94,55 @@ class Rect implements Shape //BROKEN FOR NOW
         return isColliding;
     }
     
+    //Use this to move the rectangle
+    void move(PVector deltaD)
+    {
+        ct.add(deltaD);
+        tl.add(deltaD);
+        tr.add(deltaD);
+        br.add(deltaD);
+        bl.add(deltaD);
+    }
     
+    void rot(float angle)
+    {
+        this.angle += angle;
+        
+        //Record old center
+        PVector ctr = new PVector(ct.x, ct.y);
+        
+        //Translate so center is at origin
+        move(PVector.mult(ctr, -1));
+        
+        //Rotate all vectors
+        tl.rotate(angle);
+        tr.rotate(angle);
+        br.rotate(angle);
+        bl.rotate(angle);
+        
+        //Translate back
+        move(ctr);
+    }
+    
+    void rotTo(float newAngle)
+    {
+        angle = newAngle;
+        
+        //Record old center
+        PVector ctr = new PVector(ct.x, ct.y);
+        
+        //Translate so center is at origin
+        move(PVector.mult(ctr, -1));
+        
+        //Rotate all vectors
+        tl.rotate(angle);
+        tr.rotate(angle);
+        br.rotate(angle);
+        bl.rotate(angle);
+        
+        //Translate back
+        move(ctr);
+    }
     
     
     
@@ -91,55 +151,28 @@ class Rect implements Shape //BROKEN FOR NOW
     //Return the position (center)
     PVector getPos()
     {
-        PVector pos = new PVector(br.x, br.y);
+        PVector pos = new PVector(ct.x, ct.y);
         return pos;
     }
     
-    //Use this to move the rectangle
+    //Use this to set the position
     void setPos(PVector newPos)
     {
-        PVector tPos = PVector.div(newPos, 2);
-        PVector d = PVector.sub(tl, tPos);
-        tl = new PVector(tPos.x, tPos.y);
+        PVector dif = PVector.sub(ct, newPos);
         
-        br.add(d);
-    }
-    
-    //Use this to move the rectangle (top left)
-    void setPos(PVector newPos, boolean oc)
-    {
-        if (oc)
-        {
-            PVector d = PVector.sub(tl, newPos);
-            tl = new PVector(newPos.x, newPos.y);
-        
-            br.add(d);
-        }
-        else
-            setPos(newPos);
-    }
-    
-    //Use this to change vector, to account
-    //for the radius change
-    void setTL(PVector newTL)
-    {
-        tl = new PVector(newTL.x, newTL.y);
-        calcRad();
-    }
-    
-    //Use this to change vector, to account
-    //for the radius change
-    void setBR(PVector newBR)
-    {
-        br = new PVector(newBR.x, newBR.y);
-        calcRad();
+        ct = new PVector(newPos.x, newPos.y);
+        tl.add(dif);
+        tr.add(dif);
+        br.add(dif);
+        bl.add(dif);
     }
     
     //Calculate the new "radius"
     private void calcRad()
     {
-        PVector d = PVector.sub(br, tl);
-        radius = d.mag() / 2;
+        PVector d1 = PVector.sub(br, tl);
+        PVector d2 = PVector.sub(tr, bl);
+        radius = max(d2.mag()/2, d1.mag()/2);
     }
     
     //Returns the "radius", the distance between
