@@ -8,6 +8,11 @@ class Collision
     Collision(ArrayList<Shape> hbox, PVector center)
     {
         hitBox = hbox;
+        this.center = center;
+        for (int i = 0; i < hitBox.size(); i++)
+        {
+            hitBox.get(i).move(center);
+        }
     }
     
     boolean collide(Collision c)
@@ -29,6 +34,39 @@ class Collision
         return isColliding;
     }
     
+    void render()
+    {
+        for (int i = 0; i < hitBox.size(); i++)
+        {
+            hitBox.get(i).render();
+        }
+    }
+    
+    void rot(float x)
+    {
+        for (int i = 0; i < hitBox.size(); i++)
+        {
+            if (hitBox.get(i).type() == Shape.SRECT)
+            {
+                Rect r = (Rect)hitBox.get(i);
+                r.rot(x);
+            }
+            
+            //Get center of each shape
+            PVector tpos = hitBox.get(i).getPos();
+            
+            //Translate by center
+            tpos.sub(center);
+            //Rotate
+            tpos.rotate(x);
+            //Translate back
+            tpos.add(center);
+            
+            //Re-set the position
+            hitBox.get(i).setPos(tpos);
+        }
+    }
+    
 }
 
 //Abstract interface to represent Shapes
@@ -36,6 +74,10 @@ interface Shape
 {
     boolean collide(Shape s);
     int type();
+    void move(PVector p);
+    void render();
+    PVector getPos();
+    void setPos(PVector p);
     
     static final int SRECT = 0;
     static final int SCIRC = 1;
@@ -43,7 +85,7 @@ interface Shape
 
 //Some small classes for convienience
 
-class Rect implements Shape //BROKEN FOR NOW
+class Rect implements Shape
 {
     PVector tl, tr, bl, br, ct;
     float radius, angle;
@@ -144,6 +186,17 @@ class Rect implements Shape //BROKEN FOR NOW
         move(ctr);
     }
     
+    void render()
+    {
+        stroke(255,0,0);
+        noFill();
+        
+        line(tl.x, tl.y, tr.x, tr.y);
+        line(tr.x, tr.y, br.x, br.y);
+        line(br.x, br.y, bl.x, bl.y);
+        line(bl.x, bl.y, tl.x, tl.y);
+    }
+    
     
     
     //     GETTERS & SETTERS     //
@@ -224,6 +277,35 @@ class Circ implements Shape
         }
         
         return isColliding;
+    }
+    
+    void render()
+    {
+        stroke(255,0,0);
+        noFill();
+        
+        ellipse(pos.x, pos.y, radius, radius);
+    }
+    
+    void move(PVector deltaD)
+    {
+        pos.add(deltaD);
+    }
+    
+    
+    
+    
+    //     GETTERS & SETTERS     //
+    
+    
+    PVector getPos()
+    {
+        return new PVector(pos.x, pos.y);
+    }
+    
+    void setPos(PVector newPos)
+    {
+        pos = new PVector(newPos.x, newPos.y);
     }
     
     int type()
