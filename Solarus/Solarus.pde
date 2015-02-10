@@ -9,10 +9,10 @@ void setup()
     ellipseMode(RADIUS);
     rectMode(CORNERS);
     
-    Rect r = new Rect(new PVector(-10,-10), new PVector(10,-10),
-                      new PVector(10,10), new PVector(-10,10));
-    Circ c1 = new Circ(new PVector(0, -10), 10);
-    Circ c2 = new Circ(new PVector(0, 10), 10);
+    Rect r = new Rect(new PVector(-40,-80), new PVector(40,-80),
+                      new PVector(40,80), new PVector(-40,80));
+    Circ c1 = new Circ(new PVector(0, -80), 40);
+    Circ c2 = new Circ(new PVector(0, 80), 40);
     
     ArrayList<Shape> a = new ArrayList<Shape>();
     a.add(r);
@@ -27,5 +27,5 @@ void draw()
     background(0);
     
     c.render();
-    c.rot(PI/32);
+    c.rot(PI/128);
 }

@@ -133,6 +133,30 @@ class Rect implements Shape
     {
         boolean isColliding = false;
         
+        //If rect-rect collision
+        if (s.type() == Shape.SRECT)
+        {
+            Rect r = (Rect)s;
+            
+            if (dist(getPos().x, getPos().y, r.getPos().x, r.getPos().y) <
+                getRad() + r.getRad())
+            {
+                //Check if any point lies inside the other rect
+                if (pointInRect(r.tl) || pointInRect(r.tr) ||
+                    pointInRect(r.br) || pointInRect(r.bl))
+                        isColliding = true;
+                
+                if (r.pointInRect(tl) || r.pointInRect(tr) ||
+                    r.pointInRect(br) || r.pointInRect(bl))
+                        isColliding = true;
+            }
+        }
+        //If rect-circ collision
+        else if (s.type() == Shape.SCIRC)
+        {
+            
+        }
+        
         return isColliding;
     }
     
@@ -195,6 +219,42 @@ class Rect implements Shape
         line(tr.x, tr.y, br.x, br.y);
         line(br.x, br.y, bl.x, bl.y);
         line(bl.x, bl.y, tl.x, tl.y);
+    }
+    
+    boolean pointInRect(PVector p)
+    {
+        boolean colliding = true;
+        
+        float rSum = dist(tl.x, tl.y, tr.x, tr.y) *
+                     dist(tl.x, tl.y, bl.x, bl.y);
+        
+        float a1 = areaOf(tl, p, bl);
+        float a2 = areaOf(bl, p, br);
+        float a3 = areaOf(br, p, tr);
+        float a4 = areaOf(p, tr, tl);
+        
+        float pSum = a1 + a2 + a3 + a4;
+        
+        if (pSum - rSum > 2)
+            colliding = false;
+        
+        return colliding;
+    }
+    
+    private float areaOf(PVector p1, PVector p2, PVector p3)
+    {
+        float a = abs(p1.x * (p2.y - p3.y) + 
+                      p2.x * (p3.y - p1.y) +
+                      p3.x * (p1.y - p2.y));
+        a /= 2;
+        
+        /*
+        line(p1.x,p1.y,p2.x,p2.y);
+        line(p2.x,p2.y,p3.x,p3.y);
+        line(p3.x,p3.y,p1.x,p1.y);
+        */
+        
+        return a;
     }
     
     
@@ -265,6 +325,8 @@ class Circ implements Shape
         if (s.type() == Shape.SRECT)
         {
             Rect r = (Rect)s;
+            
+            
         }
         //If circ-circ collision
         else if (s.type() == Shape.SCIRC)
