@@ -23,7 +23,7 @@ class Collision
         {
             for (int j = 0; j < c.hitBox.size(); j++)
             {
-                if (hitBox.get(i).collide(c.hitBox.get(i)))
+                if (hitBox.get(i).collide(c.hitBox.get(j)))
                 {
                     isColliding = true;
                     break;
@@ -32,6 +32,15 @@ class Collision
         }
         
         return isColliding;
+    }
+    
+    void moveTo(PVector p)
+    {
+        for (int i = 0; i < hitBox.size(); i++)
+        {
+            hitBox.get(i).setPos(p);
+        }
+        center = p;
     }
     
     void render()
@@ -154,7 +163,7 @@ class Rect implements Shape
         //If rect-circ collision
         else if (s.type() == Shape.SCIRC)
         {
-            
+            isColliding = collideRC(this, (Circ) s);
         }
         
         return isColliding;
@@ -248,11 +257,12 @@ class Rect implements Shape
                       p3.x * (p1.y - p2.y));
         a /= 2;
         
-        /*
-        line(p1.x,p1.y,p2.x,p2.y);
-        line(p2.x,p2.y,p3.x,p3.y);
-        line(p3.x,p3.y,p1.x,p1.y);
-        */
+        if (debug_)
+        {
+            line(p1.x,p1.y,p2.x,p2.y);
+            line(p2.x,p2.y,p3.x,p3.y);
+            line(p3.x,p3.y,p1.x,p1.y);
+        }
         
         return a;
     }
@@ -271,7 +281,7 @@ class Rect implements Shape
     //Use this to set the position
     void setPos(PVector newPos)
     {
-        PVector dif = PVector.sub(ct, newPos);
+        PVector dif = PVector.sub(newPos, ct);
         
         ct = new PVector(newPos.x, newPos.y);
         tl.add(dif);
@@ -326,7 +336,7 @@ class Circ implements Shape
         {
             Rect r = (Rect)s;
             
-            
+            isColliding = collideRC(r, this);
         }
         //If circ-circ collision
         else if (s.type() == Shape.SCIRC)
@@ -374,4 +384,62 @@ class Circ implements Shape
     {
         return type;
     }
+}
+
+ boolean collideRC(Rect r, Circ c)
+{
+    if (r.pointInRect(c.getPos()))
+        return true;
+    
+    if (lineIntCirc(r.tl, r.tr, c))
+        return true;
+    /*if (lineIntCirc(r.tr, r.br, c))
+        return true;
+    if (lineIntCirc(r.br, r.bl, c))
+        return true;
+    if (lineIntCirc(r.bl, r.tl, c))
+        return true;
+    */
+    return false;
+}
+
+ boolean lineIntCirc(PVector p1, PVector p2, Circ c)
+{
+    boolean isInt = false;
+    
+    //Line seg.
+    PVector x1 = PVector.sub(p2, p1);
+    
+    //p1 - c
+    PVector x2 = PVector.sub(p1, c.getPos());
+    //p2 - c
+    PVector x3 = PVector.sub(p2, c.getPos());
+    
+    line(p2.x, p2.y, p1.x, p1.y);
+    line(p2.x, p2.y, c.getPos().x, c.getPos().y);
+    line(c.getPos().x, c.getPos().y, p1.x, p1.y);
+    
+    if (PVector.angleBetween(x1, x2) > PI/2)
+    {
+        //println(PVector.angleBetween(x1, x2));
+        float d = x3.mag();
+        if (d < c.radius)
+            isInt = true;
+    }
+    else if (PVector.angleBetween(x1, x3) > PI/2)
+    {
+        //println(PVector.angleBetween(x1, x3));
+        float d = x2.mag();
+        if (d < c.radius)
+            isInt = true;
+    }
+    else
+    {
+        //println("3");
+        float d = sin(PVector.angleBetween(x1, x2)) * x2.mag();
+        if (d < c.radius)
+            isInt = true;
+    }
+    
+    return isInt;
 }
