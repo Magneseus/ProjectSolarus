@@ -40,7 +40,5 @@ void draw()
     cc.moveTo(new PVector(mouseX, mouseY));
     cc.render();
     
-    c.collide(cc);
-    
-    println(PVector.angleBetween(new PVector(mouseX - width/2, mouseY - height/2), new PVector(width/2, 0)));
+    println(c.collide(cc));
 }

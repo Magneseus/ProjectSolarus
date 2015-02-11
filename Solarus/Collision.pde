@@ -388,8 +388,8 @@ class Circ implements Shape
 
  boolean collideRC(Rect r, Circ c)
 {
-    if (r.pointInRect(c.getPos()))
-        return true;
+   // if (r.pointInRect(c.getPos()))
+     //   return true;
     
     if (lineIntCirc(r.tl, r.tr, c))
         return true;
@@ -410,33 +410,29 @@ class Circ implements Shape
     //Line seg.
     PVector x1 = PVector.sub(p2, p1);
     
-    //p1 - c
-    PVector x2 = PVector.sub(p1, c.getPos());
-    //p2 - c
-    PVector x3 = PVector.sub(p2, c.getPos());
+    //c - p1
+    PVector x2 = PVector.sub(c.getPos(), p1);
+    //c - p2
+    PVector x3 = PVector.sub(c.getPos(), p2);
     
-    line(p2.x, p2.y, p1.x, p1.y);
-    line(p2.x, p2.y, c.getPos().x, c.getPos().y);
-    line(c.getPos().x, c.getPos().y, p1.x, p1.y);
+    float theta1 = PVector.angleBetween(x1, x2);
+    float theta2 = PI - theta1;
     
-    if (PVector.angleBetween(x1, x2) > PI/2)
+    if (theta1 > PI/2)
     {
-        //println(PVector.angleBetween(x1, x2));
         float d = x3.mag();
         if (d < c.radius)
             isInt = true;
     }
-    else if (PVector.angleBetween(x1, x3) > PI/2)
+    else if (theta2 > PI/2)
     {
-        //println(PVector.angleBetween(x1, x3));
         float d = x2.mag();
         if (d < c.radius)
             isInt = true;
     }
     else
     {
-        //println("3");
-        float d = sin(PVector.angleBetween(x1, x2)) * x2.mag();
+        float d = sin(theta1) * x2.mag();
         if (d < c.radius)
             isInt = true;
     }
