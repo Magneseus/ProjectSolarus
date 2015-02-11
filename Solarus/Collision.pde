@@ -393,13 +393,13 @@ class Circ implements Shape
     
     if (lineIntCirc(r.tl, r.tr, c))
         return true;
-    /*if (lineIntCirc(r.tr, r.br, c))
+    if (lineIntCirc(r.tr, r.br, c))
         return true;
     if (lineIntCirc(r.br, r.bl, c))
         return true;
     if (lineIntCirc(r.bl, r.tl, c))
         return true;
-    */
+    
     return false;
 }
 
@@ -416,17 +416,19 @@ class Circ implements Shape
     PVector x3 = PVector.sub(c.getPos(), p2);
     
     float theta1 = PVector.angleBetween(x1, x2);
-    float theta2 = PI - theta1;
+    
+    PVector x4 = PVector.mult(x1, -1);
+    float theta2 = PVector.angleBetween(x4, x3);
     
     if (theta1 > PI/2)
     {
-        float d = x3.mag();
+        float d = x2.mag();
         if (d < c.radius)
             isInt = true;
     }
     else if (theta2 > PI/2)
     {
-        float d = x2.mag();
+        float d = x3.mag();
         if (d < c.radius)
             isInt = true;
     }
