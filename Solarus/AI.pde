@@ -1,5 +1,5 @@
 
-class AI extends Entity
-{
+//class AI extends Entity
+//{
     
-}
+//}
