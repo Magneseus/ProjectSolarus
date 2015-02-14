@@ -3,6 +3,8 @@ class Collision
 {
     ArrayList<Shape> hitBox;
     PVector center;
+    boolean collideable;
+    private float angle;
     
     //The center being based off of the local coordinates
     Collision(ArrayList<Shape> hbox, PVector center)
@@ -13,11 +15,17 @@ class Collision
         {
             hitBox.get(i).move(center);
         }
+        
+        collideable = true;
+        angle = PI/2;
     }
     
     boolean collide(Collision c)
     {
         boolean isColliding = false;
+        
+        if (!collideable || !c.collideable)
+            return false;
         
         for (int i = 0; i < hitBox.size(); i++)
         {
@@ -74,6 +82,41 @@ class Collision
             //Re-set the position
             hitBox.get(i).setPos(tpos);
         }
+        
+        angle += x;
+        if (angle > 2*PI)
+            angle = angle - (2*PI);
+        else if (angle < 0)
+            angle = (2*PI) + angle;
+    }
+    
+    void rotTo(float x)
+    {
+        for (int i = 0; i < hitBox.size(); i++)
+        {
+            if (hitBox.get(i).type() == Shape.SRECT)
+            {
+                Rect r = (Rect)hitBox.get(i);
+                r.rot(-angle);
+                r.rot(x);
+            }
+            
+            //Get center of each shape
+            PVector tpos = hitBox.get(i).getPos();
+            
+            //Translate by center
+            tpos.sub(center);
+            //Rotate
+            tpos.rotate(-angle);
+            tpos.rotate(x);
+            //Translate back
+            tpos.add(center);
+            
+            //Re-set the position
+            hitBox.get(i).setPos(tpos);
+        }
+        
+        angle = x;
     }
     
 }
