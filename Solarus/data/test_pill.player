@@ -1,0 +1,10 @@
+# Player test file
+
+:collision:
+	Rect2 = -40,-80, 40,80
+	Circ = 0,-80, 40
+	Circ = 0,80, 40
+	Center = 0,0
+:
+
+# End Player test file

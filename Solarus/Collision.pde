@@ -42,11 +42,22 @@ class Collision
         return isColliding;
     }
     
-    void moveTo(PVector p)
+    void move(PVector p)
     {
         for (int i = 0; i < hitBox.size(); i++)
         {
             hitBox.get(i).setPos(p);
+        }
+        center = p;
+    }
+    
+    void moveTo(PVector p)
+    {
+        PVector d = PVector.sub(p, center);
+        
+        for (int i = 0; i < hitBox.size(); i++)
+        {
+            hitBox.get(i).move(d);
         }
         center = p;
     }

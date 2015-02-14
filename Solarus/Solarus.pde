@@ -1,7 +1,7 @@
 boolean debug_ = false;
 
 Collision c, cc;
-PC p, p1;
+PC p, p1, p2;
 
 void setup()
 {
@@ -12,42 +12,37 @@ void setup()
     ellipseMode(RADIUS);
     rectMode(CORNERS);
     
-    ArrayList<Shape> a = new ArrayList<Shape>();
-    ArrayList<Shape> a1 = new ArrayList<Shape>();
-    
-    Circ c1 = new Circ(new PVector(0, -80), 40);
-    Circ c2 = new Circ(new PVector(0, 80), 40);
-    Rect r1 = new Rect(new PVector(-40, -80), new PVector(40, 80));
-    a.add(c1);
-    a.add(c2);
-    a.add(r1);
-    
-    Rect r = new Rect(new PVector(-1, -20), new PVector(1,-20),
-                      new PVector(20, 20), new PVector(-20, 20));
-    r.ct = new PVector(0,0);
-    Rect r2 = new Rect(new PVector(-20,-20), new PVector(20,20));
-    a1.add(r);
-    
-    c = new Collision(a, new PVector(width/2, height/2));
-    cc = new Collision(a1, new PVector(width/2,height/2));
-    
+    p = parsePC("test_triangle.player");
     PGraphics im = createGraphics(40,40);
     im.beginDraw();
     im.fill(0,255,0);
     im.triangle(0, 40, 20, 0, 40, 40);
     im.endDraw();
     
-    p = new PC(new PVector(width/2,height/2), im, cc);
+    p.setImage(im);
+    p.moveTo(new PVector(width/2, height/2));
     p.toggleHitBox();
     
+    p1 = parsePC("test_pill.player");
     PGraphics im2 = createGraphics(10,10);
     im2.beginDraw();
     im2.fill(0,0,255);
     im2.rect(0,0, 10, 10);
     im2.endDraw();
     
-    p1 = new PC(new PVector(width/2, height/2), im2, c);
+    p1.setImage(im2);
+    p1.moveTo(new PVector(width/2, height/2));
     p1.toggleHitBox();
+    
+    p2 = parsePC("test.player");
+    PGraphics im4 = createGraphics(20,20);
+    im4.beginDraw();
+    im4.fill(0,255,255);
+    im4.rect(0,0,20,20);
+    im4.endDraw();
+    
+    p2.setImage(im4);
+    p2.toggleHitBox();
 }
 
 void draw()
@@ -62,7 +57,10 @@ void draw()
     p1.rot(PI/128);
     p1.render(PVector.add(PVector.mult(p.pos, -1), new PVector(width/2,height/2)));
     
-    if (p.collide(p1))
+    p2.render(PVector.add(PVector.mult(p.pos, -1), new PVector(width/2,height/2)));
+    
+    
+    if (p.collide(p1) || p.collide(p2))
     {
         PGraphics im = p.getImage();
         im.beginDraw();

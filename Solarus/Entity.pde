@@ -15,7 +15,7 @@ abstract class Entity
         vel.add(PVector.mult(accel, delta));
         pos.add(PVector.mult(vel, delta));
         
-        col.moveTo(pos);
+        col.move(pos);
     }
     
     protected void initBase()

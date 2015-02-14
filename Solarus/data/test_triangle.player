@@ -1,0 +1,9 @@
+# Player test file
+
+:collision:
+	Rect1 = -1,-20, 1,-20, 20,20, -20,20
+	ct = 0,0
+	Center = 0,0
+:
+
+# End Player test file
