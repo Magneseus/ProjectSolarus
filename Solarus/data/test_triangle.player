@@ -6,4 +6,20 @@
 	Center = 0,0
 :
 
+health = 10
+
+pos = 400,400
+vel = 0,0
+accel = 0,0
+
+maxVel = 20
+maxAccel = 0.8
+maxRot = 4
+
+percentF = 50
+percentB = 20
+percentS = 30
+
+slow = 0.1
+
 # End Player test file

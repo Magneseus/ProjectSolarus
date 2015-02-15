@@ -13,6 +13,12 @@ abstract class Entity
     protected void updateKin(float delta)
     {
         vel.add(PVector.mult(accel, delta));
+        
+        if (vel.mag() > maxVel)
+            vel.setMag(maxVel);
+        else if (vel.mag() < 0.2)
+            vel.setMag(0);
+        
         pos.add(PVector.mult(vel, delta));
         
         col.move(pos);

@@ -313,9 +313,18 @@ class Rect implements Shape
         
         if (debug_)
         {
+            pushMatrix();
+            
+            PVector controlCoords = new PVector(control.pos.x, control.pos.y);
+            controlCoords.mult(-1);
+            controlCoords.add(new PVector(width/2, height/2));
+            translate(controlCoords.x, controlCoords.y);
+            
             line(p1.x,p1.y,p2.x,p2.y);
             line(p2.x,p2.y,p3.x,p3.y);
             line(p3.x,p3.y,p1.x,p1.y);
+            
+            popMatrix();
         }
         
         return a;

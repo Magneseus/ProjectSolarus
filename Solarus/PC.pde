@@ -3,6 +3,7 @@ class PC extends Entity
 {
     private int health;
     private boolean inControl;
+    private float percentF, percentB, percentS, slow;
 
     PC (PVector pos, PGraphics img, Collision c)
     {
@@ -14,6 +15,10 @@ class PC extends Entity
 
         health = 0;
         inControl = false;
+        
+        percentF = 1;
+        percentS = 1;
+        percentB = 1;
     }
 
     boolean update(float delta)
@@ -23,6 +28,67 @@ class PC extends Entity
         //Check key and mouse presses
         if (inControl)
         {
+            PVector mouseCoords = new PVector(mouseX, mouseY);
+            PVector dis = PVector.sub(mouseCoords, new PVector(width/2, height/2));
+            PVector ang = PVector.fromAngle(angle);
+            ang.rotate(-PI/2);
+            
+            boolean tCW = false;
+            boolean tCCW = false;
+            
+            if (PVector.angleBetween(dis, ang) > PI/32)
+            {
+                float dot = (ang.x * -dis.y) + (ang.y * dis.x);
+                
+                if (dot >= 0)
+                    tCW = true;
+                else
+                    tCCW = true;
+            }
+            
+            if (tCW)
+                rot(-maxRot / frameRate);
+            else if (tCCW)
+                rot(maxRot / frameRate);
+            
+            PVector one = new PVector(0,0);
+            PVector two = new PVector(0,0);
+            
+            // W
+            if (keys[0])
+            {
+                one = PVector.fromAngle(angle - PI/2);
+                one.mult(10 * percentF);
+            }
+            else if (keys[2])
+            {
+                one = PVector.fromAngle(angle + PI/2);
+                one.mult(10 * percentB);
+            }
+            // A
+            if (keys[1])
+            {
+                two = PVector.fromAngle(angle + PI);
+                two.mult(10 * percentS);
+            }
+            else if (keys[3])
+            {
+                two = PVector.fromAngle(angle);
+                two.mult(10 * percentS);
+            }
+            
+            if (!keys[0] && !keys[1] && !keys[2] && !keys[3])
+            {
+                accel = new PVector(vel.x, vel.y);
+                accel.mult(-slow);
+            }
+            else
+            {
+                PVector a = PVector.add(one, two);
+                a.setMag(maxAccel);
+                accel = new PVector(a.x, a.y);
+            }
+            
         }
 
         if (health < 0)
@@ -50,6 +116,27 @@ class PC extends Entity
     {
         health = h;
     }
+    
+    void setPercentF(float f)
+    {
+        percentF = f;
+    }
+    
+    void setPercentB(float f)
+    {
+        percentB = f;
+    }
+    
+    void setPercentS(float f)
+    {
+        percentS = f;
+    }
+    
+    void setSlow(float f)
+    {
+        slow = f;
+    }
+    
 }
 
 PC parsePC(String fileName)
@@ -168,6 +255,14 @@ PC parsePC(String fileName)
                 returnP.maxRot = float(trim(data[0]));
             else if (line.equals("health"))
                 returnP.setHealth( int(trim(data[0])) );
+            else if (line.equals("percentF"))
+                returnP.setPercentF(float(trim(data[0])) );
+            else if (line.equals("percentB"))
+                returnP.setPercentB(float(trim(data[0])) );
+            else if (line.equals("percentS"))
+                returnP.setPercentS(float(trim(data[0])) );
+            else if (line.equals("slow"))
+                returnP.setSlow(float(trim(data[0])) );
         }
     }
 

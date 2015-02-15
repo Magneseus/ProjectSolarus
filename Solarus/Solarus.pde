@@ -1,7 +1,9 @@
-boolean debug_ = false;
+boolean debug_ = true;
 
-Collision c, cc;
 PC p, p1, p2;
+PC control;
+
+ArrayList<PC> test;
 
 void setup()
 {
@@ -12,15 +14,78 @@ void setup()
     ellipseMode(RADIUS);
     rectMode(CORNERS);
     
+    for (int i = 0; i < keysS.length; i++)
+        keysS[i] = true;
+    
+    loadPlayers();
+}
+
+void draw()
+{
+    background(0);
+    
+    p.update(0.5f);
+    p1.rot(PI/128);
+    for (PC tx : test)
+    {
+        tx.rot(PI/128);
+    }
+    
+    PVector controlCoords = new PVector(control.pos.x, control.pos.y);
+    controlCoords.mult(-1);
+    controlCoords.add(new PVector(width/2, height/2));
+    
+    p.render(controlCoords);
+    p1.render(controlCoords);
+    p2.render(controlCoords);
+    
+    boolean cxx = false;
+    
+    for (PC tx : test)
+    {
+        tx.render(controlCoords);
+        if (p.collide(tx))
+        {
+            cxx = true;
+        }
+    }
+    
+    
+    if (p.collide(p1) || p.collide(p2) || cxx)
+    {
+        PGraphics im = p.getImage();
+        im.beginDraw();
+        im.stroke(255,0,0);
+        im.fill(255,0,0);
+        im.triangle(0, 40, 20, 0, 40, 40);
+        im.endDraw();
+    }
+    else
+    {
+        PGraphics im = p.getImage();
+        im.beginDraw();
+        im.stroke(0,255,0);
+        im.fill(0,255,0);
+        im.triangle(0, 40, 20, 0, 40, 40);
+        im.endDraw();
+    }
+}
+
+//Temp function
+void loadPlayers()
+{
     p = parsePC("test_triangle.player");
     PGraphics im = createGraphics(40,40);
     im.beginDraw();
+    im.stroke(0,255,0);
     im.fill(0,255,0);
     im.triangle(0, 40, 20, 0, 40, 40);
     im.endDraw();
     
     p.setImage(im);
     p.moveTo(new PVector(width/2, height/2));
+    p.setControl(true);
+    control = p;
     p.toggleHitBox();
     
     p1 = parsePC("test_pill.player");
@@ -43,75 +108,28 @@ void setup()
     
     p2.setImage(im4);
     p2.toggleHitBox();
-}
-
-void draw()
-{
-    background(0);
     
-    PVector pCoords = p.pos;
-    
-    p.update(0.5f);
-    p.render(PVector.add(PVector.mult(p.pos, -1), new PVector(width/2,height/2)));
-    
-    p1.rot(PI/128);
-    p1.render(PVector.add(PVector.mult(p.pos, -1), new PVector(width/2,height/2)));
-    
-    p2.render(PVector.add(PVector.mult(p.pos, -1), new PVector(width/2,height/2)));
-    
-    
-    if (p.collide(p1) || p.collide(p2))
+    test = new ArrayList<PC>();
+    for (int i = 0; i < 10; i++)
     {
-        PGraphics im = p.getImage();
-        im.beginDraw();
-        im.fill(255,0,0);
-        im.triangle(0, 40, 20, 0, 40, 40);
-        im.endDraw();
-    }
-    else
-    {
-        PGraphics im = p.getImage();
-        im.beginDraw();
-        im.fill(0,255,0);
-        im.triangle(0, 40, 20, 0, 40, 40);
-        im.endDraw();
-    }
-    
-    if (keyPressed && key == 'a')
-        p.rot(-PI/64);
-    else if (keyPressed && key == 'd')
-        p.rot(PI/64);
-    
-    if (keyPressed)
-    {
-        
-        if (key == 'w')
+        for (int j = 0; j < 20; j++)
         {
-            PVector v = PVector.fromAngle(p.getAngle() + PI/2);
-            v.setMag(10);
-            v.mult(-1);
-            p.vel = v;
-        }
-        else if (key == 's')
-        {
-            PVector v = PVector.fromAngle(p.getAngle() + PI/2);
-            v.setMag(10);
+            float offsetx = 100 * i;
+            float offsety = 100 * j;
             
-            p.vel = v;
+            PC px;
+            px = parsePC("test.player");
+            PGraphics imx = createGraphics(20,20);
+            imx.beginDraw();
+            imx.fill(0,255,255);
+            imx.rect(0,0,20,20);
+            imx.endDraw();
+            
+            px.setImage(imx);
+            px.moveTo(new PVector(width/2 + offsetx, height/2 + offsety));
+            px.toggleHitBox();
+            
+            test.add(px);
         }
-        else
-        {
-            PVector v = p.vel;
-            v.mult(0.2);
-            if (v.mag() < 1)
-                p.vel = new PVector(0,0);
-        }
-    }
-    else
-    {
-        PVector v = p.vel;
-            v.mult(0.2);
-            if (v.mag() < 1)
-                p.vel = new PVector(0,0);
     }
 }
