@@ -1,7 +1,9 @@
-boolean debug_ = false;
+boolean debug_ = true;
 
 PC p, p1, p2;
 PC control;
+
+ArrayList<PC> test;
 
 void setup()
 {
@@ -24,6 +26,10 @@ void draw()
     
     p.update(0.5f);
     p1.rot(PI/128);
+    for (PC tx : test)
+    {
+        tx.rot(PI/128);
+    }
     
     PVector controlCoords = new PVector(control.pos.x, control.pos.y);
     controlCoords.mult(-1);
@@ -33,7 +39,19 @@ void draw()
     p1.render(controlCoords);
     p2.render(controlCoords);
     
-    if (p.collide(p1) || p.collide(p2))
+    boolean cxx = false;
+    
+    for (PC tx : test)
+    {
+        tx.render(controlCoords);
+        if (p.collide(tx))
+        {
+            cxx = true;
+        }
+    }
+    
+    
+    if (p.collide(p1) || p.collide(p2) || cxx)
     {
         PGraphics im = p.getImage();
         im.beginDraw();
@@ -68,7 +86,7 @@ void loadPlayers()
     p.moveTo(new PVector(width/2, height/2));
     p.setControl(true);
     control = p;
-    //p.toggleHitBox();
+    p.toggleHitBox();
     
     p1 = parsePC("test_pill.player");
     PGraphics im2 = createGraphics(10,10);
@@ -91,4 +109,27 @@ void loadPlayers()
     p2.setImage(im4);
     p2.toggleHitBox();
     
+    test = new ArrayList<PC>();
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 20; j++)
+        {
+            float offsetx = 100 * i;
+            float offsety = 100 * j;
+            
+            PC px;
+            px = parsePC("test.player");
+            PGraphics imx = createGraphics(20,20);
+            imx.beginDraw();
+            imx.fill(0,255,255);
+            imx.rect(0,0,20,20);
+            imx.endDraw();
+            
+            px.setImage(imx);
+            px.moveTo(new PVector(width/2 + offsetx, height/2 + offsety));
+            px.toggleHitBox();
+            
+            test.add(px);
+        }
+    }
 }
