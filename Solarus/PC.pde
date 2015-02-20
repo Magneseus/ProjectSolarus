@@ -25,7 +25,8 @@ class PC extends Entity
     {
         updateKin(delta);
         
-        accel = new PVector(0,0);
+        accel = new PVector(vel.x, vel.y);
+        accel.mult(-slow);
 
         //Check key and mouse presses
         if (inControl)
