@@ -1,8 +1,10 @@
 boolean debug_ = false;
 
-PC p, p1, p2;
+PC p, p1, p2, p3;
 PC control;
 Stars star;
+
+boolean controlToggle = true;
 
 void setup()
 {
@@ -21,7 +23,7 @@ void setup()
     star = new Stars();
     star.addMapLayer(new PVector(5,5), 5, 0.1);
     star.addTileLayer(new PVector(400,400), 5, 0.0001, color(255,255,255,40), 5);
-    star.addMapLayer(new PVector(5,5), 5, 0.05);
+    star.addMapLayer(new PVector(5,5), 5, -0.1);
     star.addTileLayer(new PVector(400,400), 3, 0.001, color(255,255,255,45), 5);
     //star.addMapLayer(new PVector(5,5), 5, -0.3);
     //star.addTileLayer(new PVector(400,400), 1, 0.005, color(255,255,255,60), 5);
@@ -32,6 +34,7 @@ void draw()
     background(0);
     
     p.update(0.5f);
+    p3.update(0.5f);
     p1.rot(PI/128);
     
     PVector controlCoords = new PVector(control.pos.x, control.pos.y);
@@ -41,6 +44,7 @@ void draw()
     star.render(controlCoords, control.pos, 2);
     
     p.render(controlCoords);
+    p3.render(controlCoords);
     p1.render(controlCoords);
     p2.render(controlCoords);
     
@@ -62,6 +66,26 @@ void draw()
         im.triangle(0, 40, 20, 0, 40, 40);
         im.endDraw();
     }
+    
+    if (keysS[5] && keys[5])
+    {
+        controlToggle = !controlToggle;
+        
+        if (controlToggle)
+        {
+            control = p;
+            p.setControl(true);
+            p3.setControl(false);
+        }
+        else
+        {
+            control = p3;
+            p3.setControl(true);
+            p.setControl(false);
+        }
+        
+        keysS[5] = false;
+    }
 }
 
 //Temp function
@@ -79,6 +103,18 @@ void loadPlayers()
     p.moveTo(new PVector(width/2, height/2));
     p.setControl(true);
     control = p;
+    //p.toggleHitBox();
+    
+    p3 = parsePC("test_triangle.player");
+    im = createGraphics(40,40);
+    im.beginDraw();
+    im.stroke(0,255,0);
+    im.fill(0,255,0);
+    im.triangle(0, 40, 20, 0, 40, 40);
+    im.endDraw();
+    
+    p3.setImage(im);
+    p3.moveTo(new PVector(width, height));
     //p.toggleHitBox();
     
     p1 = parsePC("test_pill.player");

@@ -24,6 +24,8 @@ class PC extends Entity
     boolean update(float delta)
     {
         updateKin(delta);
+        
+        accel = new PVector(0,0);
 
         //Check key and mouse presses
         if (inControl)
