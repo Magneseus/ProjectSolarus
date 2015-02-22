@@ -4,22 +4,20 @@ class AI
     private HashMap<String,Integer> states;
     private int STATE = 0;
     
-    private PVector pos, vel, accel;
-    private float maxVel, maxAccel, maxRot;
+    private ArrayList<PC> targets;
     
-    AI(String state, PVector pos, PVector vel, PVector accel)
+    AI(ArrayList<PC> targets_, HashMap<String,Integer> info)
     {
+        states = new HashMap<String,Integer>();
         states.put("stop", 0);
         states.put("follow", 1);
-        states.put("", 2);
-        states.put("stop", 3);
+        states.put("attack", 2);
+        states.put("roam", 3);
         
-        maxVel = 1;
-        maxAccel = 1;
-        maxRot = 1;
+        targets = targets_;
     }
     
-    String update(PVector pos, PVector vel)
+    String update(Entity self)
     {
         return "s";
     }

@@ -4,6 +4,8 @@ class PC extends Entity
     private int health;
     private boolean inControl;
     private float percentF, percentB, percentS, slow;
+    
+    private AI alf;
 
     PC (PVector pos, PGraphics img, Collision c)
     {
@@ -24,9 +26,6 @@ class PC extends Entity
     boolean update(float delta)
     {
         updateKin(delta);
-        
-        accel = new PVector(vel.x, vel.y);
-        accel.mult(-slow);
 
         //Check key and mouse presses
         if (inControl)

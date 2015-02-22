@@ -1,10 +1,13 @@
 boolean debug_ = false;
 
-PC p, p1, p2, p3;
+PC p1, p2;
 PC control;
 Stars star;
 
-boolean controlToggle = true;
+ArrayList<PC> players;
+int playerInd = 0;
+
+ArrayList<PC> enemies;
 
 void setup()
 {
@@ -18,6 +21,9 @@ void setup()
     for (int i = 0; i < keysS.length; i++)
         keysS[i] = true;
     
+    enemies = new ArrayList<PC>();
+    players = new ArrayList<PC>();
+    loadEnemies();
     loadPlayers();
     
     star = new Stars();
@@ -33,8 +39,11 @@ void draw()
 {
     background(0);
     
-    p.update(0.5f);
-    p3.update(0.5f);
+    for (PC p : players)
+        p.update(0.5f);
+    for (PC p : enemies)
+        p.update(0.5f);
+    
     p1.rot(PI/128);
     
     PVector controlCoords = new PVector(control.pos.x, control.pos.y);
@@ -43,54 +52,77 @@ void draw()
     
     star.render(controlCoords, control.pos, 2);
     
-    p.render(controlCoords);
-    p3.render(controlCoords);
+    for (PC p : players)
+        p.render(controlCoords);
+    for (PC p : enemies)
+        p.render(controlCoords);
+    
     p1.render(controlCoords);
     p2.render(controlCoords);
     
-    if (p.collide(p1) || p.collide(p2))
+    playerSwitchCheck();
+}
+
+void playerSwitchCheck()
+{
+    //Q
+    if (keysS[4] && keys[4])
     {
-        PGraphics im = p.getImage();
-        im.beginDraw();
-        im.stroke(255,0,0);
-        im.fill(255,0,0);
-        im.triangle(0, 40, 20, 0, 40, 40);
-        im.endDraw();
-    }
-    else
-    {
-        PGraphics im = p.getImage();
-        im.beginDraw();
-        im.stroke(0,255,0);
-        im.fill(0,255,0);
-        im.triangle(0, 40, 20, 0, 40, 40);
-        im.endDraw();
-    }
-    
-    if (keysS[5] && keys[5])
-    {
-        controlToggle = !controlToggle;
+        playerInd--;
+        if (playerInd < 0)
+            playerInd = players.size() - 1;
         
-        if (controlToggle)
-        {
-            control = p;
-            p.setControl(true);
-            p3.setControl(false);
-        }
-        else
-        {
-            control = p3;
-            p3.setControl(true);
-            p.setControl(false);
-        }
+        control.setControl(false);
+        control = players.get(playerInd);
+        control.setControl(true);
+        
+        keysS[4] = false;
+    }
+    //E
+    else if (keysS[5] && keys[5])
+    {
+        playerInd++;
+        if (playerInd >= players.size())
+            playerInd = 0;
+        
+        control.setControl(false);
+        control = players.get(playerInd);
+        control.setControl(true);
         
         keysS[5] = false;
     }
 }
 
+void loadEnemies()
+{
+    PC p;
+    p = parsePC("test_triangle.player");
+    PGraphics im = createGraphics(40,40);
+    im.beginDraw();
+    im.stroke(0,255,0);
+    im.fill(255,0,0);
+    im.triangle(0, 40, 20, 0, 40, 40);
+    im.endDraw();
+    
+    p.setImage(im);
+    p.moveTo(new PVector(0,0));
+    
+    PC p1;
+    p1 = parsePC("test_triangle.player");
+    p1.setImage(im);
+    p1.moveTo(new PVector(0,0));
+    
+    p.alf = new AI(players);
+    p1.alf = new AI(players);
+    
+    enemies.add(p);
+    enemies.add(p1);
+}
+
 //Temp function
 void loadPlayers()
 {
+    PC p;
     p = parsePC("test_triangle.player");
     PGraphics im = createGraphics(40,40);
     im.beginDraw();
@@ -105,6 +137,7 @@ void loadPlayers()
     control = p;
     //p.toggleHitBox();
     
+    PC p3;
     p3 = parsePC("test_triangle.player");
     im = createGraphics(40,40);
     im.beginDraw();
@@ -116,6 +149,10 @@ void loadPlayers()
     p3.setImage(im);
     p3.moveTo(new PVector(width, height));
     //p.toggleHitBox();
+    
+    players.add(p);
+    players.add(p3);
+    playerInd = 0;
     
     p1 = parsePC("test_pill.player");
     PGraphics im2 = createGraphics(10,10);
