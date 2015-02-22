@@ -99,7 +99,7 @@ void loadEnemies()
     p = parsePC("test_triangle.player");
     PGraphics im = createGraphics(40,40);
     im.beginDraw();
-    im.stroke(0,255,0);
+    im.stroke(255,0,0);
     im.fill(255,0,0);
     im.triangle(0, 40, 20, 0, 40, 40);
     im.endDraw();
@@ -110,10 +110,10 @@ void loadEnemies()
     PC p1;
     p1 = parsePC("test_triangle.player");
     p1.setImage(im);
-    p1.moveTo(new PVector(0,0));
+    p1.moveTo(new PVector(-400,-300));
     
-    p.alf = new AI(players);
-    p1.alf = new AI(players);
+    p.setAITargets(players);
+    p1.setAITargets(players);
     
     enemies.add(p);
     enemies.add(p1);

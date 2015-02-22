@@ -41,6 +41,11 @@ abstract class Entity
         showHitBox = false;
     }
     
+    public float distance(Entity other)
+    {
+        return dist(pos.x, pos.y, other.pos.x, other.pos.y);
+    }
+    
     public void moveTo(PVector pos)
     {
         this.pos = pos;

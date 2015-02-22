@@ -12,7 +12,7 @@ pos = 400,400
 vel = 0,0
 accel = 0,0
 
-maxVel = 20
+maxVel = 15
 maxAccel = 0.8
 maxRot = 4
 
@@ -21,5 +21,9 @@ percentB = 20
 percentS = 30
 
 slow = 0.1
+
+AI.aggro = 1000
+AI.attack = 400
+AI.close = 100
 
 # End Player test file

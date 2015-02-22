@@ -21,6 +21,8 @@ class PC extends Entity
         percentF = 1;
         percentS = 1;
         percentB = 1;
+        
+        alf = new AI(null);
     }
 
     boolean update(float delta)
@@ -92,6 +94,10 @@ class PC extends Entity
             }
             
         }
+        else
+        {
+            alf.update(this);
+        }
 
         if (health < 0)
             return false;
@@ -102,6 +108,21 @@ class PC extends Entity
     void setControl(boolean c)
     {
         inControl = c;
+    }
+    
+    void setAITargets(ArrayList<PC> targ)
+    {
+        alf.setTargets(targ);
+    }
+    
+    void setAIInfo(HashMap<String,Integer> info)
+    {
+        alf.setInfo(info);
+    }
+    
+    void setAI(AI a)
+    {
+        alf = a;
     }
 
     void setCollision(Collision c)
@@ -146,6 +167,8 @@ PC parsePC(String fileName)
     String[] lines = loadStrings(fileName);
     PC returnP = new PC(null, null, null);
     returnP.initBase();
+    
+    HashMap<String,Integer> aiInfo = new HashMap<String,Integer>();
 
     for (int i = 0; i < lines.length; i++)
     {
@@ -265,8 +288,17 @@ PC parsePC(String fileName)
                 returnP.setPercentS(float(trim(data[0])) );
             else if (line.equals("slow"))
                 returnP.setSlow(float(trim(data[0])) );
+            else if (line.equals("AI.aggro"))
+                aiInfo.put( "aggro", int(trim(data[0])) );
+            else if (line.equals("AI.attack"))
+                aiInfo.put( "attack", int(trim(data[0])) );
+            else if (line.equals("AI.close"))
+                aiInfo.put( "close", int(trim(data[0])) );
+            
         }
     }
+    
+    returnP.setAIInfo(aiInfo);
 
     return returnP;
 }
