@@ -4,6 +4,7 @@
 */
  
  PImage MainFrame;
+ PImage StatusBarFrame;
  PFont timeFont;
  
  Clock clock;
@@ -14,7 +15,10 @@
  void mainScreenSetup()
  {
    MainFrame = loadImage("Windows/MainFrame.png");
-   MainFrame.resize(235, 320);
+   MainFrame.resize(200, 300);
+   
+   StatusBarFrame = loadImage("Windows/StatusBarFrame.png");
+   StatusBarFrame.resize(700, 200);
    
    clock = new Clock();
    
@@ -24,7 +28,7 @@
  
  void renderMainScreen()
  {
-   
+   /*
    // Trim
    strokeWeight(3);
    stroke(0, 250, 230, 75);
@@ -35,17 +39,19 @@
    strokeWeight(1);
    stroke(0, 250, 230);
    fill(0, 230, 210, 50);
-   rect(15, 15, width/5 - 20, height - 30);
+   rect(15, 15, width/5 - 10, height - 20);
+   */
    
    image(MainFrame, 5, 10);
+   image(StatusBarFrame, width/2 - 350, height - 195);
    
-   textFont(timeFont, 32);
+   textFont(timeFont, 24);
    textAlign(CENTER, CENTER);
    
    // Current time
    fill(0, 250, 230);
    clock.getTime();
-   clock.x = width/10;
+   clock.x = width/11;
    clock.y = height/8;
    clock.displayTime();
    
