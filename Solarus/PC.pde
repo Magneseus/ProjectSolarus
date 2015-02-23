@@ -8,6 +8,7 @@ class PC extends Entity
     private AI alf;
 
     public ArrayList<Proj> projList;
+    public ArrayList<PC> enemyList;
 
     PC (PVector pos, PGraphics img, Collision c)
     {
@@ -102,11 +103,14 @@ class PC extends Entity
                 {
                     Proj ptmp = parseProj("test.bullet");
                     ptmp.originator = this;
+                    ptmp.targetList = enemyList;
 
                     ptmp.pos = new PVector(pos.x, pos.y);
                     ptmp.vel = PVector.fromAngle(angle-PI/2);
                     ptmp.vel.setMag(ptmp.maxVel);
-                    ptmp.vel.add(vel);
+                    
+                    if (PVector.angleBetween(ptmp.vel, vel) < PI/2)
+                        ptmp.vel.add(vel);
 
                     PGraphics im = createGraphics(30, 30);
                     im.beginDraw();

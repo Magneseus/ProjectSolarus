@@ -59,13 +59,19 @@ class AI
         //Check states
         
         if (STATE == states.get("follow"))
-            chase(self, closest);
+        {
+            
+        }
         
         if (STATE == states.get("attack"))
-            chase(self, closest);
+        {
+            
+        }
         
         if (STATE == states.get("back"))
-            chase(self, closest);
+        {
+            
+        }
         
         if (STATE == states.get("stop"))
         {
@@ -73,11 +79,43 @@ class AI
             
             self.accel = new PVector(self.vel.x, self.vel.y);
             self.accel.mult(-self.slow);
-            
+            s
             if (self.vel.mag() < 0.1)
                 self.vel = new PVector(0,0);
         }
         
+        attack(self, closest);
+        chase(self, closest);
+        
+    }
+    
+    void attack(PC self, PC other)
+    {
+        if (self.projCount < self.projMax && 1 > random(300))
+        {
+            Proj ptmp = parseProj("test.bullet");
+            ptmp.originator = self;
+            ptmp.targetList = self.enemyList;
+
+            ptmp.pos = new PVector(self.pos.x, self.pos.y);
+            ptmp.vel = PVector.fromAngle(self.getAngle()-PI/2);
+            ptmp.vel.setMag(ptmp.maxVel);
+            
+            if (PVector.angleBetween(ptmp.vel, self.vel) < PI/2)
+                ptmp.vel.add(self.vel);
+
+            PGraphics im = createGraphics(30, 30);
+            im.beginDraw();
+            im.fill(0, 0, 255);
+            im.ellipse(15, 15, 15, 15);
+            im.endDraw();
+
+            ptmp.setImage(im);
+
+            self.projList.add(ptmp);
+
+            self.projCount++;
+        }
     }
     
     void chase(PC self, PC other)

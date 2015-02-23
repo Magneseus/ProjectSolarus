@@ -13,7 +13,7 @@ ArrayList<PC> enemies;
 
 void setup()
 {
-    size(1200,600);
+    size(1200,800);
     background(0);
     frameRate(60);
     
@@ -30,49 +30,30 @@ void setup()
     loadEnemies();
     loadPlayers();
     
+    for (PC p : players)
+        p.enemyList = enemies;
+    
+    for (PC p : enemies)
+        p.enemyList = players;
+    
     star = new Stars();
     star.addMapLayer(new PVector(5,5), 5, 0.1);
     star.addTileLayer(new PVector(400,400), 5, 0.0001, color(255,255,255,40), 5);
     star.addMapLayer(new PVector(5,5), 5, -0.1);
     star.addTileLayer(new PVector(400,400), 3, 0.001, color(255,255,255,45), 5);
-    star.addMapLayer(new PVector(5,5), 5, -0.3);
-    star.addTileLayer(new PVector(400,400), 1, 0.005, color(255,255,255,60), 5);
+    //star.addMapLayer(new PVector(5,5), 5, -0.3);
+    //star.addTileLayer(new PVector(400,400), 1, 0.005, color(255,255,255,60), 5);
 }
 
 void draw()
 {
     background(0);
     
-    for (PC p : players)
-        p.update(30/frameRate);
-    for (PC p : enemies)
-        p.update(30/frameRate);
-    
-    for (Proj p : playerProj)
-        p.update(30/frameRate);
-    for (Proj p : enemyProj)
-        p.update(30/frameRate);
+    update();
     
     p1.rot(PI/128);
     
-    PVector controlCoords = new PVector(control.pos.x, control.pos.y);
-    controlCoords.mult(-1);
-    controlCoords.add(new PVector(width/2, height/2));
-    
-    star.render(controlCoords, control.pos, 2);
-    
-    for (PC p : players)
-        p.render(controlCoords);
-    for (PC p : enemies)
-        p.render(controlCoords);
-        
-    for (Proj p : playerProj)
-        p.render(controlCoords);
-    for (Proj p : enemyProj)
-        p.render(controlCoords);
-    
-    p1.render(controlCoords);
-    p2.render(controlCoords);
+    render();
     
     playerSwitchCheck();
     
@@ -101,6 +82,69 @@ void draw()
             p.setImage(im);
         }
     }
+}
+
+void update()
+{
+    float delta = 30 / frameRate;
+    
+    for (int i = 0; i < players.size(); i++)
+    {
+        if (!players.get(i).update(delta))
+        {
+            players.remove(i);
+            i--;
+        }
+    }
+    
+    for (int i = 0; i < enemies.size(); i++)
+    {
+        if (!enemies.get(i).update(delta))
+        {
+            enemies.remove(i);
+            i--;
+        }
+    }
+    
+    for (int i = 0; i < enemyProj.size(); i++)
+    {
+        if (!enemyProj.get(i).update(delta))
+        {
+            enemyProj.remove(i);
+            i--;
+        }
+    }
+    
+    for (int i = 0; i < playerProj.size(); i++)
+    {
+        if (!playerProj.get(i).update(delta))
+        {
+            playerProj.remove(i);
+            i--;
+        }
+    }
+}
+
+void render()
+{
+    PVector controlCoords = new PVector(control.pos.x, control.pos.y);
+    controlCoords.mult(-1);
+    controlCoords.add(new PVector(width/2, height/2));
+    
+    star.render(controlCoords, control.pos, 2);
+    
+    for (PC p : players)
+        p.render(controlCoords);
+    for (PC p : enemies)
+        p.render(controlCoords);
+        
+    for (Proj p : playerProj)
+        p.render(controlCoords);
+    for (Proj p : enemyProj)
+        p.render(controlCoords);
+    
+    p1.render(controlCoords);
+    p2.render(controlCoords);
 }
 
 void playerSwitchCheck()
