@@ -1,7 +1,7 @@
 /*
    PROJECT SOLARUS
    Main Screen
- */
+*/
  
  PImage MainFrame;
  PFont timeFont;
@@ -11,10 +11,8 @@
  int health = 100;
  int fuel = 100;
  
- void setup()
+ void mainScreenSetup()
  {
-   size(1200, 650);
-   
    MainFrame = loadImage("Windows/MainFrame.png");
    MainFrame.resize(235, 320);
    
@@ -24,9 +22,8 @@
    smooth();
  }
  
- void draw()
+ void renderMainScreen()
  {
-   background(0);
    
    // Trim
    strokeWeight(3);
