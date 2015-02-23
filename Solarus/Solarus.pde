@@ -11,7 +11,7 @@ Minim minim;
 
 void setup()
 {
-    size(1200,600);
+    size(1200, 600);
     background(0);
     frameRate(60);
     

@@ -18,8 +18,8 @@
  
  void mainScreenSetup()
  {
-   MainFrame = loadImage("Windows/MainFrame.png");
-   MainFrame.resize(200, 300);
+   MainFrame = loadImage("Windows/MainFrameMenu.png");
+   MainFrame.resize(250, 300);
    
    StatusBarFrame = loadImage("Windows/StatusBarFrame.png");
    StatusBarFrame.resize(700, 200);
@@ -55,13 +55,17 @@
    image(MainFrame, 5, 10);
    image(StatusBarFrame, width/2 - 350, height - 195);
    
-   textFont(timeFont, 24);
+   fill(255, 200);
+   textFont(timeFont, 16);
+   text("Menu", 60, 40);
+      
+   textSize(24);
    textAlign(CENTER, CENTER);
    
    // Current time
    fill(0, 250, 230);
    clock.getTime();
-   clock.x = width/11;
+   clock.x = width/10;
    clock.y = height/8;
    clock.displayTime();
    
