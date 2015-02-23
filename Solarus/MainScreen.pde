@@ -10,11 +10,8 @@
  Clock clock;
  
  int health = 100;
+ int damage = 0;
  int fuel = 100;
- 
- AudioPlayer MenuMusic;
- 
- boolean play = true;
  
  void mainScreenSetup()
  {
@@ -28,12 +25,6 @@
    
    timeFont = loadFont("Fonts/HoboStd-40.vlw");
    smooth();
-   
-   //set up the music
-   minim = new Minim(this);
-   MenuMusic = minim.loadFile("Music/Savant - Invasion - 15 Problematimaticalulatorture.mp3");
-   //MenuMusic.setLoopPoints(0,155000);
-   
  }
  
  void renderMainScreen()
@@ -72,20 +63,4 @@
    // Health bar
    
    // Fuel bar
-   
-   //Music
-   //MenuMusic.play();
-   MenuMusic.loop();
-   //MenuMusic.setLoopPoints(0,155000);
-   
  }
- 
-
- void stop(){
-   
-   MenuMusic.close();
-   minim.stop();
-   super.stop();
- 
- }
- 
