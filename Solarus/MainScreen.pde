@@ -74,7 +74,7 @@
    // Fuel bar
    
    //Music
-   MenuMusic.play();
+   MenuMusic.play(154800);
    //MenuMusic.loop();
    //MenuMusic.setLoopPoints(0,155000);
    
