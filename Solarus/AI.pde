@@ -15,7 +15,8 @@ class AI
         states.put("follow", 1);
         states.put("attack", 2);
         states.put("roam", 3);
-        states.put("flee", 4);
+        states.put("back", 4);
+        states.put("flee", 5);
         
         targets = targets_;
         
@@ -30,8 +31,9 @@ class AI
         
         if (targets != null && targets.size() > 0)
         {
-            closest = null;
             int minDist = (int)self.distance(targets.get(0));
+            closest = targets.get(0);
+            
             for (PC e : targets)
             {
                 float dist = self.distance(e);
@@ -48,26 +50,70 @@ class AI
                 STATE = states.get("follow");
             if (minDist < check(attack, minDist))
                 STATE = states.get("attack");
+            if (minDist < check(close + 100, minDist))
+                STATE = states.get("stop");
             if (minDist < check(close, minDist))
-                STATE = states.get("flee");
+                STATE = states.get("back");
         }
         
         //Check states
         
         if (STATE == states.get("follow"))
-            chase(self, closest, false);
+            chase(self, closest);
         
         if (STATE == states.get("attack"))
-            println("attack");
+            chase(self, closest);
         
-        if (STATE == states.get("flee"))
-            chase(self, closest, true);
+        if (STATE == states.get("back"))
+            chase(self, closest);
+        
+        if (STATE == states.get("stop"))
+        {
+            chase(self, closest);
+            
+            self.accel = new PVector(self.vel.x, self.vel.y);
+            self.accel.mult(-self.slow);
+            
+            if (self.vel.mag() < 0.1)
+                self.vel = new PVector(0,0);
+        }
         
     }
     
-    void chase(PC self, PC other, boolean flee)
+    void chase(PC self, PC other)
     {
-        
+        if (self != null && other != null)
+        {
+            PVector dis = PVector.sub(other.pos, self.pos);
+            PVector ang = PVector.fromAngle(self.getAngle());
+            ang.rotate(-PI/2);
+            
+            boolean tCW = false;
+            boolean tCCW = false;
+            
+            if (PVector.angleBetween(dis, ang) > PI/self.getRotThresh())
+            {
+                float dot = (ang.x * -dis.y) + (ang.y * dis.x);
+                
+                if (dot >= 0)
+                    tCW = true;
+                else
+                    tCCW = true;
+            }
+            
+            if (tCW)
+                self.rot(-self.maxRot / frameRate);
+            else if (tCCW)
+                self.rot(self.maxRot / frameRate);
+            
+            
+            self.accel = PVector.fromAngle(self.getAngle());
+            self.accel.rotate(-PI/2);
+            self.accel.setMag(self.maxAccel);
+            
+            if (STATE == states.get("back"))
+                self.accel.mult(-1);
+        }
     }
     
     void setTargets(ArrayList<PC> targ)

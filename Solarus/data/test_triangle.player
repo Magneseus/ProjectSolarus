@@ -7,6 +7,7 @@
 :
 
 health = 10
+projMax = 5
 
 pos = 400,400
 vel = 0,0
@@ -21,9 +22,10 @@ percentB = 20
 percentS = 30
 
 slow = 0.1
+rotThresh = 32
 
 AI.aggro = 1000
-AI.attack = 400
+AI.attack = 500
 AI.close = 100
 
 # End Player test file

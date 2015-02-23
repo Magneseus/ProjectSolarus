@@ -51,10 +51,10 @@ class Stars
                     int y2 = (int) fixNum(y+ypos, sy);
                     
                     int ind = mapList.get(i)[x2][y2];
-                    PImage tile = tileList.get(i).get(ind);
+                    //PImage tile = tileList.get(i).get(ind);
                     
                     //tile.render(PVector.add(pos,trans));
-                    image(tile, trans.x+pos.x, trans.y+pos.y);
+                    image(tileList.get(i).get(ind), trans.x+pos.x, trans.y+pos.y);
                 }
             }
             

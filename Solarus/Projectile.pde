@@ -1,133 +1,53 @@
 
-class PC extends Entity
+class Proj extends Entity
 {
-    private int health, projCount, projMax;
-    private boolean inControl;
-    private float percentF, percentB, percentS, slow, rotThresh;
+    //Vars
+    public PC originator;
+    public ArrayList<PC> targetList;
     
-    private AI alf;
-
-    PC (PVector pos, PGraphics img, Collision c)
+    private int damage;
+    private boolean dead;
+    
+    Proj (PVector pos, PGraphics img, Collision c, PC originator)
     {
         initBase();
-
+        
         this.pos = pos;
         this.img = img;
         this.col = c;
-
-        health = 0;
-        projCount = 0;
-        inControl = false;
+        this.originator = originator;
         
-        percentF = 1;
-        percentS = 1;
-        percentB = 1;
-        
-        rotThresh = 32;
-        
-        alf = new AI(null);
+        damage = 1;
+        dead = false;
     }
-
+    
     boolean update(float delta)
     {
         updateKin(delta);
-
-        //Check key and mouse presses
-        if (inControl)
+        
+        if (targetList != null)
         {
-            PVector mouseCoords = new PVector(mouseX, mouseY);
-            PVector dis = PVector.sub(mouseCoords, new PVector(width/2, height/2));
-            PVector ang = PVector.fromAngle(angle);
-            ang.rotate(-PI/2);
-            
-            boolean tCW = false;
-            boolean tCCW = false;
-            
-            if (PVector.angleBetween(dis, ang) > PI/rotThresh)
+            for (PC p : targetList)
             {
-                float dot = (ang.x * -dis.y) + (ang.y * dis.x);
-                
-                if (dot >= 0)
-                    tCW = true;
-                else
-                    tCCW = true;
+                if (p.collide(this))
+                {
+                    p.health -= damage;
+                    originator.projCount--;
+                    
+                    dead = true;
+                    return !dead;
+                }
             }
-            
-            if (tCW)
-                rot(-maxRot / frameRate);
-            else if (tCCW)
-                rot(maxRot / frameRate);
-            
-            PVector one = new PVector(0,0);
-            PVector two = new PVector(0,0);
-            
-            // W
-            if (keys[0])
-            {
-                one = PVector.fromAngle(angle - PI/2);
-                one.mult(10 * percentF);
-            }
-            else if (keys[2])
-            {
-                one = PVector.fromAngle(angle + PI/2);
-                one.mult(10 * percentB);
-            }
-            // A
-            if (keys[1])
-            {
-                two = PVector.fromAngle(angle + PI);
-                two.mult(10 * percentS);
-            }
-            else if (keys[3])
-            {
-                two = PVector.fromAngle(angle);
-                two.mult(10 * percentS);
-            }
-            
-            if (!keys[0] && !keys[1] && !keys[2] && !keys[3])
-            {
-                accel = new PVector(vel.x, vel.y);
-                accel.mult(-slow);
-            }
-            else
-            {
-                PVector a = PVector.add(one, two);
-                a.setMag(maxAccel);
-                accel = new PVector(a.x, a.y);
-            }
-            
         }
-        else
-        {
-            alf.update(this);
-        }
-
-        if (health < 0)
-            return false;
-
-        return true;
-    }
-
-    void setControl(boolean c)
-    {
-        inControl = c;
+        
+        return !dead;
     }
     
-    void setAITargets(ArrayList<PC> targ)
+    void setDamage(int d)
     {
-        alf.setTargets(targ);
+        damage = d;
     }
     
-    void setAIInfo(HashMap<String,Integer> info)
-    {
-        alf.setInfo(info);
-    }
-    
-    void setAI(AI a)
-    {
-        alf = a;
-    }
-
     void setCollision(Collision c)
     {
         this.col = c;
@@ -137,56 +57,15 @@ class PC extends Entity
     {
         img = i;
     }
-
-    void setHealth(int h)
-    {
-        health = h;
-    }
-    
-    void setProjMax(int h)
-    {
-        projMax = h;
-    }
-    
-    void setRotThresh(float f)
-    {
-        rotThresh = f;
-    }
-    
-    float getRotThresh()
-    {
-        return rotThresh;
-    }
-    
-    void setPercentF(float f)
-    {
-        percentF = f;
-    }
-    
-    void setPercentB(float f)
-    {
-        percentB = f;
-    }
-    
-    void setPercentS(float f)
-    {
-        percentS = f;
-    }
-    
-    void setSlow(float f)
-    {
-        slow = f;
-    }
     
 }
 
-PC parsePC(String fileName)
+
+Proj parseProj(String fileName)
 {
     String[] lines = loadStrings(fileName);
-    PC returnP = new PC(null, null, null);
+    Proj returnP = new Proj(null, null, null, null);
     returnP.initBase();
-    
-    HashMap<String,Integer> aiInfo = new HashMap<String,Integer>();
 
     for (int i = 0; i < lines.length; i++)
     {
@@ -296,32 +175,11 @@ PC parsePC(String fileName)
                 returnP.maxAccel = float(trim(data[0]));
             else if (line.equals("maxRot"))
                 returnP.maxRot = float(trim(data[0]));
-            else if (line.equals("health"))
-                returnP.setHealth( int(trim(data[0])) );
-            else if (line.equals("projMax"))
-                returnP.setProjMax( int(trim(data[0])) );
-            else if (line.equals("percentF"))
-                returnP.setPercentF(float(trim(data[0])) );
-            else if (line.equals("percentB"))
-                returnP.setPercentB(float(trim(data[0])) );
-            else if (line.equals("percentS"))
-                returnP.setPercentS(float(trim(data[0])) );
-            else if (line.equals("slow"))
-                returnP.setSlow(float(trim(data[0])) );
-            else if (line.equals("rotThresh"))
-                returnP.setRotThresh(float(trim(data[0])) );
-            else if (line.equals("AI.aggro"))
-                aiInfo.put( "aggro", int(trim(data[0])) );
-            else if (line.equals("AI.attack"))
-                aiInfo.put( "attack", int(trim(data[0])) );
-            else if (line.equals("AI.close"))
-                aiInfo.put( "close", int(trim(data[0])) );
+            else if (line.equals("damage"))
+                returnP.setDamage(int(trim(data[0])) );
             
         }
     }
-    
-    returnP.setAIInfo(aiInfo);
 
     return returnP;
 }
-

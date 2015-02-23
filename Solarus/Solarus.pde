@@ -4,9 +4,11 @@ PC p1, p2;
 PC control;
 Stars star;
 
+ArrayList<Proj> playerProj;
 ArrayList<PC> players;
 int playerInd = 0;
 
+ArrayList<Proj> enemyProj;
 ArrayList<PC> enemies;
 
 void setup()
@@ -40,9 +42,9 @@ void draw()
     background(0);
     
     for (PC p : players)
-        p.update(0.5f);
+        p.update(30/frameRate);
     for (PC p : enemies)
-        p.update(0.5f);
+        p.update(30/frameRate);
     
     p1.rot(PI/128);
     
@@ -105,12 +107,18 @@ void loadEnemies()
     im.endDraw();
     
     p.setImage(im);
-    p.moveTo(new PVector(0,0));
+    p.moveTo(new PVector(20,20));
     
     PC p1;
     p1 = parsePC("test_triangle.player");
     p1.setImage(im);
-    p1.moveTo(new PVector(-400,-300));
+    p1.moveTo(new PVector(0,0));
+    
+    p.maxRot = 6;
+    p1.maxRot = 6;
+    
+    p.setRotThresh(16);
+    p1.setRotThresh(16);
     
     p.setAITargets(players);
     p1.setAITargets(players);
