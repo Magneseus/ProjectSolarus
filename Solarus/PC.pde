@@ -4,8 +4,10 @@ class PC extends Entity
     private int health, projCount, projMax;
     private boolean inControl;
     private float percentF, percentB, percentS, slow, rotThresh;
-    
+
     private AI alf;
+
+    public ArrayList<Proj> projList;
 
     PC (PVector pos, PGraphics img, Collision c)
     {
@@ -18,13 +20,13 @@ class PC extends Entity
         health = 0;
         projCount = 0;
         inControl = false;
-        
+
         percentF = 1;
         percentS = 1;
         percentB = 1;
-        
+
         rotThresh = 32;
-        
+
         alf = new AI(null);
     }
 
@@ -39,35 +41,34 @@ class PC extends Entity
             PVector dis = PVector.sub(mouseCoords, new PVector(width/2, height/2));
             PVector ang = PVector.fromAngle(angle);
             ang.rotate(-PI/2);
-            
+
             boolean tCW = false;
             boolean tCCW = false;
-            
+
             if (PVector.angleBetween(dis, ang) > PI/rotThresh)
             {
                 float dot = (ang.x * -dis.y) + (ang.y * dis.x);
-                
+
                 if (dot >= 0)
                     tCW = true;
                 else
                     tCCW = true;
             }
-            
+
             if (tCW)
                 rot(-maxRot / frameRate);
             else if (tCCW)
                 rot(maxRot / frameRate);
-            
-            PVector one = new PVector(0,0);
-            PVector two = new PVector(0,0);
-            
+
+            PVector one = new PVector(0, 0);
+            PVector two = new PVector(0, 0);
+
             // W
             if (keys[0])
             {
                 one = PVector.fromAngle(angle - PI/2);
                 one.mult(10 * percentF);
-            }
-            else if (keys[2])
+            } else if (keys[2])
             {
                 one = PVector.fromAngle(angle + PI/2);
                 one.mult(10 * percentB);
@@ -77,52 +78,81 @@ class PC extends Entity
             {
                 two = PVector.fromAngle(angle + PI);
                 two.mult(10 * percentS);
-            }
-            else if (keys[3])
+            } else if (keys[3])
             {
                 two = PVector.fromAngle(angle);
                 two.mult(10 * percentS);
             }
-            
+
             if (!keys[0] && !keys[1] && !keys[2] && !keys[3])
             {
                 accel = new PVector(vel.x, vel.y);
                 accel.mult(-slow);
-            }
-            else
+            } else
             {
                 PVector a = PVector.add(one, two);
                 a.setMag(maxAccel);
                 accel = new PVector(a.x, a.y);
             }
-            
-        }
-        else
+
+            //Mouse
+            if (mousePressed && mouseS)
+            {
+                if (projCount < projMax)
+                {
+                    Proj ptmp = parseProj("test.bullet");
+                    ptmp.originator = this;
+
+                    ptmp.pos = new PVector(pos.x, pos.y);
+                    ptmp.vel = PVector.fromAngle(angle-PI/2);
+                    ptmp.vel.setMag(ptmp.maxVel);
+                    ptmp.vel.add(vel);
+
+                    PGraphics im = createGraphics(30, 30);
+                    im.beginDraw();
+                    im.fill(0, 0, 255);
+                    im.ellipse(15, 15, 15, 15);
+                    im.endDraw();
+
+                    ptmp.setImage(im);
+
+                    projList.add(ptmp);
+
+                    projCount++;
+                }
+                mouseS = false;
+            }
+        } else
         {
             alf.update(this);
         }
 
-        if (health < 0)
+        if (health <= 0)
             return false;
 
         return true;
+    }
+
+    void removeProj()
+    {
+        projCount--;
     }
 
     void setControl(boolean c)
     {
         inControl = c;
     }
-    
+
     void setAITargets(ArrayList<PC> targ)
     {
         alf.setTargets(targ);
     }
-    
-    void setAIInfo(HashMap<String,Integer> info)
+
+    void setAIInfo(HashMap<String, Integer> info)
     {
         alf.setInfo(info);
     }
-    
+
     void setAI(AI a)
     {
         alf = a;
@@ -142,42 +172,41 @@ class PC extends Entity
     {
         health = h;
     }
-    
+
     void setProjMax(int h)
     {
         projMax = h;
     }
-    
+
     void setRotThresh(float f)
     {
         rotThresh = f;
     }
-    
+
     float getRotThresh()
     {
         return rotThresh;
     }
-    
+
     void setPercentF(float f)
     {
         percentF = f;
     }
-    
+
     void setPercentB(float f)
     {
         percentB = f;
     }
-    
+
     void setPercentS(float f)
     {
         percentS = f;
     }
-    
+
     void setSlow(float f)
     {
         slow = f;
     }
-    
 }
 
 PC parsePC(String fileName)
@@ -185,8 +214,8 @@ PC parsePC(String fileName)
     String[] lines = loadStrings(fileName);
     PC returnP = new PC(null, null, null);
     returnP.initBase();
-    
-    HashMap<String,Integer> aiInfo = new HashMap<String,Integer>();
+
+    HashMap<String, Integer> aiInfo = new HashMap<String, Integer>();
 
     for (int i = 0; i < lines.length; i++)
     {
@@ -211,55 +240,51 @@ PC parsePC(String fileName)
                     if (line.equals("Rect1"))
                     {
                         Rect r = new Rect(
-                            new PVector(
-                                float(trim(data[0])), 
-                                float(trim(data[1])) ), 
-                            new PVector(
-                                float(trim(data[2])), 
-                                float(trim(data[3])) ), 
-                            new PVector(
-                                float(trim(data[4])), 
-                                float(trim(data[5])) ), 
-                            new PVector(
-                                float(trim(data[6])), 
-                                float(trim(data[7])) ));
+                        new PVector(
+                        float(trim(data[0])), 
+                        float(trim(data[1])) ), 
+                        new PVector(
+                        float(trim(data[2])), 
+                        float(trim(data[3])) ), 
+                        new PVector(
+                        float(trim(data[4])), 
+                        float(trim(data[5])) ), 
+                        new PVector(
+                        float(trim(data[6])), 
+                        float(trim(data[7])) ));
 
                         tempShapes.add(r);
-                    }
-                    else if (line.equals("Rect2"))
+                    } else if (line.equals("Rect2"))
                     {
                         Rect r = new Rect(
-                            new PVector(
-                                float(trim(data[0])), 
-                                float(trim(data[1])) ), 
-                            new PVector(
-                                float(trim(data[2])), 
-                                float(trim(data[3])) ));
+                        new PVector(
+                        float(trim(data[0])), 
+                        float(trim(data[1])) ), 
+                        new PVector(
+                        float(trim(data[2])), 
+                        float(trim(data[3])) ));
 
                         tempShapes.add(r);
-                    }
-                    else if (line.equals("Circ"))
+                    } else if (line.equals("Circ"))
                     {
                         Circ c = new Circ(
-                            new PVector(
-                                float(trim(data[0])), 
-                                float(trim(data[1])) ), 
-                                float(trim(data[2])) );
+                        new PVector(
+                        float(trim(data[0])), 
+                        float(trim(data[1])) ), 
+                        float(trim(data[2])) );
                         tempShapes.add(c);
-                    }
-                    else if (line.equals("Center"))
+                    } else if (line.equals("Center"))
                     {
                         tempCenter.x = float(trim(data[0]));
                         tempCenter.y = float(trim(data[1]));
-                    }
-                    else if (line.equals("ct"))
+                    } else if (line.equals("ct"))
                     {
                         Rect r = (Rect)tempShapes.get(tempShapes.size()-1);
                         r.ct = new PVector(
-                            float(trim(data[0])), 
-                            float(trim(data[1])) );
+                        float(trim(data[0])), 
+                        float(trim(data[1])) );
                     }
-                    
+
                     j++;
                 }
 
@@ -316,10 +341,9 @@ PC parsePC(String fileName)
                 aiInfo.put( "attack", int(trim(data[0])) );
             else if (line.equals("AI.close"))
                 aiInfo.put( "close", int(trim(data[0])) );
-            
         }
     }
-    
+
     returnP.setAIInfo(aiInfo);
 
     return returnP;

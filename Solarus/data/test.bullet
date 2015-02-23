@@ -1,0 +1,19 @@
+# Bullet test file
+
+:collision:
+	Circ = 0,0, 15
+	Center = 0,0
+:
+
+pos = 0,0
+vel = 0,0
+accel = 0,0
+
+maxVel = 25
+maxAccel = 1
+maxRot = 8
+
+damage = 1
+lifeTime = 3000
+
+# End Bullet test file

@@ -13,7 +13,7 @@ ArrayList<PC> enemies;
 
 void setup()
 {
-    size(800,600);
+    size(1200,600);
     background(0);
     frameRate(60);
     
@@ -24,7 +24,9 @@ void setup()
         keysS[i] = true;
     
     enemies = new ArrayList<PC>();
+    enemyProj = new ArrayList<Proj>();
     players = new ArrayList<PC>();
+    playerProj = new ArrayList<Proj>();
     loadEnemies();
     loadPlayers();
     
@@ -33,8 +35,8 @@ void setup()
     star.addTileLayer(new PVector(400,400), 5, 0.0001, color(255,255,255,40), 5);
     star.addMapLayer(new PVector(5,5), 5, -0.1);
     star.addTileLayer(new PVector(400,400), 3, 0.001, color(255,255,255,45), 5);
-    //star.addMapLayer(new PVector(5,5), 5, -0.3);
-    //star.addTileLayer(new PVector(400,400), 1, 0.005, color(255,255,255,60), 5);
+    star.addMapLayer(new PVector(5,5), 5, -0.3);
+    star.addTileLayer(new PVector(400,400), 1, 0.005, color(255,255,255,60), 5);
 }
 
 void draw()
@@ -44,6 +46,11 @@ void draw()
     for (PC p : players)
         p.update(30/frameRate);
     for (PC p : enemies)
+        p.update(30/frameRate);
+    
+    for (Proj p : playerProj)
+        p.update(30/frameRate);
+    for (Proj p : enemyProj)
         p.update(30/frameRate);
     
     p1.rot(PI/128);
@@ -58,11 +65,42 @@ void draw()
         p.render(controlCoords);
     for (PC p : enemies)
         p.render(controlCoords);
+        
+    for (Proj p : playerProj)
+        p.render(controlCoords);
+    for (Proj p : enemyProj)
+        p.render(controlCoords);
     
     p1.render(controlCoords);
     p2.render(controlCoords);
     
     playerSwitchCheck();
+    
+    for (PC p : players)
+    {
+        if (p.collide(p1) || p.collide(p2))
+        {
+            PGraphics im = createGraphics(40,40);
+            im.beginDraw();
+            im.stroke(255,255,0);
+            im.fill(255,255,0);
+            im.triangle(0, 40, 20, 0, 40, 40);
+            im.endDraw();
+            
+            p.setImage(im);
+        }
+        else
+        {
+            PGraphics im = createGraphics(40,40);
+            im.beginDraw();
+            im.stroke(0,255,0);
+            im.fill(0,255,0);
+            im.triangle(0, 40, 20, 0, 40, 40);
+            im.endDraw();
+            
+            p.setImage(im);
+        }
+    }
 }
 
 void playerSwitchCheck()
@@ -123,6 +161,9 @@ void loadEnemies()
     p.setAITargets(players);
     p1.setAITargets(players);
     
+    p.projList = enemyProj;
+    p1.projList = enemyProj;
+    
     enemies.add(p);
     enemies.add(p1);
 }
@@ -157,6 +198,9 @@ void loadPlayers()
     p3.setImage(im);
     p3.moveTo(new PVector(width, height));
     //p.toggleHitBox();
+    
+    p.projList = playerProj;
+    p3.projList = playerProj;
     
     players.add(p);
     players.add(p3);

@@ -5,6 +5,7 @@ class Proj extends Entity
     public PC originator;
     public ArrayList<PC> targetList;
     
+    private long startTime, lifeTime;
     private int damage;
     private boolean dead;
     
@@ -19,6 +20,8 @@ class Proj extends Entity
         
         damage = 1;
         dead = false;
+        
+        startTime = millis();
     }
     
     boolean update(float delta)
@@ -40,7 +43,18 @@ class Proj extends Entity
             }
         }
         
+        if (!dead && millis() - startTime > lifeTime)
+        {
+            originator.projCount--;
+            dead = true;
+        }
+        
         return !dead;
+    }
+    
+    void setLifeTime(int d)
+    {
+        lifeTime = (long)d;
     }
     
     void setDamage(int d)
@@ -177,6 +191,8 @@ Proj parseProj(String fileName)
                 returnP.maxRot = float(trim(data[0]));
             else if (line.equals("damage"))
                 returnP.setDamage(int(trim(data[0])) );
+            else if (line.equals("lifeTime"))
+                returnP.setLifeTime(int(trim(data[0])) );
             
         }
     }
