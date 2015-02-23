@@ -4,8 +4,9 @@
  */
  
  PImage MainFrame;
+ PFont timeFont;
  
- Time time;
+ Clock clock;
  
  int health = 100;
  int fuel = 100;
@@ -17,7 +18,9 @@
    MainFrame = loadImage("MainFrame.png");
    MainFrame.resize(235, 320);
    
-   time = new Time(30, 30, 20);
+   clock = new Clock();
+   
+   timeFont = loadFont("HoboStd-40.vlw");
    smooth();
  }
  
@@ -39,12 +42,15 @@
    
    image(MainFrame, 5, 10);
    
+   textFont(timeFont, 32);
+   textAlign(CENTER, CENTER);
+   
    // Current time
-   fill(255);
-   time.getTime();
-   time.x = 35;
-   time.y = 75;
-   time.displayTime();
+   fill(0, 250, 230);
+   clock.getTime();
+   clock.x = width/10;
+   clock.y = height/8;
+   clock.displayTime();
    
    // Health bar
    
