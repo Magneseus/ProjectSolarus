@@ -15,12 +15,12 @@
  {
    size(1200, 650);
    
-   MainFrame = loadImage("MainFrame.png");
+   MainFrame = loadImage("Windows/MainFrame.png");
    MainFrame.resize(235, 320);
    
    clock = new Clock();
    
-   timeFont = loadFont("HoboStd-40.vlw");
+   timeFont = loadFont("Fonts/HoboStd-40.vlw");
    smooth();
  }
  
