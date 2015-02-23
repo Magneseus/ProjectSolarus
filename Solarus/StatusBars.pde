@@ -1,17 +1,18 @@
 class StatusBar
 {
   float x, y;
-  int barWidth;
+  int barWidth, barHeight;
   
-  StatusBar(float _x, float _y, int _barWidth)
+  StatusBar(float _x, float _y, int _barWidth, int _barHeight)
   {
     x = _x;
     y = _y;
-    barWidth = _barWidth;
+    barWidth = _barWidth*2;
+    barHeight = _barHeight;
   }
   
-  void update()
+  void drawBar()
   {
-    rect(x, y, barWidth, 10);
+    rect(x, y, barWidth, barHeight);
   }
 }
