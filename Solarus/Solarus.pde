@@ -7,6 +7,8 @@ import ddf.minim.effects.*;
 
 boolean debug_ = false;
 
+Minim minim;
+
 void setup()
 {
     size(1200,600);
@@ -25,3 +27,4 @@ void draw()
     
     renderMainScreen();
 }
+
