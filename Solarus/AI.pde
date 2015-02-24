@@ -79,7 +79,6 @@ class AI
             
             self.accel = new PVector(self.vel.x, self.vel.y);
             self.accel.mult(-self.slow);
-            s
             if (self.vel.mag() < 0.1)
                 self.vel = new PVector(0,0);
         }

@@ -1,4 +1,14 @@
+import ddf.minim.spi.*;
+import ddf.minim.signals.*;
+import ddf.minim.*;
+import ddf.minim.analysis.*;
+import ddf.minim.ugens.*;
+import ddf.minim.effects.*;
+
 boolean debug_ = false;
+
+Minim minim;
+AudioPlayer MenuMusic;
 
 PC p1, p2;
 PC control;
@@ -13,7 +23,7 @@ ArrayList<PC> enemies;
 
 void setup()
 {
-    size(1200,800);
+    size(1200, 800);
     background(0);
     frameRate(60);
     
@@ -43,6 +53,16 @@ void setup()
     star.addTileLayer(new PVector(400,400), 3, 0.001, color(255,255,255,45), 5);
     //star.addMapLayer(new PVector(5,5), 5, -0.3);
     //star.addTileLayer(new PVector(400,400), 1, 0.005, color(255,255,255,60), 5);
+    
+    mainScreenSetup();
+    
+    //set up the music
+    minim = new Minim(this);
+    MenuMusic = minim.loadFile("Music/Savant - Invasion - 15 Problematimaticalulatorture.mp3");
+    
+    //Music
+    MenuMusic.loop();
+    MenuMusic.setLoopPoints(0,155000);
 }
 
 void draw()
@@ -54,6 +74,7 @@ void draw()
     p1.rot(PI/128);
     
     render();
+    renderMainScreen();
     
     playerSwitchCheck();
     
@@ -270,5 +291,11 @@ void loadPlayers()
     
     p2.setImage(im4);
     p2.toggleHitBox();
-    
+}
+
+void stop() {
+
+    MenuMusic.close();
+    minim.stop();
+    super.stop();
 }
