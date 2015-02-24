@@ -73,6 +73,9 @@ class AI
             
         }
         
+        attack(self, closest);
+        chase(self, closest);
+        
         if (STATE == states.get("stop"))
         {
             chase(self, closest);
@@ -83,14 +86,11 @@ class AI
                 self.vel = new PVector(0,0);
         }
         
-        attack(self, closest);
-        chase(self, closest);
-        
     }
     
     void attack(PC self, PC other)
     {
-        if (self.projCount < self.projMax && 1 > random(300))
+        if (self.projCount < self.projMax && 1 > random(200))
         {
             Proj ptmp = parseProj("test.bullet");
             ptmp.originator = self;
