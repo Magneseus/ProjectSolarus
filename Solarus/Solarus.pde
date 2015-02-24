@@ -7,12 +7,9 @@ import ddf.minim.effects.*;
 
 boolean debug_ = false;
 
-<<<<<<< HEAD
-=======
 Minim minim;
 AudioPlayer MenuMusic;
 
->>>>>>> 88dc85efdb75a4dada8e32c67225cc531400017f
 void setup()
 {
     size(1200, 800);
@@ -39,8 +36,6 @@ void draw()
     
     renderMainScreen();
 }
-<<<<<<< HEAD
-=======
 
 void stop() {
 
@@ -48,4 +43,3 @@ void stop() {
     minim.stop();
     super.stop();
 }
->>>>>>> 88dc85efdb75a4dada8e32c67225cc531400017f
