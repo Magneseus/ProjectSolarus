@@ -54,7 +54,7 @@ class Stars
                     //PImage tile = tileList.get(i).get(ind);
                     
                     //tile.render(PVector.add(pos,trans));
-                    image(tileList.get(i).get(ind), trans.x+pos.x, trans.y+pos.y);
+                    image(tileList.get(i).get(ind), (int)(trans.x+pos.x), (int)(trans.y+pos.y));
                 }
             }
             

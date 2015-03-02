@@ -47,12 +47,12 @@ void setup()
         p.enemyList = players;
     
     star = new Stars();
-    star.addMapLayer(new PVector(5,5), 5, 0.1);
+    star.addMapLayer(new PVector(5,5), 5, -0.3);
     star.addTileLayer(new PVector(400,400), 5, 0.0001, color(255,255,255,40), 5);
     star.addMapLayer(new PVector(5,5), 5, -0.1);
     star.addTileLayer(new PVector(400,400), 3, 0.001, color(255,255,255,45), 5);
-    //star.addMapLayer(new PVector(5,5), 5, -0.3);
-    //star.addTileLayer(new PVector(400,400), 1, 0.005, color(255,255,255,60), 5);
+    star.addMapLayer(new PVector(5,5), 5, 0.1);
+    star.addTileLayer(new PVector(400,400), 1, 0.005, color(255,255,255,60), 5);
     
     mainScreenSetup();
     
@@ -61,7 +61,7 @@ void setup()
     MenuMusic = minim.loadFile("Music/Savant - Invasion - 15 Problematimaticalulatorture.mp3");
     
     //Music
-    MenuMusic.loop();
+    //MenuMusic.loop();
     MenuMusic.setLoopPoints(0,155000);
 }
 
