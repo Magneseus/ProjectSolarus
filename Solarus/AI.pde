@@ -4,11 +4,11 @@ class AI
     private HashMap<String,Integer> states;
     private int STATE = 0;
     
-    private ArrayList<PC> targets;
+    private ArrayList<PC> targets, friendly;
     
     private int aggro, attack, close;
     
-    AI(ArrayList<PC> targets_)
+    AI(ArrayList<PC> targets_, ArrayList<PC> friendly_)
     {
         states = new HashMap<String,Integer>();
         states.put("stop", 0);
@@ -19,6 +19,7 @@ class AI
         states.put("flee", 5);
         
         targets = targets_;
+        friendly = friendly_;
         
         aggro = -1;
         attack = -1;
@@ -86,6 +87,24 @@ class AI
                 self.vel = new PVector(0,0);
         }
         
+        
+        if (friendly != null)
+        {
+            for (PC f : friendly)
+            {
+                //Push apart
+                float d = dist(f.pos.x, f.pos.y, self.pos.x, self.pos.y);
+                if (d < 50)
+                {
+                    PVector vel1 = PVector.sub(self.pos, f.pos);
+                    vel1.setMag(map(d, 0, 50, 0.1, 0.0001));
+                    self.vel.add(vel1);
+                    
+                    vel1.mult(-1);
+                    f.vel.add(vel1);
+                }
+            }
+        }
     }
     
     void attack(PC self, PC other)
@@ -156,6 +175,11 @@ class AI
     void setTargets(ArrayList<PC> targ)
     {
         targets = targ;
+    }
+    
+    void setFriend(ArrayList<PC> friend)
+    {
+        friendly = friend;
     }
     
     void setInfo(HashMap<String,Integer> info)

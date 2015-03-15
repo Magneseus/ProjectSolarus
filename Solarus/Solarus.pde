@@ -225,6 +225,8 @@ void loadEnemies()
     
     p.setAITargets(players);
     p1.setAITargets(players);
+    p.setAIFriend(enemies);
+    p1.setAIFriend(enemies);
     
     p.projList = enemyProj;
     p1.projList = enemyProj;

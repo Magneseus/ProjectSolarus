@@ -28,7 +28,7 @@ class PC extends Entity
 
         rotThresh = 32;
 
-        alf = new AI(null);
+        alf = new AI(null, null);
     }
 
     boolean update(float delta)
@@ -150,6 +150,11 @@ class PC extends Entity
     void setAITargets(ArrayList<PC> targ)
     {
         alf.setTargets(targ);
+    }
+    
+    void setAIFriend(ArrayList<PC> friend)
+    {
+        alf.setFriend(friend);
     }
 
     void setAIInfo(HashMap<String, Integer> info)

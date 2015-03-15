@@ -8,7 +8,6 @@ PImage MainFrame;
 PImage StatusBarFrame;
 PFont timeFont;
 
-Clock clock;
 StatusBar healthBar;
 StatusBar damageBar;
 StatusBar fuelBar;
@@ -29,8 +28,6 @@ void mainScreenSetup()
     healthBar = new StatusBar(width/2 - 50, height - 105, health, 10);
     damageBar = new StatusBar(width/2 - 50, height - 85, damage, 10);
     fuelBar = new StatusBar(width/2 - 50, height - 65, fuel, 10);
-
-    clock = new Clock();
 
     timeFont = loadFont("Fonts/HoboStd-40.vlw");
     smooth();
@@ -66,7 +63,8 @@ void renderMainScreen()
     if (health > 50 || fuel > 50)
     {
         fill(0, 255, 0);
-    } else 
+    }
+    else 
     {
         fill(255, 0, 0);
     }
@@ -84,10 +82,6 @@ void renderMainScreen()
 
     // Current time
     fill(0, 250, 230);
-    clock.getTime();
-    clock.x = width/10;
-    clock.y = height/8;
-    clock.displayTime();
 
     // Health bar
 
