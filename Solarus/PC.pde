@@ -1,4 +1,20 @@
-
+/**
+ * Main class used for both the player and the AI ships.
+ * <p>
+ * Contains:
+ * - IntBox for health storage
+ * - projectile count and maximum
+ * - inControl variable, if True the PC will take keyboard and mouse input
+ * - percentF/S/B: percentage amounts for the speed in each direction of movement
+ * - slow: the percentage to slow velocity when no movement keys are pressed
+ * - rotThresh: the furthest angle the PC can be facing it's target and not rotate any more
+ * 
+ * - alf: Alf, your personal AI assistant
+ * 
+ * - projList, enemyList: projectile and enemy lists
+ * @author Matt
+ *
+ */
 class PC extends Entity
 {
     private IntBox health;
@@ -11,6 +27,12 @@ class PC extends Entity
     public ArrayList<Proj> projList;
     public ArrayList<PC> enemyList;
 
+    /**
+     * Creates a brand new PC.
+     * @param pos Center position to start at
+     * @param img The PGraphic to display
+     * @param c The collision box of the Entity
+     */
     PC (PVector pos, PGraphics img, Collision c)
     {
         initBase();
@@ -32,13 +54,22 @@ class PC extends Entity
         alf = new AI(null, null);
     }
 
+    /**
+     * Updates the kinetic parts, and if in control the user input.
+     * If not in control, but the AI is active, the AI will act as the user input.
+     * 
+     * @param delta The timescale to multiply kinetic actions by.
+     * @return False, if the PC is out of health
+     */
     boolean update(float delta)
     {
+        //Update kinetic stuff
         updateKin(delta);
 
         //Check key and mouse presses
         if (inControl)
         {
+            //Find angle to match due to mouse position
             PVector mouseCoords = new PVector(mouseX, mouseY);
             PVector dis = PVector.sub(mouseCoords, new PVector(width/2, height/2));
             PVector ang = PVector.fromAngle(angle);
@@ -85,7 +116,8 @@ class PC extends Entity
                 two = PVector.fromAngle(angle);
                 two.mult(10 * percentS);
             }
-
+            
+            //If not moving, slow the entity down
             if (!keys[0] && !keys[1] && !keys[2] && !keys[3])
             {
                 accel = new PVector(vel.x, vel.y);
@@ -97,9 +129,10 @@ class PC extends Entity
                 accel = new PVector(a.x, a.y);
             }
 
-            //Mouse
+            //Projectiles
             if (mousePressed && mouseS)
             {
+                //If we can make more projectiles, do so
                 if (projCount < projMax)
                 {
                     Proj ptmp = parseProj("test.bullet");
@@ -127,22 +160,29 @@ class PC extends Entity
                 }
                 mouseS = false;
             }
-        } else
+        }
+        //Update the AI
+        else
         {
             alf.update(this);
         }
-
+        
+        //If we're dead, tell 'em
         if (health.store <= 0)
             return false;
 
         return true;
     }
-
+    
+    /**
+     * Called when a projectile destroys itself, decrement the count
+     */
     void removeProj()
     {
         projCount--;
     }
-
+    
+    // GETTERS AND SETTERS
     void setControl(boolean c)
     {
         inControl = c;
@@ -224,6 +264,15 @@ class PC extends Entity
     }
 }
 
+/**
+ * The worst function I've ever made in my life.
+ * <p>
+ * Parses a text file for information on the PC. Not even gonna bother describing this one.
+ * <p>
+ * TODO: Describe how to use the file properly to create PCs.
+ * @param fileName File to load from.
+ * @return The created PC.
+ */
 PC parsePC(String fileName)
 {
     String[] lines = loadStrings(fileName);
@@ -363,4 +412,3 @@ PC parsePC(String fileName)
 
     return returnP;
 }
-

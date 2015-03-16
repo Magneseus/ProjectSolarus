@@ -1,6 +1,6 @@
-
 class AI
 {
+    // Members
     private HashMap<String,Integer> states;
     private int STATE = 0;
     
@@ -8,8 +8,15 @@ class AI
     
     private int aggro, attack, close;
     
+    /**
+     * Creates a new AI with the given PC lists.
+     * 
+     * @param targets_ The list of enemy targets.
+     * @param friendly_ The list of friendlies to avoid colliding with.
+    */
     AI(ArrayList<PC> targets_, ArrayList<PC> friendly_)
     {
+        // Puts all the possible states into a HashMap
         states = new HashMap<String,Integer>();
         states.put("stop", 0);
         states.put("follow", 1);
@@ -26,12 +33,19 @@ class AI
         close = -1;
     }
     
+    /**
+     * Updates the velocities and states of the AI as well as the given PC.
+     * @param self Reference to the parent PC class that owns the AI.
+     */
     void update(PC self)
     {
         PC closest = null;
         
+        // If there are targets available
         if (targets != null && targets.size() > 0)
         {
+            // Loop through all enemies and find the closest target
+            // This target will be receiving the aggro of this AI.
             int minDist = (int)self.distance(targets.get(0));
             closest = targets.get(0);
             
@@ -45,8 +59,10 @@ class AI
                 }
             }
             
+            // Default state is to stop
             STATE = states.get("stop");
             
+            // Checks for the various states, overriding the previous
             if (minDist < check(aggro, minDist))
                 STATE = states.get("follow");
             if (minDist < check(attack, minDist))
@@ -58,7 +74,7 @@ class AI
         }
         
         //Check states
-        
+        // TODO: Add more state-dependent behaviours
         if (STATE == states.get("follow"))
         {
             
@@ -74,6 +90,7 @@ class AI
             
         }
         
+        //TODO: fix all of this behaviour
         attack(self, closest);
         chase(self, closest);
         
@@ -88,6 +105,8 @@ class AI
         }
         
         
+        // Checks for all friendly units, and pushes away from them if
+        // they are too close.
         if (friendly != null)
         {
             for (PC f : friendly)
@@ -107,10 +126,18 @@ class AI
         }
     }
     
+    /**
+     * Random chance to fire at an enemy unit
+     * 
+     * @param self Reference to the parent PC
+     * @param other Reference to the targeted PC.
+     */
     void attack(PC self, PC other)
     {
+        // Checks for the max projectile count and random chance of 0.05%
         if (self.projCount < self.projMax && 1 > random(200))
         {
+            // Create a projectile and add our velocity to it
             Proj ptmp = parseProj("test.bullet");
             ptmp.originator = self;
             ptmp.targetList = self.enemyList;
@@ -121,7 +148,8 @@ class AI
             
             if (PVector.angleBetween(ptmp.vel, self.vel) < PI/2)
                 ptmp.vel.add(self.vel);
-
+            
+            // Draw the bullet
             PGraphics im = createGraphics(30, 30);
             im.beginDraw();
             im.fill(0, 0, 255);
@@ -129,17 +157,27 @@ class AI
             im.endDraw();
 
             ptmp.setImage(im);
-
+            
+            // Add the bullet to the PCs list, increase the count
             self.projList.add(ptmp);
 
             self.projCount++;
         }
     }
     
+    /**
+     * Chases the given target directly.
+     * 
+     * @param self Reference to the parent PC.
+     * @param other Reference to the targeted PC.
+     */
     void chase(PC self, PC other)
     {
+        // Check for nullity
         if (self != null && other != null)
         {
+            // Finds the vectors representing the distance from self to other
+            // and the one representing the self PCs current bearing.
             PVector dis = PVector.sub(other.pos, self.pos);
             PVector ang = PVector.fromAngle(self.getAngle());
             ang.rotate(-PI/2);
@@ -147,6 +185,7 @@ class AI
             boolean tCW = false;
             boolean tCCW = false;
             
+            // Check for which direction to turn
             if (PVector.angleBetween(dis, ang) > PI/self.getRotThresh())
             {
                 float dot = (ang.x * -dis.y) + (ang.y * dis.x);
@@ -157,20 +196,24 @@ class AI
                     tCCW = true;
             }
             
+            // Start turning in that direction
             if (tCW)
                 self.rot(-self.maxRot / frameRate);
             else if (tCCW)
                 self.rot(self.maxRot / frameRate);
             
-            
+            // Accelerate towards the target
             self.accel = PVector.fromAngle(self.getAngle());
             self.accel.rotate(-PI/2);
             self.accel.setMag(self.maxAccel);
             
+            // If we want to retreat, accelerate backwards
             if (STATE == states.get("back"))
                 self.accel.mult(-1);
         }
     }
+    
+    // GETTERS AND SETTERS
     
     void setTargets(ArrayList<PC> targ)
     {
@@ -194,6 +237,11 @@ class AI
     }
 }
 
+/**
+ * @param val The value to check.
+ * @param def The default value to return.
+ * @return If the value is not -1, return val, otherwise return def.
+ */
 int check(int val, int def)
 {
     if (val != -1)

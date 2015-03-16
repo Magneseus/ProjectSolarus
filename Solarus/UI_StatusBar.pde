@@ -1,4 +1,10 @@
 
+/**
+ * Status bar, given an IntBox for val and max Val, will render
+ * a status bar that will fill itself to the correct percentage.
+ * @author Matt
+ *
+ */
 class UIStatusBar extends UI
 {
     // Members
@@ -6,7 +12,13 @@ class UIStatusBar extends UI
     private color col;
     
     
-    
+    /**
+     * @param pos Position Vector
+     * @param size Size Vector
+     * @param val Reference to the value to store
+     * @param maxVal Reference to the maximum value
+     * @param col Color to display
+     */
     UIStatusBar(PVector pos, PVector size, IntBox val, IntBox maxVal, color col)
     {
         super(pos,size);

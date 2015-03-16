@@ -1,4 +1,9 @@
 
+/**
+ * Image class, for simplicity.
+ * @author Matt
+ *
+ */
 class UIImage extends UI
 {
     // Members

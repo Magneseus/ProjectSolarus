@@ -1,4 +1,13 @@
-
+/**
+ * Abstract parent class that all UI elements will be based off.
+ * <P>
+ * Contains:
+ * - Position, Size and Offset vectors
+ * - Center boolean, to store whether the position is the center or the TL coords
+ * 
+ * @author Matt
+ *
+ */
 abstract class UI
 {
     // Members
@@ -6,18 +15,29 @@ abstract class UI
     protected boolean center = true;
     
     
+    /**
+     * @param pos Position vector
+     */
     UI(PVector pos)
     {
         this.pos = pos;
         size = new PVector(0,0);
     }
     
+    /**
+     * @param pos Position Vector
+     * @param size Size Vector
+     */
     UI(PVector pos, PVector size)
     {
         this.pos = pos;
         this.size = size;
     }
     
+    /**
+     * Renders the UI element with the given offset
+     * @param off Offset Vector
+     */
     public void render(PVector off)
     {
         offset = new PVector(0,0);
