@@ -1,7 +1,8 @@
 
 class PC extends Entity
 {
-    private int health, projCount, projMax;
+    private IntBox health;
+    private int projCount, projMax;
     private boolean inControl;
     private float percentF, percentB, percentS, slow, rotThresh;
 
@@ -18,7 +19,7 @@ class PC extends Entity
         this.img = img;
         this.col = c;
 
-        health = 0;
+        health = new IntBox(0);
         projCount = 0;
         inControl = false;
 
@@ -131,7 +132,7 @@ class PC extends Entity
             alf.update(this);
         }
 
-        if (health <= 0)
+        if (health.store <= 0)
             return false;
 
         return true;
@@ -179,7 +180,12 @@ class PC extends Entity
 
     void setHealth(int h)
     {
-        health = h;
+        health = new IntBox(h);
+    }
+    
+    IntBox getHealth()
+    {
+        return health;
     }
 
     void setProjMax(int h)

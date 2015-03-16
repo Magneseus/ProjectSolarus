@@ -21,6 +21,8 @@ int playerInd = 0;
 ArrayList<Proj> enemyProj;
 ArrayList<PC> enemies;
 
+UIStatusBar healthBar;
+
 void setup()
 {
     size(1200, 800);
@@ -45,6 +47,13 @@ void setup()
     
     for (PC p : enemies)
         p.enemyList = players;
+    
+    healthBar = new UIStatusBar(new PVector(0,0),
+                                new PVector(100,20),
+                                players.get(0).getHealth(),
+                                new IntBox(10),
+                                color(255,0,0));
+    healthBar.setCenter(false);
     
     star = new Stars();
     star.addMapLayer(new PVector(5,5), 5, -0.3);
@@ -77,6 +86,8 @@ void draw()
     renderMainScreen();
     
     playerSwitchCheck();
+    
+    healthBar.render(new PVector(0,0));
     
     for (PC p : players)
     {

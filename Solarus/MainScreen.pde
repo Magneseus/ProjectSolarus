@@ -8,7 +8,7 @@ PImage MainFrame;
 PImage StatusBarFrame;
 PFont timeFont;
 
-StatusBar healthBar;
+//StatusBar healthBar;
 StatusBar damageBar;
 StatusBar fuelBar;
 
@@ -25,7 +25,7 @@ void mainScreenSetup()
     StatusBarFrame = loadImage("Windows/StatusBarFrame.png");
     StatusBarFrame.resize(700, 200);
 
-    healthBar = new StatusBar(width/2 - 50, height - 105, health, 10);
+    //healthBar = new StatusBar(width/2 - 50, height - 105, health, 10);
     damageBar = new StatusBar(width/2 - 50, height - 85, damage, 10);
     fuelBar = new StatusBar(width/2 - 50, height - 65, fuel, 10);
 
@@ -69,7 +69,7 @@ void renderMainScreen()
         fill(255, 0, 0);
     }
 
-    healthBar.drawBar();
+   // healthBar.drawBar();
     damageBar.drawBar();
     fuelBar.drawBar();
 

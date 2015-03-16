@@ -34,7 +34,7 @@ class Proj extends Entity
             {
                 if (p.collide(this))
                 {
-                    p.health -= damage;
+                    p.health.store -= damage;
                     originator.projCount--;
                     
                     dead = true;
