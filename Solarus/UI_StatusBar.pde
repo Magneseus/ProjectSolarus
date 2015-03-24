@@ -32,6 +32,9 @@ class UIStatusBar extends UI
     
     public void render(PVector off)
     {
+        if (!enabled)
+            return;
+        
         super.render(off);
         
         stroke(col);
@@ -47,6 +50,9 @@ class UIStatusBar extends UI
     
     public boolean update()
     {
+        if (!enabled)
+            return false;
+        
         return true;
     }
     

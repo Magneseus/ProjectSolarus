@@ -23,6 +23,9 @@ ArrayList<PC> enemies;
 
 UIStatusBar healthBar;
 
+public class TestC implements Command { public void execute() {println("Test");} }
+UI_Button b;
+
 void setup()
 {
     size(1200, 800);
@@ -72,11 +75,18 @@ void setup()
     //Music
     //MenuMusic.loop();
     MenuMusic.setLoopPoints(0,155000);
+    
+    b = new UI_Button(new PVector(100,100),
+                                new PVector(200,100),
+                                "Test Button",
+                                new TestC());
+                                
 }
 
 void draw()
 {
     background(0);
+    b.update();
     
     update();
     
@@ -114,6 +124,8 @@ void draw()
             p.setImage(im);
         }
     }
+    
+    b.render(new PVector(0,0));
 }
 
 void update()

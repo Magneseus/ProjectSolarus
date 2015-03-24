@@ -23,6 +23,9 @@ class UIImage extends UI
     
     public void render(PVector off)
     {
+        if (!enabled)
+            return;
+        
         super.render(off);
         
         image(image.get(), (int)(pos.x + offset.x), (int)(pos.y + offset.y),
@@ -31,7 +34,10 @@ class UIImage extends UI
     
     public boolean update()
     {
-        return false;
+        if (!enabled)
+            return false;
+        
+        return true;
     }
     
     

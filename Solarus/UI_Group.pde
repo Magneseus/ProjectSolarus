@@ -41,6 +41,9 @@ class UIGroup extends UI
      */
     public void render(PVector off)
     {
+        if (!enabled)
+            return;
+        
         super.render(off);
         
         for (UI u : elements)
@@ -55,6 +58,9 @@ class UIGroup extends UI
      */
     public boolean update()
     {
+        if (!enabled)
+            return false;
+        
         for (UI u : elements)
         {
             u.update();

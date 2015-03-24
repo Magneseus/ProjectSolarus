@@ -13,6 +13,7 @@ abstract class UI
     // Members
     protected PVector pos, size, offset;
     protected boolean center = true;
+    protected boolean enabled = true;
     
     
     /**
@@ -40,6 +41,9 @@ abstract class UI
      */
     public void render(PVector off)
     {
+        if (!enabled)
+            return;
+        
         offset = new PVector(0,0);
         if (center)
             offset = new PVector(-size.x/2, -size.y/2);
@@ -60,4 +64,7 @@ abstract class UI
     
     public void setCenter(boolean newCenter) {center=newCenter;}
     public boolean getCenter() {return center;}
+    
+    public void setEnabled(boolean newEnable) {enabled=newEnable;}
+    public boolean getEnabled() {return enabled;}
 }
