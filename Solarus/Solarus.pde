@@ -6,13 +6,13 @@ import ddf.minim.ugens.*;
 import ddf.minim.effects.*;
 
 boolean debug_ = false;
+boolean pause = false, options = false;
 
 Minim minim;
 Stars star;
 
-ArrayList<UI> UIElements;
-
-
+Entity control;
+StateManager game;
 
 void setup()
 {
@@ -41,13 +41,18 @@ void setup()
     minim = new Minim(this);
     
     // Start the State Manager
+    game = new StateManager();
 }
 
 
 
 void draw()
 {
+    background(0);
     
+    while (game.run()) {}
+    
+    exit();
 }
 
 /*
