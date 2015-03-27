@@ -1,4 +1,4 @@
-/*
+ /*
    PROJECT SOLARUS
  <<<<<<< HEAD
  Main Screen
