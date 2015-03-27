@@ -29,16 +29,4 @@ class StateManager
         
         return finalRun;    
     }
-    
-    private class pause implements Command { public void execute(){pause=true;} }
-    private class unpause implements Command { public void execute(){pause=false;} }
-    
-    public pause getPause() {return new pause();}
-    public unpause getUnpause() {return new unpause();}
-    
-    private class options implements Command { public void execute(){options=true;} }
-    private class unoptions implements Command { public void execute(){options=false;} }
-    
-    public options getOptions() {return new options();}
-    public unoptions getUnoptions() {return new unoptions();}
 }

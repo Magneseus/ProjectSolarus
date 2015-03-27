@@ -12,6 +12,12 @@ public abstract class State
     public abstract void init();
     public abstract void render();
     public abstract boolean update();
+    
+    protected class options implements Command { public void execute(){options=true;} }
+    protected class unoptions implements Command { public void execute(){options=false;} }
+    
+    protected class pause implements Command { public void execute(){pause=true;} }
+    protected class unpause implements Command { public void execute(){pause=false;} }
 }
 
 public class MMState extends State
@@ -20,10 +26,16 @@ public class MMState extends State
     boolean finalRun = true;
     UIGroup UIElements;
     
+    PC camera;
+    ArrayList<PC> targ;
+    
     public MMState(StateManager sm)
     {
         super(sm);
         UIElements = new UIGroup(new PVector(width/2,height/2));
+        
+        camera = parsePC("data/test_triangle.player");
+        targ = new ArrayList<PC>();
     }
     
     public void init()
@@ -46,7 +58,7 @@ public class MMState extends State
                 new PVector(0, 75),
                 new PVector(400,100),
                 "Options",
-                sm.getOptions() ));
+                new options() ));
         
         class ExitGame implements Command { public void execute(){finalRun=false;} }
         UIElements.add(new UIButton(
@@ -54,12 +66,17 @@ public class MMState extends State
                 new PVector(400,100),
                 "Exit Game",
                 new ExitGame() ));
+        
+        targ.add(parsePC("data/test_triangle.player"));
+        targ.get(0).pos = new PVector(random(-1000,1000), random(-1000,1000));
+        
+        camera.setAITargets(targ);
     }
     
     public void render()
     {
         background(0);
-        star.render(new PVector(0,0), new PVector(0,0), 6);
+        star.render(camera.pos, camera.pos, 3);
         
         UIElements.render(new PVector(0,0));
     }
