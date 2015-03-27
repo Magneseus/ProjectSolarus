@@ -7,14 +7,14 @@
 :
 
 health = 100000
-projMax = 5
+projMax = 0
 
 pos = 400,400
 vel = 0,0
 accel = 0,0
 
-maxVel = 15
-maxAccel = 0.8
+maxVel = 10
+maxAccel = 0.5
 maxRot = 4
 
 percentF = 50
@@ -24,7 +24,7 @@ percentS = 30
 slow = 0.1
 rotThresh = 32
 
-AI.aggro = 1000
+AI.aggro = 10000
 AI.attack = 500
 AI.close = 100
 

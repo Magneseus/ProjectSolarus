@@ -76,7 +76,11 @@ public class MMState extends State
     public void render()
     {
         background(0);
-        star.render(camera.pos, camera.pos, 3);
+        PVector controlCoords = new PVector(camera.pos.x, camera.pos.y);
+        controlCoords.mult(-1);
+        controlCoords.add(new PVector(width/2, height/2));
+        
+        star.render(controlCoords, camera.pos, 3);
         
         UIElements.render(new PVector(0,0));
     }
@@ -84,6 +88,12 @@ public class MMState extends State
     public boolean update()
     {
         UIElements.update();
+        
+        camera.update(30.f/frameRate);
+        
+        if (random(10) <= 1)
+            targ.get(0).pos = new PVector(camera.pos.x + random(-1000,1000), 
+                                          camera.pos.y + random(-1000,1000));
         
         return finalRun;
     }

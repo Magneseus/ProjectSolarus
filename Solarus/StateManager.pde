@@ -6,11 +6,15 @@ class StateManager
     public String state = states[0];
     public State[] stateList;
     
+    protected UIGroup optionsMenu;
+    
     StateManager()
     {
         stateList = new State[4];
         stateList[0] = new MMState(this);
         stateList[0].init();
+        
+        options = new UIGroup(new PVector(width/2, height/2), new PVector(0,0));
     }
     
     public boolean run()
