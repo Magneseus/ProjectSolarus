@@ -30,4 +30,7 @@ void keyReleased()
             keysS[i] = true;
         }
     }
+    
+    if (keyCode == ESC)
+        pause = !pause;
 }

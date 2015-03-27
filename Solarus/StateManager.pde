@@ -2,9 +2,10 @@
 
 class StateManager
 {
-    public final String[] states = {"MAIN_MENU", "GAME_SELECT", "GAME_INSTANCE", "GAME_MARKET"};
+    public final String[] states = {"MAIN_MENU", "GAME_INSTANCE", "GAME_MARKET", "LOADING"};
     public String state = states[0];
     public State[] stateList;
+    public State curState;
     
     protected UIGroup optionsMenu;
     
@@ -14,7 +15,7 @@ class StateManager
         stateList[0] = new MMState(this);
         stateList[0].init();
         
-        options = new UIGroup(new PVector(width/2, height/2), new PVector(0,0));
+        optionsMenu = new UIGroup(new PVector(width/2, height/2), new PVector(0,0));
     }
     
     public boolean run()
@@ -32,5 +33,22 @@ class StateManager
         }
         
         return finalRun;    
+    }
+    
+    public changeState(String newState)
+    {
+        int ind = -1;
+        
+        for (int i = 0; i < states.length; i++)
+        {
+            if (newState.equals(states[i]))
+            {
+                ind = i;
+                break;
+            }
+        }
+        
+        state = states[i];
+        
     }
 }
