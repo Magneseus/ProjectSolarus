@@ -9,10 +9,10 @@
 
 // Global Constants since we can't have static
 // variables in inner classes
-PFont BUTTON_FONT = createFont("Times New Roman", 15);
-int BUTTON_FONT_SIZE = 15;
+PFont BUTTON_FONT = createFont("Arial", 15);
+int BUTTON_FONT_SIZE = 40;
 
-class UI_Button extends UI
+class UIButton extends UI
 {
     // Members
     private String text;
@@ -23,7 +23,7 @@ class UI_Button extends UI
     private int fontSize;
 
     // Constructor
-    UI_Button(PVector pos, PVector size, String newText, Command newFunc)
+    UIButton(PVector pos, PVector size, String newText, Command newFunc)
     {
         super(pos, size);
 
@@ -31,13 +31,13 @@ class UI_Button extends UI
         func = newFunc;
 
         col = color(255, 0, 0);
-        scol = col;
+        scol = color(150, 20, 20);
 
         font = BUTTON_FONT;
         fontSize = BUTTON_FONT_SIZE;
     }
 
-    UI_Button(PVector pos, PVector size, String newText, Command newFunc, color newCol)
+    UIButton(PVector pos, PVector size, String newText, Command newFunc, color newCol)
     {
         this(pos, size, newText, newFunc);
 
@@ -45,7 +45,7 @@ class UI_Button extends UI
         scol = col;
     }
 
-    UI_Button(PVector pos, PVector size, String newText, Command newFunc, color newCol, color newSCol)
+    UIButton(PVector pos, PVector size, String newText, Command newFunc, color newCol, color newSCol)
     {
         this(pos, size, newText, newFunc);
 
@@ -65,11 +65,12 @@ class UI_Button extends UI
         stroke(scol);
 
         rect((int)(pos.x + offset.x), (int)(pos.y + offset.y), 
-        (int)size.x, (int)size.y, 7);
+        (int)pos.x + offset.x + size.x, (int)pos.y + offset.y + size.y, 7);
 
         fill(0);
         textFont(font);
         textSize(fontSize);
+        textAlign(CENTER, CENTER);
         text(text, (int)(pos.x + offset.x + size.x/2), (int)(pos.y + offset.y + size.y/2));
     }
 
@@ -81,8 +82,8 @@ class UI_Button extends UI
         // If the user has clicked in the button, call the function
         if (mousePressed && mouseS)
         {
-            if (mouseX > pos.x && mouseX < pos.x + size.x &&
-                mouseY > pos.y && mouseY < pos.y + size.y)
+            if (mouseX > pos.x + offset.x && mouseX < pos.x + offset.x + size.x &&
+                mouseY > pos.y + offset.y && mouseY < pos.y + offset.y + size.y)
             {
                 func.execute();
                 mouseS = false;

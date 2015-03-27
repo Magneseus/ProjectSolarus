@@ -2,139 +2,43 @@
 
 class StateManager
 {
-    private final String[] states = {"MAIN_MENU", "GAME_SELECT", "GAME_INSTANCE", "GAME_MARKET"};
-    private String state = states[0];
+    public final String[] states = {"MAIN_MENU", "GAME_SELECT", "GAME_INSTANCE", "GAME_MARKET"};
+    public String state = states[0];
+    public State[] stateList;
     
     StateManager()
     {
-        
+        stateList = new State[4];
+        stateList[0] = new MMState(this);
+        stateList[0].init();
     }
     
     public boolean run()
     {
-        boolean finalRun = false;
-        UI_Group UIElements = new UI_Group(new PVector(0,0));
+        boolean finalRun = true;   
         
         // Main Menu
-        if (state.equals(states[0]))
+        for (int i = 0; i < stateList.length; i++)
         {
-            //Init state
-            
-            
-            boolean running = true;
-            while (running)
+            if (state.equals(states[i]))
             {
-                //Render
-                
-                // Update
-                if (!pause)
-                {
-                    
-                }
-                else
-                {
-                    if (options)
-                    {
-                        
-                    }
-                    else
-                    {
-                        
-                    }
-                }
-            }
-        }
-        // Select
-        else if (state.equals(states[1]))
-        {
-            //Init state
-            
-            boolean running = true;
-            while (running)
-            {
-                //Render
-                
-                // Update
-                if (!pause)
-                {
-                    
-                }
-                else
-                {
-                    if (options)
-                    {
-                        
-                    }
-                    else
-                    {
-                        
-                    }
-                }
-            }
-        }
-        // Instance
-        else if (state.equals(states[2]))
-        {
-            //Init state
-            
-            boolean running = true;
-            while (running)
-            {
-                //Render
-                
-                // Update
-                if (!pause)
-                {
-                    
-                }
-                else
-                {
-                    if (options)
-                    {
-                        
-                    }
-                    else
-                    {
-                        
-                    }
-                }
-            }
-        }
-        // Market
-        else if (state.equals(states[3]))
-        {
-            //Init state
-            
-            boolean running = true;
-            while (running)
-            {
-                //Render
-                
-                // Update
-                if (!pause)
-                {
-                    
-                }
-                else
-                {
-                    if (options)
-                    {
-                        
-                    }
-                    else
-                    {
-                        
-                    }
-                }
+                finalRun = stateList[i].update();
+                stateList[i].render();
             }
         }
         
         return finalRun;    
     }
     
-    private class pause extends Command { public void execute(){pause=true;} }
-    private class unpause extends Command { public void execute(){pause=false;} }
+    private class pause implements Command { public void execute(){pause=true;} }
+    private class unpause implements Command { public void execute(){pause=false;} }
     
-    private class options extends Command { public void execute(){options=true;} }
-    private class unoptions extends Command { public void execute(){options=false;} }
+    public pause getPause() {return new pause();}
+    public unpause getUnpause() {return new unpause();}
+    
+    private class options implements Command { public void execute(){options=true;} }
+    private class unoptions implements Command { public void execute(){options=false;} }
+    
+    public options getOptions() {return new options();}
+    public unoptions getUnoptions() {return new unoptions();}
 }

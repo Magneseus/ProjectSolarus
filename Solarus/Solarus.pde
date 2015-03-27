@@ -48,11 +48,16 @@ void setup()
 
 void draw()
 {
-    background(0);
+    //background(0);
     
-    while (game.run()) {}
-    
-    exit();
+    if (game.run())
+    {
+        
+    }
+    else
+    {
+        exit();
+    }
 }
 
 /*

@@ -48,7 +48,7 @@ class UIGroup extends UI
         
         for (UI u : elements)
         {
-            u.render(offset);
+            u.render(PVector.add(pos, offset));
         }
     }
     
@@ -69,9 +69,14 @@ class UIGroup extends UI
         return true;
     }
     
-    public void addElement(UI newElement)
+    public void add(UI newElement)
     {
         elements.add(newElement);
+    }
+    
+    public void clear()
+    {
+        elements.clear();
     }
     
     
