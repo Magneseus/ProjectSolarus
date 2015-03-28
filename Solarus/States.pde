@@ -14,8 +14,6 @@ public abstract class State
     public abstract boolean update();
     
     protected class options implements Command { public void execute(){options=true;} }
-    protected class unoptions implements Command { public void execute(){options=false;} }
-    
     protected class pause implements Command { public void execute(){pause=true;} }
     protected class unpause implements Command { public void execute(){pause=false;} }
 }
@@ -40,7 +38,7 @@ public class MMState extends State
     
     public void init()
     {
-        class StartGame implements Command { public void execute(){println("New Game Hit");} }
+        class StartGame implements Command { public void execute(){sm.changeState("GAME_INSTANCE");} }
         UIElements.add(new UIButton(
                 new PVector(0, -225),
                 new PVector(400,100),
@@ -82,12 +80,18 @@ public class MMState extends State
         
         star.render(controlCoords, camera.pos, 3);
         
-        UIElements.render(new PVector(0,0));
+        if (!options)
+            UIElements.render(new PVector(0,0));
+        else
+            sm.optionsMenu.render(new PVector(0,0));
     }
     
     public boolean update()
     {
-        UIElements.update();
+        if (!options)
+            UIElements.update();
+        else
+            sm.optionsMenu.update();
         
         camera.update(30.f/frameRate);
         

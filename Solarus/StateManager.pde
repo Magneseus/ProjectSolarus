@@ -15,7 +15,15 @@ class StateManager
         stateList[0] = new MMState(this);
         stateList[0].init();
         
+        class unoptions implements Command { public void execute(){options=false;} }
         optionsMenu = new UIGroup(new PVector(width/2, height/2), new PVector(0,0));
+        optionsMenu.add(new UIButton(
+                new PVector(0, -225),
+                new PVector(400,100),
+                "Return to Prev Menu",
+                new unoptions() ));
+        
+        
     }
     
     public boolean run()
@@ -35,7 +43,7 @@ class StateManager
         return finalRun;    
     }
     
-    public changeState(String newState)
+    public void changeState(String newState)
     {
         int ind = -1;
         
@@ -48,7 +56,7 @@ class StateManager
             }
         }
         
-        state = states[i];
-        
+        state = states[ind];
+        stateList[ind].init();
     }
 }
