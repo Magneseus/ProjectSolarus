@@ -13,7 +13,7 @@ Stars star;
 
 Entity control;
 StateManager game;
-
+ 
 void setup()
 {
     // Initialize Screen and shape prefs

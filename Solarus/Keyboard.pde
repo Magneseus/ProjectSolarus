@@ -31,6 +31,6 @@ void keyReleased()
         }
     }
     
-    if (key == '`')
+    if (key == '`' || key == '~')
         pause = !pause;
 }

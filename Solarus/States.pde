@@ -73,6 +73,58 @@ public class GIState extends State
         playerInd = 0;
         
         
+        // HUD
+        PGraphics statusFrame = createGraphics(900, 150);
+        statusFrame.beginDraw();
+        PImage tmp = loadImage("Windows/StatusBarFrame.png");
+        statusFrame.image(tmp,0,0,900,150);
+        statusFrame.endDraw();
+        HUD.add(new UIImage(
+                new PVector(width/2, height-75),
+                new PVector(900,150),
+                statusFrame) );
+        
+        HUD.add(new UIStatusBar(
+                new PVector(width/2, height-80),
+                new PVector(250,15),
+                control.getHealth(),
+                new IntBox(10),
+                color(255,0,0) ));
+        HUD.add(new UIStatusBar(
+                new PVector(width/2, height-60),
+                new PVector(250,15),
+                new IntBox(10),
+                new IntBox(10),
+                color(0,0,255) ));
+        HUD.add(new UIStatusBar(
+                new PVector(width/2, height-40),
+                new PVector(250,15),
+                new IntBox(67),
+                new IntBox(100),
+                color(0,255,0) ));
+        
+        // Game Menu
+        PGraphics tmpBack = createGraphics(500,650);
+        tmpBack.beginDraw();
+        tmpBack.fill(50,50,50,150);
+        tmpBack.stroke(50,50,50);
+        tmpBack.rect(0,0,500,650);
+        tmpBack.endDraw();
+        GIMenu.add(new UIImage(
+                new PVector(0,0),
+                new PVector(500, 650),
+                tmpBack ));
+                
+        PGraphics tmpBack2 = createGraphics(width,height);
+        tmpBack2.beginDraw();
+        tmpBack2.fill(0,0,0,100);
+        tmpBack2.stroke(0,0,0,100);
+        tmpBack2.rect(0,0,width,height);
+        tmpBack2.endDraw();
+        GIMenu.add(new UIImage(
+                new PVector(0,0),
+                new PVector(width, height),
+                tmpBack2 ));
         
         GIMenu.add(new UIButton(
                 new PVector(0, -225),
@@ -257,6 +309,16 @@ public class MMState extends State
         pause = false;
         options = false;
         
+        PGraphics tmpBack = createGraphics(500,650);
+        tmpBack.beginDraw();
+        tmpBack.fill(50,50,50,150);
+        tmpBack.stroke(50,50,50);
+        tmpBack.rect(0,0,500,650);
+        tmpBack.endDraw();
+        UIElements.add(new UIImage(
+                new PVector(0,0),
+                new PVector(500, 650),
+                tmpBack ));
         class StartGame implements Command { public void execute(){sm.changeState("GAME_INSTANCE");} }
         UIElements.add(new UIButton(
                 new PVector(0, -225),
