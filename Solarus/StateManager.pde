@@ -15,13 +15,23 @@ class StateManager
         stateList[0] = new MMState(this);
         stateList[0].init();
         
-        class unoptions implements Command { public void execute(){options=false;} }
+        stateList[1] = new GIState(this);
+        
         optionsMenu = new UIGroup(new PVector(width/2, height/2), new PVector(0,0));
+        
+        class unoptions implements Command { public void execute(){options=false;} }
         optionsMenu.add(new UIButton(
-                new PVector(0, -225),
+                new PVector(0, -75),
                 new PVector(400,100),
                 "Return to Prev Menu",
                 new unoptions() ));
+        
+        class temp implements Command { public void execute(){println("TBD");} }
+        optionsMenu.add(new UIButton(
+                new PVector(0, 75),
+                new PVector(400,100),
+                "Options to be added",
+                new temp() ));
         
         
     }

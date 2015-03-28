@@ -24,8 +24,6 @@ class Stars
      */
     void render(PVector trans, PVector playerCoord, int radius)
     {
-        int c = 0;
-        
         // Iterate through all the tiles we have selected to render
         for (int i = 0; i < mapList.size(); i++)
         {

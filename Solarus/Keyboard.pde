@@ -31,6 +31,6 @@ void keyReleased()
         }
     }
     
-    if (keyCode == ESC)
+    if (key == '`')
         pause = !pause;
 }
