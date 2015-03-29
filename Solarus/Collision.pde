@@ -358,7 +358,8 @@ class Rect implements Shape
             p2.x * (p3.y - p1.y) +
             p3.x * (p1.y - p2.y));
         a /= 2;
-
+        
+        /*
         if (debug_)
         {
             pushMatrix();
@@ -374,6 +375,7 @@ class Rect implements Shape
 
             popMatrix();
         }
+        */
 
         return a;
     }

@@ -7,9 +7,9 @@
 5 - E
 */
 
-char[] keyList = {'w', 'a', 's', 'd', 'q', 'e'};
-boolean[] keys = new boolean[6];
-boolean[] keysS = new boolean[6];
+char[] keyList = {'w', 'a', 's', 'd', 'q', 'e', 'f'};
+boolean[] keys = new boolean[7];
+boolean[] keysS = new boolean[7];
 
 void keyPressed()
 {

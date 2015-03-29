@@ -11,8 +11,8 @@ boolean pause = false, options = false;
 Minim minim;
 Stars star;
 
-Entity control;
 StateManager game;
+UIGroup toast;
  
 void setup()
 {
@@ -42,12 +42,23 @@ void setup()
     
     // Start the State Manager
     game = new StateManager();
+    
+    // init the toast group
+    toast = new UIGroup(new PVector(width/2,height-200), new PVector(0,0));
 }
-
 
 
 void draw()
 {
+    for (int i = 0; i < toast.getElements().size(); i++)
+    {
+        if (!toast.getElements().get(i).update())
+        {
+            toast.getElements().remove(i);
+            i--;
+        }
+    }
+    
     if (game.run())
     {
         
