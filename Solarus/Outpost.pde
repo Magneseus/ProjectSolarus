@@ -24,16 +24,17 @@ class Outpost
         
         if (newDisplay == null)
         {
-            display = createGraphics(100,100);
+            display = createGraphics(200,200);
             display.beginDraw();
+            display.ellipseMode(RADIUS);
             display.fill(random(255), random(255), random(255));
             display.stroke(random(255), random(255), random(255));
-            display.ellipse(50,50,50,50);
+            display.ellipse(100,100,100,50);
             display.endDraw();
         }
         
         angle = 0f;
-        angleRot = random(0.1,1);
+        angleRot = random(0.001,0.01);
         radiusOfInteraction = dist(0,0,display.width,display.height);
     }
     
@@ -66,6 +67,8 @@ class Outpost
         translate(-display.width/2, -display.height/2);
         
         image(display.get(), 0, 0);
+        
+        popMatrix();
     }
     
 }

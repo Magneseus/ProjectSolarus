@@ -5,7 +5,7 @@ import ddf.minim.analysis.*;
 import ddf.minim.ugens.*;
 import ddf.minim.effects.*;
 
-boolean debug_ = false;
+boolean debug_ = true;
 boolean pause = false, options = false;
 
 Minim minim;

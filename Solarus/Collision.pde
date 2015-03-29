@@ -364,7 +364,7 @@ class Rect implements Shape
         {
             pushMatrix();
 
-            PVector controlCoords = new PVector(control.pos.x, control.pos.y);
+            PVector controlCoords = new PVector(acontrol.pos.x, acontrol.pos.y);
             controlCoords.mult(-1);
             controlCoords.add(new PVector(width/2, height/2));
             translate(controlCoords.x, controlCoords.y);
@@ -374,8 +374,8 @@ class Rect implements Shape
             line(p3.x, p3.y, p1.x, p1.y);
 
             popMatrix();
-        }
-        */
+        }*/
+        
 
         return a;
     }

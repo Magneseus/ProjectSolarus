@@ -32,6 +32,8 @@ public class GIState extends State
     PC control;
     int playerInd;
     
+    Outpost test;
+    
     public GIState(StateManager sm)
     {
         super(sm);
@@ -74,6 +76,9 @@ public class GIState extends State
         players.add(p);
         playerInd = 0;
         
+        
+        //Outposts
+        test = new Outpost(new PVector(random(width), random(height)), "test", null);
         
         // HUD
         PGraphics statusFrame = createGraphics(900, 150);
@@ -162,6 +167,8 @@ public class GIState extends State
         //If game is running
         if (!pause)
         {
+            println(test.update(control.pos));
+            println(test.pos.x + ":" + test.pos.y);
             playerSwitchCheck();
             cheatsCheck(); //REMOVE LATER
             
@@ -200,6 +207,7 @@ public class GIState extends State
                     i--;
                 }
             }
+            //println(players.size() + ":" + enemies.size() + "   " + playerProj.size() + ":" + enemyProj.size());
             
             HUD.update();
         }
@@ -231,6 +239,8 @@ public class GIState extends State
         
         star.render(controlCoords, control.pos, 2);
         
+        test.render(controlCoords);
+        
         for (PC p : players)
             p.render(controlCoords);
         for (PC p : enemies)
@@ -240,6 +250,7 @@ public class GIState extends State
             p.render(controlCoords);
         for (Proj p : enemyProj)
             p.render(controlCoords);
+        
         
         HUD.render(new PVector(0,0));
         
