@@ -68,6 +68,8 @@ public class GIState extends State
         p.moveTo(new PVector(width/2, height/2));
         p.setControl(true);
         control = p;
+        p.setAIFriend(players);
+        p.setAITargets(enemies);
         p.projList = playerProj;
         players.add(p);
         playerInd = 0;
@@ -160,6 +162,9 @@ public class GIState extends State
         //If game is running
         if (!pause)
         {
+            playerSwitchCheck();
+            cheatsCheck(); //REMOVE LATER
+            
             for (int i = 0; i < players.size(); i++)
             {
                 if (!players.get(i).update(delta))
@@ -251,32 +256,84 @@ public class GIState extends State
         }
     }
     
+    public void cheatsCheck()
+    {
+        if (keys[7] && keysS[7])
+        {
+            //Load a temp player
+            PC p;
+            p = parsePC("enemy_basic.player");
+            PGraphics im = createGraphics(40,40);
+            im.beginDraw();
+            im.stroke(0,255,0);
+            im.fill(0,255,0);
+            im.triangle(0, 40, 20, 0, 40, 40);
+            im.endDraw();
+            p.setImage(im);
+            p.moveTo(new PVector(control.pos.x + random(-200,200),
+                                 control.pos.y + random(-200,200)));
+            p.projList = playerProj;
+            p.setAIFriend(players);
+            p.setAITargets(enemies);
+            players.add(p);
+        }
+        else if (keys[8] && keysS[8])
+        {
+             //Load a temp enemy
+            PC p;
+            p = parsePC("enemy_basic.player");
+            PGraphics im = createGraphics(40,40);
+            im.beginDraw();
+            im.stroke(255,0,0);
+            im.fill(255,0,0);
+            im.triangle(0, 40, 20, 0, 40, 40);
+            im.endDraw();
+            p.setImage(im);
+            p.moveTo(new PVector(control.pos.x + random(-1000,1000),
+                                 control.pos.y + random(-1000,1000)));
+            p.projList = enemyProj;
+            p.setAIFriend(enemies);
+            p.setAITargets(players);
+            enemies.add(p);
+        }
+    }
+    
     // Functions
     void playerSwitchCheck()
     {
         //Q
         if (keysS[4] && keys[4])
         {
-            playerInd--;
-            if (playerInd < 0)
-                playerInd = players.size() - 1;
-            
-            control.setControl(false);
-            control = players.get(playerInd);
-            control.setControl(true);
+            if (players.size() > 0)
+            {
+                playerInd--;
+                if (playerInd < 0)
+                    playerInd = players.size() - 1;
+                
+                control.setControl(false);
+                control = players.get(playerInd);
+                control.setControl(true);
+                
+                ((UIStatusBar)HUD.elements.get(1)).setVal(control.getHealth());
+            }
             
             keysS[4] = false;
         }
         //E
         else if (keysS[5] && keys[5])
         {
-            playerInd++;
-            if (playerInd >= players.size())
-                playerInd = 0;
-            
-            control.setControl(false);
-            control = players.get(playerInd);
-            control.setControl(true);
+            if (players.size() > 0)
+            {
+                playerInd++;
+                if (playerInd >= players.size())
+                    playerInd = 0;
+                
+                control.setControl(false);
+                control = players.get(playerInd);
+                control.setControl(true);
+                
+                ((UIStatusBar)HUD.elements.get(1)).setVal(control.getHealth());
+            }
             
             keysS[5] = false;
         }

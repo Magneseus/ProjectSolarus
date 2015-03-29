@@ -5,11 +5,14 @@
 3 - D
 4 - Q
 5 - E
+6 - F
+7 - 1 temp
+8 - 2 temp
 */
 
-char[] keyList = {'w', 'a', 's', 'd', 'q', 'e', 'f'};
-boolean[] keys = new boolean[7];
-boolean[] keysS = new boolean[7];
+char[] keyList = {'w', 'a', 's', 'd', 'q', 'e', 'f', '1', '2'};
+boolean[] keys = new boolean[9];
+boolean[] keysS = new boolean[9];
 
 void keyPressed()
 {

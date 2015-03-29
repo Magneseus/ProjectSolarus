@@ -191,6 +191,7 @@ class PC extends Entity
     void setAITargets(ArrayList<PC> targ)
     {
         alf.setTargets(targ);
+        enemyList = targ;
     }
     
     void setAIFriend(ArrayList<PC> friend)
