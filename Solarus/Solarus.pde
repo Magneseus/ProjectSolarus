@@ -5,14 +5,14 @@ import ddf.minim.analysis.*;
 import ddf.minim.ugens.*;
 import ddf.minim.effects.*;
 
-boolean debug_ = true;
+boolean debug_ = false;
 boolean pause = false, options = false;
 
 Minim minim;
 Stars star;
 
 StateManager game;
-UIGroup toast;
+UIToast toast;
  
 void setup()
 {
@@ -44,24 +44,23 @@ void setup()
     game = new StateManager();
     
     // init the toast group
-    toast = new UIGroup(new PVector(width/2,height-200), new PVector(0,0));
+    toast = new UIToast(new PVector(width/2,25), 
+                        new PVector(300,50),
+                        color(#C1B0B0),
+                        color(#6C6363));
+    toast.pushToast("Test", 2000);
+    toast.pushToast("Test1", 1000);
+    toast.pushToast("Test2", 500);
+    toast.pushToast("Test3", 5000);
 }
 
 
 void draw()
 {
-    for (int i = 0; i < toast.getElements().size(); i++)
-    {
-        if (!toast.getElements().get(i).update())
-        {
-            toast.getElements().remove(i);
-            i--;
-        }
-    }
-    
     if (game.run())
     {
-        
+        toast.update();
+        toast.render(new PVector(0,0));
     }
     else
     {

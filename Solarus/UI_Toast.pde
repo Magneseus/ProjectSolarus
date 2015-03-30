@@ -1,42 +1,52 @@
 
+import java.util.LinkedList;
 
 class UIToast extends UI
 {
     // Members
-    private String text;
-    private long lifeStart, lifeTime;
+    private LinkedList<String> text;
+    private LinkedList<Integer> lifeTime;
+    private long lifeStart;
     private color col, scol;
 
     private PFont font;
     private int fontSize;
+    
+    private PVector startPos, curPos;
+    private int stage, speed;
 
     // Constructor
-    UIToast(PVector pos, PVector size, String newText, long life)
+    UIToast(PVector pos, PVector size)
     {
         super(pos, size);
 
-        text = newText;
-        lifeTime = life;
+        text = new LinkedList<String>();
+        lifeTime = new LinkedList<Integer>();
 
         col = color(255, 0, 0);
         scol = color(150, 20, 20);
+        
+        startPos = new PVector(pos.x, -size.y/2 - 1);
+        curPos = new PVector(startPos.x, startPos.y);
+        stage = 0;
+        speed = 4;
 
         font = BUTTON_FONT;
-        fontSize = BUTTON_FONT_SIZE;
+        fontSize = 20;
     }
 
-    UIToast(PVector pos, PVector size, String newText, long life, color newCol)
+    UIToast(PVector pos, PVector size, color newCol)
     {
-        this(pos, size, newText, life);
+        this(pos, size);
 
         col = newCol;
         scol = col;
     }
 
-    UIToast(PVector pos, PVector size, String newText, long life, color newCol, color newSCol)
+    UIToast(PVector pos, PVector size, color newCol, color newSCol)
     {
-        this(pos, size, newText, life);
-
+        this(pos, size);
+        
         col = newCol;
         scol = newSCol;
     }
@@ -48,18 +58,22 @@ class UIToast extends UI
             return;
 
         super.render(off);
-
-        fill(col);
-        stroke(scol);
-
-        rect((int)(pos.x + offset.x), (int)(pos.y + offset.y), 
-        (int)pos.x + offset.x + size.x, (int)pos.y + offset.y + size.y);
-
-        fill(0);
-        textFont(font);
-        textSize(fontSize);
-        textAlign(CENTER, CENTER);
-        text(text, (int)(pos.x + offset.x + size.x/2), (int)(pos.y + offset.y + size.y/2));
+        
+        if (text.size() > 0)
+        {
+            fill(col);
+            stroke(scol);
+            
+            rect((int)(curPos.x + offset.x), (int)(curPos.y + offset.y), 
+            (int)curPos.x + offset.x + size.x, (int)curPos.y + offset.y + size.y);
+            
+            fill(0);
+            textFont(font);
+            textSize(fontSize);
+            textAlign(CENTER, CENTER);
+            
+            text(text.get(0), (int)(curPos.x + offset.x + size.x/2), (int)(curPos.y + offset.y + size.y/2 - 1));
+        }
     }
 
     public boolean update()
@@ -67,12 +81,58 @@ class UIToast extends UI
         if (!enabled)
             return false;
         
-        if (millis() - lifeStart > lifeTime)
+        if (lifeTime.size() > 0)
         {
-            enabled = false;
+            if (stage == 0)
+            {
+                curPos.y += speed;
+                
+                if (curPos.y >= pos.y)
+                {
+                    curPos.y = pos.y;
+                    stage = 1;
+                    lifeStart = millis();
+                }
+            }
+            else if (stage == 1)
+            {
+                if (millis() - lifeStart > lifeTime.get(0))
+                {
+                    stage = 2;
+                }
+            }
+            else if (stage == 2)
+            {
+                curPos.y -= speed;
+                
+                if (curPos.y <= startPos.y)
+                {
+                    curPos.y = startPos.y;
+                    stage = 3;
+                    lifeStart = millis();
+                    lifeTime.removeFirst();
+                    text.removeFirst();
+                }
+            }
+            else if (stage == 3)
+            {
+                if (millis() - lifeStart > 200)
+                {
+                    stage = 0;
+                }
+            }
         }
         
         return true;
+    }
+    
+    public void pushToast(String message, int lifeTime)
+    {
+        text.add(message);
+        this.lifeTime.add(new Integer(lifeTime));
+        
+        if (this.lifeTime.size() == 1)
+            lifeStart = millis();
     }
 
 
