@@ -27,17 +27,17 @@ public class Resource{
   }
   
   public void render(int y){
-    if(value>valueOld){
+    if(value>valueOld+5){
       rectMode(CORNERS);
       noStroke();
       fill(col);
       rect(50,y-12,50+(value/2),y+12);
-      fill(lerpColor(col,color(0),.33));
+      fill(lerpColor(col,color(0),.5));
       rect(50,y-12,50+(valueOld/2),y+12);
-    }else if(value<valueOld){
+    }else if(value<valueOld-5){
       rectMode(CORNERS);
       noStroke();
-      fill(lerpColor(col,color(0),.33));
+      fill(lerpColor(col,color(0),.5 ));
       rect(50,y-12,50+(valueOld/2),y+12);
       fill(col);
       rect(50,y-12,50+(value/2),y+12);
