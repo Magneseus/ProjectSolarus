@@ -239,21 +239,61 @@ class AIStop implements AIState
 class AIAggro implements AIState
 {
     private boolean suppress;
-    private float aggroDist;
-    AIAggro(float aggroDist)
+    private float aggroDist, prefDist, closeDist;
+    AIAggro(float aggroDist, float closeDist)
     {
         suppress = false;
         this.aggroDist = aggroDist;
+        this.closeDist = closeDist;
+        this.prefDist = closeDist + 100;
     }
     
     public boolean takeControl(PC self, PC other)
     {
-        return dist(self.pos.x, self.pos.y, other.pos.x, other.pos.y) < aggroDist;
+        float d = dist(self.pos.x, self.pos.y, other.pos.x, other.pos.y);
+        return (d < aggroDist && d > prefDist) || (d < closeDist);
     }
     
     public void takeAction(PC self, PC other)
     {
-        
+        // Check for nullity
+        if (self != null && other != null)
+        {
+            // Finds the vectors representing the distance from self to other
+            // and the one representing the self PCs current bearing.
+            PVector dis = PVector.sub(other.pos, self.pos);
+            PVector ang = PVector.fromAngle(self.getAngle());
+            ang.rotate(-PI/2);
+            
+            boolean tCW = false;
+            boolean tCCW = false;
+            
+            // Check for which direction to turn
+            if (PVector.angleBetween(dis, ang) > PI/self.getRotThresh())
+            {
+                float dot = (ang.x * -dis.y) + (ang.y * dis.x);
+                
+                if (dot >= 0)
+                    tCW = true;
+                else
+                    tCCW = true;
+            }
+            
+            // Start turning in that direction
+            if (tCW)
+                self.rot(-self.maxRot / frameRate);
+            else if (tCCW)
+                self.rot(self.maxRot / frameRate);
+            
+            // Accelerate towards the target
+            self.accel = PVector.fromAngle(self.getAngle());
+            self.accel.rotate(-PI/2);
+            self.accel.setMag(self.maxAccel);
+            
+            // If we want to retreat, accelerate backwards
+            if (STATE == states.get("back"))
+                self.accel.mult(-1);
+        }
     }
     
     public void suppress() {suppress=true;}

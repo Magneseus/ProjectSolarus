@@ -167,8 +167,7 @@ public class GIState extends State
         //If game is running
         if (!pause)
         {
-            println(test.update(control.pos));
-            println(test.pos.x + ":" + test.pos.y);
+            test.update(control.pos);
             playerSwitchCheck();
             cheatsCheck(); //REMOVE LATER
             
