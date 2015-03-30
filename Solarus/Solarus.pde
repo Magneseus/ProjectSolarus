@@ -62,17 +62,9 @@ void draw()
     }*/
     
     background(0);
-
- if (keyPressed) {
-    if (key == 'a') {
-      store.update();
-    }
- }
  
   store.render();
   
-  
-    
 }
 
 
