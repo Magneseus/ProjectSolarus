@@ -14,7 +14,6 @@ class StateManager
         stateList = new State[4];
         stateList[0] = new MMState(this);
         stateList[0].init();
-        
         stateList[1] = new GIState(this);
         
         optionsMenu = new UIGroup(new PVector(width/2, height/2), new PVector(0,0));
@@ -32,8 +31,6 @@ class StateManager
                 new PVector(400,100),
                 "Options to be added",
                 new temp() ));
-        
-        
     }
     
     public boolean run()

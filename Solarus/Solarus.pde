@@ -56,8 +56,6 @@ void setup()
                         color(#C1B0B0),
                         color(#6C6363));
     
-    
-    
     //CHANGE
     enemyP1 = loadImage("Images/proj_enemy1.png");
     friendP1 = loadImage("Images/proj_friend1.png");
@@ -68,6 +66,7 @@ void setup()
     
     toast.pushToast("Welcome to Solarus.", 3000);
 }
+
 
 
 void draw()
@@ -81,4 +80,5 @@ void draw()
     {
         exit();
     }
+  
 }
