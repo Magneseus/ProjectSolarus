@@ -150,8 +150,10 @@ class AI
             // Draw the bullet
             PGraphics im = createGraphics(30, 30);
             im.beginDraw();
-            im.fill(0, 0, 255);
-            im.ellipse(15, 15, 15, 15);
+            if (self.enemy)
+                im.image(enemyP1, 0,0, 30,30);
+            else
+                im.image(friendP2, 0,0, 30,30);
             im.endDraw();
 
             ptmp.setImage(im);

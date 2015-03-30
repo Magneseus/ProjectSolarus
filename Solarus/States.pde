@@ -78,7 +78,28 @@ public class GIState extends State
         
         
         //Outposts
-        test = new Outpost(new PVector(random(width), random(height)), "test", null);
+        //CHANGE
+        int pick = (int)random(3);
+        PImage out = outpost1;
+        switch(pick)
+        {
+            case 0:
+            out = outpost1;
+            break;
+            
+            case 1:
+            out = outpost2;
+            break;
+            
+            case 3:
+            out = outpost3;
+            break;
+        }
+        PGraphics out1 = createGraphics(200,200);
+        out1.beginDraw();
+        out1.image(out,0,0,200,200);
+        out1.endDraw();
+        test = new Outpost(new PVector(random(width), random(height)), "test", out1);
         
         // HUD
         PGraphics statusFrame = createGraphics(900, 150);
@@ -158,6 +179,14 @@ public class GIState extends State
                 new PVector(400,100),
                 "Return to Main Menu",
                 new ReturnToMenu() ));
+        
+        toast.pushToast("Use WASD to move.", 4000);
+        toast.pushToast("Movement is relative to the cursor.", 4000);
+        toast.pushToast("Click the mouse to fire.", 4000);
+        toast.pushToast("Press 1 & 2 to spawn AI.", 4000);
+        toast.pushToast("Press Q & E to switch ships.", 4000);
+        toast.pushToast("Press the '~' key for the menu.", 4000);
+        toast.pushToast("Press F when over a planet for the market.", 4000);
     }
     
     public boolean update()
@@ -304,6 +333,7 @@ public class GIState extends State
             p.projList = enemyProj;
             p.setAIFriend(enemies);
             p.setAITargets(players);
+            p.enemy = true;
             enemies.add(p);
         }
     }

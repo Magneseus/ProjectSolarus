@@ -13,6 +13,9 @@ Stars star;
 
 StateManager game;
 UIToast toast;
+
+//CHANGE
+PImage enemyP1, friendP1, friendP2, outpost1, outpost2, outpost3;
  
 void setup()
 {
@@ -23,6 +26,10 @@ void setup()
     
     ellipseMode(RADIUS);
     rectMode(CORNERS);
+    
+    PImage curs = loadImage("Images/reticle.png");
+    curs.resize(60,60);
+    cursor(curs);
     
     // Setup key vars
     for (int i = 0; i < keysS.length; i++)
@@ -45,13 +52,21 @@ void setup()
     
     // init the toast group
     toast = new UIToast(new PVector(width/2,25), 
-                        new PVector(300,50),
+                        new PVector(400,50),
                         color(#C1B0B0),
                         color(#6C6363));
-    toast.pushToast("Test", 2000);
-    toast.pushToast("Test1", 1000);
-    toast.pushToast("Test2", 500);
-    toast.pushToast("Test3", 5000);
+    
+    
+    
+    //CHANGE
+    enemyP1 = loadImage("Images/proj_enemy1.png");
+    friendP1 = loadImage("Images/proj_friend1.png");
+    friendP2 = loadImage("Images/proj_friend2.png");
+    outpost1 = loadImage("Images/outpost_1.png");
+    outpost2 = loadImage("Images/outpost_2.png");
+    outpost3 = loadImage("Images/outpost_3.png");
+    
+    toast.pushToast("Welcome to Solarus.", 3000);
 }
 
 

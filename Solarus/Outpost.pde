@@ -34,7 +34,7 @@ class Outpost
         }
         
         angle = 0f;
-        angleRot = random(0.001,0.01);
+        angleRot = random(0.0001,0.005);
         radiusOfInteraction = dist(0,0,display.width,display.height);
     }
     
