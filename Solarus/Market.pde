@@ -5,15 +5,21 @@ public class Market{
   
   public Market(){
    
-   for(int i=0; i<store.length; i++){
-   store[i] = new Resource((i+1)*50,colours[i],"TEMP");
-   }
+   store[0] = new Resource("TEMP", 200, 10, 0,colours[0]);
+   store[1] = new Resource("TEMP", 200, 10, QUARTER_PI,colours[1]);
+   store[2] = new Resource("TEMP", 200, 10, HALF_PI,colours[2]);
+   store[3] = new Resource("TEMP", 200, 10, PI-QUARTER_PI,colours[3]);
+   store[4] = new Resource("TEMP", 200, 10, PI,colours[4]);
+   store[5] = new Resource("TEMP", 200, 10, PI+QUARTER_PI,colours[5]);
+   store[6] = new Resource("TEMP", 200, 10, TAU-HALF_PI,colours[6]);
+   store[7] = new Resource("TEMP", 200, 10, TAU-QUARTER_PI,colours[7]);
+   
   }
   
   public void update(){
-   
+   float x = HALF_PI;
    for(int i=0; i<store.length; i++){
-     store[i].update(); 
+     store[i].update(x); 
     }
     
   }
