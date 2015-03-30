@@ -1,4 +1,4 @@
-
+boolean fRun = true;
 
 public abstract class State
 {
@@ -180,13 +180,17 @@ public class GIState extends State
                 "Return to Main Menu",
                 new ReturnToMenu() ));
         
-        toast.pushToast("Use WASD to move.", 4000);
-        toast.pushToast("Movement is relative to the cursor.", 4000);
-        toast.pushToast("Click the mouse to fire.", 4000);
-        toast.pushToast("Press 1 & 2 to spawn AI.", 4000);
-        toast.pushToast("Press Q & E to switch ships.", 4000);
-        toast.pushToast("Press the '~' key for the menu.", 4000);
-        toast.pushToast("Press F when over a planet for the market.", 4000);
+        if (fRun)
+        {
+            toast.pushToast("Use WASD to move.", 4000);
+            toast.pushToast("Movement is relative to the cursor.", 4000);
+            toast.pushToast("Click the mouse to fire.", 4000);
+            toast.pushToast("Press 1 & 2 to spawn AI.", 4000);
+            toast.pushToast("Press Q & E to switch ships.", 4000);
+            toast.pushToast("Press the '~' key for the menu.", 4000);
+            toast.pushToast("Press F when over a planet for the market.", 4000);
+            fRun = false;
+        }
     }
     
     public boolean update()
@@ -196,7 +200,11 @@ public class GIState extends State
         //If game is running
         if (!pause)
         {
-            test.update(control.pos);
+            if (test.update(control.pos))
+            {
+                sm.changeState("GAME_MARKET");
+            }
+            
             playerSwitchCheck();
             cheatsCheck(); //REMOVE LATER
             

@@ -6,6 +6,7 @@ class StateManager
     public String state = states[0];
     public State[] stateList;
     public State curState;
+    public String prevState;
     
     protected UIGroup optionsMenu;
     
@@ -15,6 +16,7 @@ class StateManager
         stateList[0] = new MMState(this);
         stateList[0].init();
         stateList[1] = new GIState(this);
+        stateList[2] = new Market(this);
         
         optionsMenu = new UIGroup(new PVector(width/2, height/2), new PVector(0,0));
         
@@ -63,7 +65,15 @@ class StateManager
             }
         }
         
+        prevState = state;
         state = states[ind];
         stateList[ind].init();
+    }
+    
+    public void returnToPrev()
+    {
+        pause = false;
+        options = false;
+        state = prevState;
     }
 }
