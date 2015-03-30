@@ -8,8 +8,6 @@ import ddf.minim.effects.*;
 boolean debug_ = false;
 boolean pause = false, options = false;
 
-public Market store = new Market();
-
 Minim minim;
 Stars star;
 
@@ -51,7 +49,7 @@ void setup()
 
 
 void draw()
-{/*
+{
     if (game.run())
     {
         
@@ -59,11 +57,7 @@ void draw()
     else
     {
         exit();
-    }*/
-    
-    background(0);
- 
-  store.render();
+    }
   
 }
 
