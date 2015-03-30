@@ -8,6 +8,8 @@ import ddf.minim.effects.*;
 boolean debug_ = false;
 boolean pause = false, options = false;
 
+public Market store = new Market();
+
 Minim minim;
 Stars star;
 
@@ -42,12 +44,14 @@ void setup()
     
     // Start the State Manager
     game = new StateManager();
+    
+    
 }
 
 
 
 void draw()
-{
+{/*
     if (game.run())
     {
         
@@ -55,8 +59,21 @@ void draw()
     else
     {
         exit();
+    }*/
+    
+    background(0);
+
+ if (keyPressed) {
+    if (key == 'a') {
+      store.update();
     }
+ }
+ 
+  store.render();
+    
 }
+
+
 
 /*
 import ddf.minim.spi.*;

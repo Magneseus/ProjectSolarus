@@ -14,7 +14,7 @@ class StateManager
         stateList[0] = new MMState(this);
         stateList[0].init();
         
-        options = new UIGroup(new PVector(width/2, height/2), new PVector(0,0));
+        //options = new UIGroup(new PVector(width/2, height/2), new PVector(0,0));
     }
     
     public boolean run()

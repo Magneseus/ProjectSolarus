@@ -7,17 +7,24 @@ public class Resource{
   Resource(int start, color colin, String id){
     value = start;
     col = colin;
-    name = id;
+    name = id;    
   }
   
-  public update(){
-    value += random(-2,2);
+  public void update(){
+    value += random(-10,11);
+    if(value<=49){
+      value = 50;
+    }else if(value>=500){
+      value = 499;
+    }
   }
   
-  public render(int y){
+  public void render(int y){
     
-    int w = value/20;
-    
+    rectMode(CORNERS);
+    noStroke();
+    fill(col);
+    rect(50,y-12,50+value,y+12);
     
     
   }
