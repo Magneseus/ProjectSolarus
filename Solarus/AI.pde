@@ -35,6 +35,8 @@ class AI
      * Updates the velocities and states of the AI as well as the given PC.
      * @param self Reference to the parent PC class that owns the AI.
      */
+    // Test commit
+    // This is a test change
     void update(PC self)
     {
         PC closest = null;
