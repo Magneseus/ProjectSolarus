@@ -90,6 +90,122 @@ class AIStop implements AIState
 	public boolean isSuppressed() {return suppress;}
 }
 
+// WANDER
+class AIWander implements AIState
+{
+	private boolean suppress;
+	
+	public AIWander()
+	{
+		suppress = false;
+	}
+	
+	public boolean takeControl(PC self, PC other, PC control)
+	{
+		// IF the target and the follow is null, don't wander
+		if (other == null && control == null)
+			return false;
+		
+		return true;
+	}
+	
+	public boolean takeControl(PC self, PC other, PC control)
+	{
+		suppress = true;
+		
+		float d1 = Integer.MAX_VALUE;
+		float d2 = Integer.MAX_VALUE;
+		
+		if (other != null)
+			d1 = dist(self.pos.x, self.pos.y, other.pos.x, other.pos.y);
+		
+		if (control != null)
+			d2 = dist(self.pos.x, self.pos.y, control.pos.x, control.pos.y);
+		
+		// IF enemy
+		if (d1 < d2)
+		{
+			// Finds the vectors representing the distance from self to other
+			// and the one representing the self PCs current bearing.
+			PVector dis = PVector.sub(other.pos, self.pos);
+			PVector ang = PVector.fromAngle(self.getAngle());
+			ang.rotate(-PI/2);
+			
+			boolean tCW = false;
+			boolean tCCW = false;
+			
+			// Check for which direction to turn
+			if (PVector.angleBetween(dis, ang) > PI/self.getRotThresh())
+			{
+				float dot = (ang.x * -dis.y) + (ang.y * dis.x);
+				
+				if (dot >= 0)
+					tCW = true;
+				else
+					tCCW = true;
+			}
+			
+			// Start turning in that direction
+			if (tCW)
+				self.rot(-self.maxRot / frameRate);
+			else if (tCCW)
+				self.rot(self.maxRot / frameRate);
+			
+			PVector variance = new PVector(newAccel.x, newAccel.y);
+			variance.rotate(PI/2);
+			variance.setMag(random(-self.maxAccel, self.maxAccel));
+			
+			self.accel = variance;
+		}
+		// If friend
+		else
+		{
+			// Finds the vectors representing the distance from self to control
+			// and the one representing the self PCs current bearing.
+			PVector dis = PVector.fromAngle(control.getAngle());
+			PVector ang = PVector.fromAngle(self.getAngle());
+			dis.rotate(-PI/2);
+			ang.rotate(-PI/2);
+			
+			boolean tCW = false;
+			boolean tCCW = false;
+			
+			// Check for which direction to turn
+			if (PVector.angleBetween(dis, ang) > PI/self.getRotThresh())
+			{
+				float dot = (ang.x * -dis.y) + (ang.y * dis.x);
+				
+				if (dot >= 0)
+					tCW = true;
+				else
+					tCCW = true;
+			}
+			
+			// Start turning in that direction
+			if (tCW)
+				self.rot(-self.maxRot / frameRate);
+			else if (tCCW)
+				self.rot(self.maxRot / frameRate);
+			
+			// Accelerate towards the target
+			PVector newAccel = PVector.fromAngle(self.getAngle());
+			newAccel.rotate(-PI/2);
+			newAccel.setMag(self.maxAccel);
+			
+			PVector variance = new PVector(newAccel.x, newAccel.y);
+			variance.rotate(PI/2);
+			variance.setMag(random(-self.maxAccel, self.maxAccel));
+			
+			newAccel.add(variance);
+			
+			self.accel = newAccel;
+		}
+	}
+	
+	public void suppress() {suppress=true;}
+	public boolean isSuppressed() {return suppress;}
+}
+
 // AGGRO
 class AIAggro implements AIState
 {
@@ -165,15 +281,23 @@ class AIAggro implements AIState
 class AIAttack implements AIState
 {
 	private boolean suppress;
+	private int chance;
 	
-	public AIAttack()
+	public AIAttack(int chance)
 	{
 		suppress = false;
+		this.chance = chance;
 	}
 	
 	public boolean takeControl(PC self, PC other, PC control)
 	{
-		return self.projCount < self.projMax && 1 > random(200);
+		// Calculate the angle between the AI and the target
+		PVector dis = PVector.sub(other.pos, self.pos);
+		PVector ang = PVector.fromAngle(self.getAngle());
+		
+		float angle = PVector.angleBetween(dis, ang);
+		
+		return angle < PI/4 && self.projCount < self.projMax && 1 > random(chance);
 	}
 	
 	public void takeAction(PC self, PC other, PC control)
@@ -211,29 +335,38 @@ class AIAttack implements AIState
 	public boolean isSuppressed() {return suppress;}
 }
 
-// WANDER
-class AIWander implements AIState
+// FOLLOW
+class AIFollow implements AIState
 {
 	private boolean suppress;
+	private float followDist, closeDist;
 	
-	public AIStop()
+	AIFollow(float followDist, float closeDist)
 	{
 		suppress = false;
+		this.followDist = followDist;
+		this.closeDist = closeDist;
 	}
 	
 	public boolean takeControl(PC self, PC other, PC control)
 	{
-		return other != null;
+		if (control == null)
+			return false;
+		
+		float d = dist(self.pos.x, self.pos.y, control.pos.x, control.pos.y);
+		return d > followDist || d < closeDist;
 	}
 	
 	public void takeAction(PC self, PC other, PC control)
 	{
+		suppress = false;
+		
 		// Check for nullity
-		if (self != null && other != null)
+		if (self != null && control != null)
 		{
-			// Finds the vectors representing the distance from self to other
+			// Finds the vectors representing the distance from self to control
 			// and the one representing the self PCs current bearing.
-			PVector dis = PVector.sub(other.pos, self.pos);
+			PVector dis = PVector.sub(control.pos, self.pos);
 			PVector ang = PVector.fromAngle(self.getAngle());
 			ang.rotate(-PI/2);
 			
@@ -257,12 +390,18 @@ class AIWander implements AIState
 			else if (tCCW)
 				self.rot(self.maxRot / frameRate);
 			
-		}
+			// Accelerate towards the target
+			self.accel = PVector.fromAngle(self.getAngle());
+			self.accel.rotate(-PI/2);
+			self.accel.setMag(self.maxAccel);
 			
+			// If we want to retreat, accelerate backwards
+			if (dis.mag() < closeDist)
+				self.accel.mult(-1);
+		}
 	}
-	
+		
 	public void suppress() {suppress=true;}
-	public boolean isSuppressed() {return suppress;}
 }
 
 

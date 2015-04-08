@@ -163,17 +163,20 @@ class PC extends Entity
                 mouseS = false;
             }
         }
-        //Update the AI
-        else
-        {
-            alf.update(this);
-        }
         
         //If we're dead, tell 'em
         if (health.store <= 0)
             return false;
 
         return true;
+    }
+    
+    public boolean update(float delta, PC con)
+    {
+        if (!inControl)
+            alf.update(con);
+        
+        return update(delta);
     }
     
     /**
@@ -188,22 +191,6 @@ class PC extends Entity
     void setControl(boolean c)
     {
         inControl = c;
-    }
-
-    void setAITargets(ArrayList<PC> targ)
-    {
-        alf.setTargets(targ);
-        enemyList = targ;
-    }
-    
-    void setAIFriend(ArrayList<PC> friend)
-    {
-        alf.setFriend(friend);
-    }
-
-    void setAIInfo(HashMap<String, Integer> info)
-    {
-        alf.setInfo(info);
     }
 
     void setAI(AI a)
@@ -282,7 +269,17 @@ PC parsePC(String fileName)
     PC returnP = new PC(null, null, null);
     returnP.initBase();
 
-    HashMap<String, Integer> aiInfo = new HashMap<String, Integer>();
+    AIStop ai1 = new AIStop();
+    AIWander ai2 = new AIWander();
+    
+    AIAggro ai3;
+    float agDist = 0, agPref = 0, agClose = 0;
+    
+    AIAttack ai4;
+    int chance = 0;
+    
+    AIFollow ai5;
+    float foDist = 0, foClose = 0;
 
     for (int i = 0; i < lines.length; i++)
     {
@@ -402,16 +399,33 @@ PC parsePC(String fileName)
                 returnP.setSlow(float(trim(data[0])) );
             else if (line.equals("rotThresh"))
                 returnP.setRotThresh(float(trim(data[0])) );
-            else if (line.equals("AI.aggro"))
-                aiInfo.put( "aggro", int(trim(data[0])) );
-            else if (line.equals("AI.attack"))
-                aiInfo.put( "attack", int(trim(data[0])) );
-            else if (line.equals("AI.close"))
-                aiInfo.put( "close", int(trim(data[0])) );
+            else if (line.equals("AI.aggroDist"))
+                agDist = float(trim(data[0]));
+            else if (line.equals("AI.aggroPref"))
+                agPref = float(trim(data[0]));
+            else if (line.equals("AI.aggroClose"))
+                agClose = float(trim(data[0]));
+            else if (line.equals("AI.followDist"))
+                foDist = float(trim(data[0]));
+            else if (line.equals("AI.followClose"))
+                foClose = float(trim(data[0]));
+            else if (line.equals("AI.attackChance"))
+                chance = int(trim(data[0]));
         }
     }
 
-    returnP.setAIInfo(aiInfo);
+    ai3 = new AIAggro(agDist, agClose, agPref);
+    ai4 = new AIAttack(chance);
+    ai5 = new AIFollow(foDist, foClose);
+    
+    ArrayList<AIState> st = new ArrayList<AIState>();
+    st.add(ai1);
+    st.add(ai2);
+    st.add(ai3);
+    st.add(ai4);
+    st.add(ai5);
+    
+    returnP.setAI(new AI(returnP, st));
 
     return returnP;
 }

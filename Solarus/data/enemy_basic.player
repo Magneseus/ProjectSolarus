@@ -24,8 +24,13 @@ percentS = 30
 slow = 0.1
 rotThresh = 32
 
-AI.aggro = 1000
-AI.attack = 500
-AI.close = 100
+AI.aggroDist = 1000
+AI.aggroPref = 200
+AI.aggroClose = 100
+
+AI.followDist = 500
+AI.followClose = 50
+
+AI.attackChance = 10
 
 # End Player test file

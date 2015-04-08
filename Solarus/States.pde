@@ -70,9 +70,8 @@ public class GIState extends State
         p.moveTo(new PVector(width/2, height/2));
         p.setControl(true);
         control = p;
-        p.setAIFriend(players);
-        p.setAITargets(enemies);
         p.projList = playerProj;
+        p.enemyList = enemies;
         players.add(p);
         playerInd = 0;
         
@@ -210,7 +209,7 @@ public class GIState extends State
             
             for (int i = 0; i < players.size(); i++)
             {
-                if (!players.get(i).update(delta))
+                if (!players.get(i).update(delta, control))
                 {
                     players.remove(i);
                     i--;
@@ -219,7 +218,7 @@ public class GIState extends State
             
             for (int i = 0; i < enemies.size(); i++)
             {
-                if (!enemies.get(i).update(delta))
+                if (!enemies.get(i).update(delta, null))
                 {
                     enemies.remove(i);
                     i--;
@@ -320,8 +319,7 @@ public class GIState extends State
             p.moveTo(new PVector(control.pos.x + random(-200,200),
                                  control.pos.y + random(-200,200)));
             p.projList = playerProj;
-            p.setAIFriend(players);
-            p.setAITargets(enemies);
+            p.enemyList = enemies;
             players.add(p);
         }
         else if (keys[8] && keysS[8])
@@ -339,8 +337,7 @@ public class GIState extends State
             p.moveTo(new PVector(control.pos.x + random(-1000,1000),
                                  control.pos.y + random(-1000,1000)));
             p.projList = enemyProj;
-            p.setAIFriend(enemies);
-            p.setAITargets(players);
+            p.enemyList = players;
             p.enemy = true;
             enemies.add(p);
         }
@@ -454,7 +451,7 @@ public class MMState extends State
         targ.add(parsePC("data/menuChase.player"));
         targ.get(0).pos = new PVector(random(-1000,1000), random(-1000,1000));
         
-        camera.setAITargets(targ);
+        camera.enemyList = targ;
     }
     
     public void render()
@@ -479,7 +476,7 @@ public class MMState extends State
         else
             sm.optionsMenu.update();
         
-        camera.update(30.f/frameRate);
+        camera.update(30.f/frameRate, null);
         
         if (random(10) <= 1)
             targ.get(0).pos = new PVector(camera.pos.x + random(-1000,1000), 
