@@ -42,10 +42,16 @@ class UIStatusBar extends UI
         
         float fillSize = ((float)val.store / (float)maxVal.store) * size.x;
         
-        rect(pos.x + offset.x, pos.y + offset.y, fillSize, size.y);
+        rect(pos.x + offset.x, 
+             pos.y + offset.y, 
+             pos.x + offset.x + fillSize, 
+             pos.y + offset.y + size.y);
         
         fill(0,0,0);
-        rect(pos.x + offset.x + fillSize, pos.y + offset.y, size.x - fillSize, size.y);
+        rect(pos.x + offset.x + fillSize, 
+             pos.y + offset.y, 
+             pos.x + offset.x + size.x, 
+             pos.y + offset.y + size.y);
     }
     
     public boolean update()

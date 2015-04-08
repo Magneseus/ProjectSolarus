@@ -9,13 +9,13 @@ class UIImage extends UI
     // Members
     private PGraphics image;
     
-    UIImage(PGraphics newImage, PVector pos)
+    UIImage(PVector pos, PGraphics newImage)
     {
         super(pos);
         image = newImage;
     }
     
-    UIImage(PGraphics newImage, PVector pos, PVector size)
+    UIImage(PVector pos, PVector size, PGraphics newImage)
     {
         super(pos, size);
         image = newImage;

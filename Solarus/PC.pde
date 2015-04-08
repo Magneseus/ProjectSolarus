@@ -23,6 +23,8 @@ class PC extends Entity
     private float percentF, percentB, percentS, slow, rotThresh;
 
     private AI alf;
+    //CHANGE
+    public boolean enemy = false;
 
     public ArrayList<Proj> projList;
     public ArrayList<PC> enemyList;
@@ -36,6 +38,7 @@ class PC extends Entity
     PC (PVector pos, PGraphics img, Collision c)
     {
         initBase();
+        enemy = false;
 
         this.pos = pos;
         this.img = img;
@@ -148,8 +151,7 @@ class PC extends Entity
 
                     PGraphics im = createGraphics(30, 30);
                     im.beginDraw();
-                    im.fill(0, 0, 255);
-                    im.ellipse(15, 15, 15, 15);
+                    im.image(friendP1, 0, 0, 30, 30);
                     im.endDraw();
 
                     ptmp.setImage(im);
@@ -191,6 +193,7 @@ class PC extends Entity
     void setAITargets(ArrayList<PC> targ)
     {
         alf.setTargets(targ);
+        enemyList = targ;
     }
     
     void setAIFriend(ArrayList<PC> friend)

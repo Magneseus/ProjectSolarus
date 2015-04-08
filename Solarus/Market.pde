@@ -1,52 +1,152 @@
 public class Market extends State {
 
-  private Resource[] market = new Resource[8];
-  private color[] colours = {color(255, 0, 0), 
-                            color(255, 128, 0), 
-                            color(255, 255, 0), 
-                            color(0, 255, 0), 
-                            color(0, 255, 255), 
-                            color(0, 0, 255), 
-                            color(128, 0, 255), 
-                            color(255, 0, 255)};
-   
-  private int[] inventory = new int[8];
-  private int money = 500;
+    private UIGroup GMMenu;
 
-  public Market(StateManager sm){
-   super(sm);
-   
-   market[0] = new Resource("TEMP", 200, 65, 0, colours[0]);
-   market[1] = new Resource("TEMP", 200, 70, QUARTER_PI, colours[1]);
-   market[2] = new Resource("TEMP", 200, 75, HALF_PI, colours[2]);
-   market[3] = new Resource("TEMP", 200, 80, PI-QUARTER_PI, colours[3]);
-   market[4] = new Resource("TEMP", 200, 85, PI, colours[4]);
-   market[5] = new Resource("TEMP", 200, 90, PI+QUARTER_PI, colours[5]);
-   market[6] = new Resource("TEMP", 200, 95, TAU-HALF_PI, colours[6]);
-   market[7] = new Resource("TEMP", 200, 100, TAU-QUARTER_PI, colours[7]);
-   
-  }
+    private Resource[] market = new Resource[8];
+    private color[] colours = {
+        color(255, 0, 0), 
+        color(255, 128, 0), 
+        color(255, 255, 0), 
+        color(0, 255, 0), 
+        color(0, 255, 255), 
+        color(0, 0, 255), 
+        color(128, 0, 255), 
+        color(255, 0, 255)
+    };
 
-  public void init() {
-    for (int i=0; i<market.length; i++) {
-      market[i].update();
+    private int[] inventory = new int[8];
+    private int money = 500;
+
+    public Market(StateManager sm) {
+        super(sm);
+
+        market[0] = new Resource("TEMP", 200, 65, 0, colours[0]);
+        market[1] = new Resource("TEMP", 200, 70, QUARTER_PI, colours[1]);
+        market[2] = new Resource("TEMP", 200, 75, HALF_PI, colours[2]);
+        market[3] = new Resource("TEMP", 200, 80, PI-QUARTER_PI, colours[3]);
+        market[4] = new Resource("TEMP", 200, 85, PI, colours[4]);
+        market[5] = new Resource("TEMP", 200, 90, PI+QUARTER_PI, colours[5]);
+        market[6] = new Resource("TEMP", 200, 95, TAU-HALF_PI, colours[6]);
+        market[7] = new Resource("TEMP", 200, 100, TAU-QUARTER_PI, colours[7]);
+
+        GMMenu = new UIGroup(new PVector(width/2, height/2), new PVector(0, 0));
     }
-  }
 
-  public boolean update() {
-    return true;
-  }
+    public void init() {
+        
+        for (int i=0; i<market.length; i++)
+        {
+            market[i].update();
+        }
+        
+        PGraphics tmpBack = createGraphics(500, 650);
+        tmpBack.beginDraw();
+        tmpBack.fill(50, 50, 50, 150);
+        tmpBack.stroke(50, 50, 50);
+        tmpBack.rect(0, 0, 500, 650);
+        tmpBack.endDraw();
+        GMMenu.add(new UIImage(
+        new PVector(0, 0), 
+        new PVector(500, 650), 
+        tmpBack ));
 
-  public void render() {
-    for (int i=0; i<market.length; i++) {
-      market[i].render((i+1)*89);
+        PGraphics tmpBack2 = createGraphics(width, height);
+        tmpBack2.beginDraw();
+        tmpBack2.fill(0, 0, 0, 100);
+        tmpBack2.stroke(0, 0, 0, 100);
+        tmpBack2.rect(0, 0, width, height);
+        tmpBack2.endDraw();
+        GMMenu.add(new UIImage(
+        new PVector(0, 0), 
+        new PVector(width, height), 
+        tmpBack2 ));
+
+        GMMenu.add(new UIButton(
+        new PVector(0, -225), 
+        new PVector(400, 100), 
+        "Resume Game", 
+        new unpause() ));
+
+        class tempSave implements Command { 
+            public void execute() {
+                println("Saved Game.");
+            }
+        }
+        GMMenu.add(new UIButton(
+        new PVector(0, -75), 
+        new PVector(400, 100), 
+        "Save Game", 
+        new tempSave() ));
+
+        GMMenu.add(new UIButton(
+        new PVector(0, 75), 
+        new PVector(400, 100), 
+        "Options", 
+        new options() ));
+
+        class ReturnToLevel implements Command { 
+            public void execute() {
+                sm.returnToPrev();
+            }
+        }
+        GMMenu.add(new UIButton(
+        new PVector(0, 225), 
+        new PVector(400, 100), 
+        "Return to Level", 
+        new ReturnToLevel() ));
     }
-    stroke(255);
-    noFill();
-    rectMode(CORNERS);
-    rect(50, 76, 550, 725);
-    stroke(255, 0, 0);
-    line(75, 77, 75, 724);
-  }
+
+    public boolean update() {
+        if (!pause)
+        {
+            
+        }
+        //If menu is up
+        else
+        {
+            if (keys[9] && keysS[9])
+            {
+                for (int i=0; i<market.length; i++)
+                {
+                    market[i].update();
+                }
+                keysS[9] = false;
+            }
+
+            if (options)
+            {
+                sm.optionsMenu.update();
+            } else
+            {
+                GMMenu.update();
+            }
+        }
+
+        return true;
+    }
+
+    public void render() {
+        background(0);
+        for (int i=0; i<market.length; i++) {
+            market[i].render((i+1)*89);
+        }
+        stroke(255);
+        noFill();
+        rectMode(CORNERS);
+        rect(50, 76, 550, 725);
+        stroke(255, 0, 0);
+        line(75, 77, 75, 724);
+
+        if (pause)
+        {
+            if (options)
+            {
+                sm.optionsMenu.render(new PVector(0, 0));
+            } else
+            {
+                GMMenu.render(new PVector(0, 0));
+            }
+        }
+    }
 }
 

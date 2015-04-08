@@ -1,7 +1,7 @@
 class AI
 {
     // Members
-    private HashMap<String,Integer> states;
+    private HashMap<String,Integer> states, info;
     private int STATE = 0;
     
     private ArrayList<PC> targets, friendly;
@@ -28,18 +28,21 @@ class AI
         targets = targets_;
         friendly = friendly_;
         
-        aggro = -1;
-        attack = -1;
-        close = -1;
+        info = new HashMap<String,Integer>();
     }
     
     /**
      * Updates the velocities and states of the AI as well as the given PC.
      * @param self Reference to the parent PC class that owns the AI.
      */
+    // Test commit
+    // This is a test change
     void update(PC self)
     {
         PC closest = null;
+        
+        // Default state is to stop
+        STATE = states.get("stop");
         
         // If there are targets available
         if (targets != null && targets.size() > 0)
@@ -58,9 +61,6 @@ class AI
                     closest = e;
                 }
             }
-            
-            // Default state is to stop
-            STATE = states.get("stop");
             
             // Checks for the various states, overriding the previous
             if (minDist < check(aggro, minDist))
@@ -135,7 +135,7 @@ class AI
     void attack(PC self, PC other)
     {
         // Checks for the max projectile count and random chance of 0.05%
-        if (self.projCount < self.projMax && 1 > random(200))
+        if (other != null && self.projCount < self.projMax && 1 > random(200))
         {
             // Create a projectile and add our velocity to it
             Proj ptmp = parseProj("test.bullet");
@@ -152,8 +152,10 @@ class AI
             // Draw the bullet
             PGraphics im = createGraphics(30, 30);
             im.beginDraw();
-            im.fill(0, 0, 255);
-            im.ellipse(15, 15, 15, 15);
+            if (self.enemy)
+                im.image(enemyP1, 0,0, 30,30);
+            else
+                im.image(friendP2, 0,0, 30,30);
             im.endDraw();
 
             ptmp.setImage(im);

@@ -21,11 +21,12 @@
 19 - ^
 20 - &
 21 - *
+22 - F
 */
 
-char[] keyList = {'w', 'a', 's', 'd', 'q', 'e','1','2','3','4','5','6','7','8','!','@','#','$','%','^','&','*'};
-boolean[] keys = new boolean[22];
-boolean[] keysS = new boolean[22];
+char[] keyList = {'w', 'a', 's', 'd', 'q', 'e','1','2','3','4','5','6','7','8','!','@','#','$','%','^','&','*', 'f'};
+boolean[] keys = new boolean[23];
+boolean[] keysS = new boolean[23];
 
 void keyPressed()
 {
@@ -47,4 +48,7 @@ void keyReleased()
             keysS[i] = true;
         }
     }
+    
+    if (key == '`' || key == '~')
+        pause = !pause;
 }
