@@ -23,10 +23,6 @@ void keyPressed()
 void keyReleased()
 {
   
-  if (key == ' ') {
-      store.update();
-    }
-  
     for (int i = 0; i < keyList.length; i++)
     {
         if (key == keyList[i])
