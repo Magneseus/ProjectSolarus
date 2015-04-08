@@ -5,11 +5,27 @@
 3 - D
 4 - Q
 5 - E
+6 - 1
+7 - 2
+8 - 3
+9 - 4
+10 - 5
+11 - 6
+12 - 7
+13 - 8
+14 - !
+15 - @
+16 - #
+17 - $
+18 - %
+19 - ^
+20 - &
+21 - *
 */
 
-char[] keyList = {'w', 'a', 's', 'd', 'q', 'e'};
-boolean[] keys = new boolean[6];
-boolean[] keysS = new boolean[6];
+char[] keyList = {'w', 'a', 's', 'd', 'q', 'e','1','2','3','4','5','6','7','8','!','@','#','$','%','^','&','*'};
+boolean[] keys = new boolean[22];
+boolean[] keysS = new boolean[22];
 
 void keyPressed()
 {
