@@ -94,6 +94,8 @@ class AIStop implements AIState
 class AIWander implements AIState
 {
     private boolean suppress;
+    private PVector target;
+    private int start = millis() - 500, wait = 500;
     
     public AIWander()
     {
@@ -104,6 +106,10 @@ class AIWander implements AIState
     {
         // IF the target and the follow is null, don't wander
         if (other == null && control == null)
+            return false;
+        
+        // If the cooldown isn't done yet
+        if (millis() - start < wait)
             return false;
         
         return true;
@@ -160,11 +166,19 @@ class AIWander implements AIState
         // If friend
         else
         {
+            // Generates a new target if one doesn't exist, or if it's too far 
+            // from the following target
+            if (target == null || 
+                dist(target.x, target.y, control.pos.x, control.pos.y) > 400)
+            {
+                target = new PVector(control.pos.x + random(-350,350),
+                                     control.pos.y + random(-350,350));
+            }
+            
             // Finds the vectors representing the distance from self to control
             // and the one representing the self PCs current bearing.
-            PVector dis = PVector.fromAngle(control.getAngle());
+            PVector dis = PVector.sub(target, self.pos);
             PVector ang = PVector.fromAngle(self.getAngle());
-            dis.rotate(-PI/2);
             ang.rotate(-PI/2);
             
             boolean tCW = false;
@@ -188,15 +202,23 @@ class AIWander implements AIState
                 self.rot(self.maxRot / frameRate / 2);
             
             // Accelerate towards the target
-            PVector newAccel = new PVector(control.accel.x, control.accel.y);
+            self.accel = new PVector(0,0);
+            self.vel = PVector.fromAngle(self.getAngle());
+            self.vel.rotate(-PI/2);
+            self.vel.setMag(self.maxVel);
             
-            PVector variance = PVector.fromAngle(self.getAngle());
-            variance.rotate(PI/2);
-            variance.setMag(random(-self.maxAccel, self.maxAccel));
+            fill(255,0,0);
+            ellipse(width/2 + target.x, height/2 + target.y, 30,30);
             
-            newAccel.add(variance);
-            
-            self.accel = newAccel;
+            // If we're close enough to the target, start the cooldown
+            if (dis.mag() < 50)
+            {
+                start = millis();
+                wait = (int) random(1000, 4000);
+                
+                target = new PVector(control.pos.x + random(-350,350),
+                                     control.pos.y + random(-350,350));
+            }
         }
     }
     

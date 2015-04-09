@@ -20,17 +20,17 @@ PImage enemyP1, friendP1, friendP2, outpost1, outpost2, outpost3;
 void setup()
 {
     // Initialize Screen and shape prefs
-    size(1200, 800);
+    size(1600, 1000);
     background(0);
     frameRate(60);
     
     ellipseMode(RADIUS);
     rectMode(CORNERS);
     
-    PImage curs = loadImage("Images/reticle.png");
+    /*PImage curs = loadImage("Images/reticle.png");
     curs.resize(60,60);
     cursor(curs);
-    
+    */
     // Setup key vars
     for (int i = 0; i < keysS.length; i++)
         keysS[i] = true;

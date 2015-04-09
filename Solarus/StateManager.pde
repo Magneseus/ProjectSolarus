@@ -44,8 +44,9 @@ class StateManager
         {
             if (state.equals(states[i]))
             {
-                finalRun = stateList[i].update();
+                //finalRun = stateList[i].update();
                 stateList[i].render();
+                finalRun = stateList[i].update();
             }
         }
         

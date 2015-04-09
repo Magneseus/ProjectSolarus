@@ -67,7 +67,7 @@ public class GIState extends State
         im.triangle(0, 40, 20, 0, 40, 40);
         im.endDraw();
         p.setImage(im);
-        p.moveTo(new PVector(width/2, height/2));
+        p.moveTo(new PVector(0,0));
         p.setControl(true);
         control = p;
         p.projList = playerProj;

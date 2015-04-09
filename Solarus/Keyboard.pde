@@ -26,7 +26,6 @@ void keyPressed()
 
 void keyReleased()
 {
-  
     for (int i = 0; i < keyList.length; i++)
     {
         if (key == keyList[i])
