@@ -1,4 +1,5 @@
 boolean fRun = true;
+boolean tut = false;
 
 public abstract class State
 {
@@ -30,6 +31,8 @@ public class GIState extends State
     ArrayList<PC> enemies;
     ArrayList<Proj> enemyProj;
     PC control;
+    IntBox fuel = new IntBox(1000);
+    IntBox fuelMax = new IntBox(1000);
     int playerInd;
     
     Outpost outpostHead;
@@ -80,7 +83,6 @@ public class GIState extends State
         players.add(p);
         playerInd = 0;
         
-        
         //Outposts
         if (outpostIn == null)
         {
@@ -105,19 +107,19 @@ public class GIState extends State
                 new PVector(width/2, height-80),
                 new PVector(250,15),
                 control.getHealth(),
-                new IntBox(10),
+                control.getHealthMax(),
                 color(255,0,0) ));
         HUD.add(new UIStatusBar(
                 new PVector(width/2, height-60),
                 new PVector(250,15),
-                new IntBox(10),
-                new IntBox(10),
+                control.getShield(),
+                control.getShield(),
                 color(0,0,255) ));
         HUD.add(new UIStatusBar(
                 new PVector(width/2, height-40),
                 new PVector(250,15),
-                new IntBox(67),
-                new IntBox(100),
+                fuel,
+                fuelMax,
                 color(0,255,0) ));
         
         // Game Menu
@@ -149,12 +151,38 @@ public class GIState extends State
                 "Resume Game",
                 new unpause() ));
         
-        class tempSave implements Command { public void execute(){outpostHead.generateGraph("data/save.tgf");} }
+        class saveFunc implements Command
+        { 
+            public void execute()
+            {
+                selectFolder("Select or create a save folder: ", "saveFolderSelect", dataFile("\\saves"));
+                int wait = 10000, start = millis();
+                while (saveFile == null)
+                {
+                    if (millis() - start > wait)
+                    {
+                        println("You're taking a while there.");
+                        start = millis();
+                    }
+                }
+                if (saveFile.equals(""))
+                {
+                    saveFile = null;
+                    toast.pushToast("Save canceled.", 2000);
+                }
+                else
+                {
+                    outpostHead.generateGraph(saveFile + "\\outpost.tgf");
+                    toast.pushToast("Saved.", 2000);
+                    saveFile = null;
+                }
+            }
+        }
         GIMenu.add(new UIButton(
                 new PVector(0, -75),
                 new PVector(400,100),
                 "Save Game",
-                new tempSave() ));
+                new saveFunc() ));
         
         GIMenu.add(new UIButton(
                 new PVector(0, 75),
@@ -169,7 +197,7 @@ public class GIState extends State
                 "Return to Main Menu",
                 new ReturnToMenu() ));
         
-        if (fRun)
+        if (fRun && tut)
         {
             toast.pushToast("Use WASD to move.", 4000);
             toast.pushToast("Movement is relative to the cursor.", 4000);
@@ -350,6 +378,10 @@ public class GIState extends State
                 control.setControl(true);
                 
                 ((UIStatusBar)HUD.elements.get(1)).setVal(control.getHealth());
+                ((UIStatusBar)HUD.elements.get(1)).setMaxVal(control.getHealthMax());
+                
+                ((UIStatusBar)HUD.elements.get(2)).setVal(control.getShield());
+                ((UIStatusBar)HUD.elements.get(2)).setMaxVal(control.getShieldMax());
             }
             
             keysS[4] = false;
@@ -368,6 +400,10 @@ public class GIState extends State
                 control.setControl(true);
                 
                 ((UIStatusBar)HUD.elements.get(1)).setVal(control.getHealth());
+                ((UIStatusBar)HUD.elements.get(1)).setMaxVal(control.getHealthMax());
+                
+                ((UIStatusBar)HUD.elements.get(2)).setVal(control.getShield());
+                ((UIStatusBar)HUD.elements.get(2)).setMaxVal(control.getShieldMax());
             }
             
             keysS[5] = false;

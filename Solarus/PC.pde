@@ -17,7 +17,9 @@
  */
 class PC extends Entity
 {
-    private IntBox health;
+    private IntBox health, shield, healthMax, shieldMax;
+    private int shieldTimer = 0, shieldCool;
+    private float shieldAccel, shieldVel, shieldMaxVel;
     private int projCount, projMax;
     private boolean inControl;
     private float percentF, percentB, percentS, slow, rotThresh;
@@ -45,6 +47,16 @@ class PC extends Entity
         this.col = c;
 
         health = new IntBox(0);
+        shield = new IntBox(0);
+        healthMax = new IntBox(0);
+        shieldMax = new IntBox(0);
+        
+        shieldTimer = millis();
+        shieldCool = 0;
+        shieldAccel = 0;
+        shieldVel = 0;
+        shieldMaxVel = 0;
+        
         projCount = 0;
         inControl = false;
 
@@ -167,6 +179,20 @@ class PC extends Entity
         //If we're dead, tell 'em
         if (health.store <= 0)
             return false;
+        
+        // If the shield cooldown is over, recharge shields
+        if (millis() - shieldTimer > shieldCool)
+        {
+            shieldVel += shieldAccel * delta;
+            shieldVel = shieldVel > shieldMaxVel ? shieldMaxVel : shieldVel;
+            
+            shield.store += shieldVel;
+            shield.store = shield.store > shieldMax.store ? shieldMax.store : shield.store;
+        }
+        else
+        {
+            shieldVel = 0;
+        }
 
         return true;
     }
@@ -185,6 +211,24 @@ class PC extends Entity
     void removeProj()
     {
         projCount--;
+    }
+    
+    // Called when a projectile hits
+    void damage(int damage)
+    {
+        // Damage the shields first
+        shield.store -= damage * 100;
+        // Start the shield recover cooldown
+        shieldTimer = millis();
+        
+        // If damage has extended past the shields
+        if (shield.store < 0)
+        {
+            int damPen = (int)((float)shield.store / 100.f);
+            shield.store = 0;
+            
+            health.store += damPen;
+        }
     }
     
     // GETTERS AND SETTERS
@@ -208,15 +252,24 @@ class PC extends Entity
         img = i;
     }
 
-    void setHealth(int h)
-    {
-        health = new IntBox(h);
-    }
+    public void setHealth(int h){ health = new IntBox(h); }
+    public IntBox getHealth(){ return health; }
+    public void setHealthMax(int h){ healthMax = new IntBox(h); }
+    public IntBox getHealthMax(){ return healthMax; }
     
-    IntBox getHealth()
-    {
-        return health;
-    }
+    public IntBox getShield(){ return shield; }
+    public void setShield(IntBox shield){ this.shield = shield; }
+    public IntBox getShieldMax(){ return shieldMax; }
+    public void setShieldMax(IntBox shieldMax){ this.shieldMax = shieldMax; }
+    
+    public int getShieldCool(){ return shieldCool; }
+    public void setShieldCool(int shieldCool){ this.shieldCool = shieldCool; }
+    
+    public float getShieldAccel(){ return shieldAccel; }
+    public void setShieldAccel(float shieldAccel){ this.shieldAccel = shieldAccel; }
+    
+    public float getShieldMaxVel(){ return shieldMaxVel; }
+    public void setShieldMaxVel(float shieldMaxVel){ this.shieldMaxVel = shieldMaxVel; }
 
     void setProjMax(int h)
     {
@@ -387,6 +440,18 @@ PC parsePC(String fileName)
                 returnP.maxRot = float(trim(data[0]));
             else if (line.equals("health"))
                 returnP.setHealth( int(trim(data[0])) );
+            else if (line.equals("healthMax"))
+                returnP.setHealthMax( int(trim(data[0])) );
+            else if (line.equals("shield"))
+                returnP.setShield( new IntBox(int(trim(data[0]))) );
+            else if (line.equals("shieldMax"))
+                returnP.setShieldMax( new IntBox(int(trim(data[0]))) );
+            else if (line.equals("shieldCool"))
+                returnP.setShieldCool( int(trim(data[0])) );
+            else if (line.equals("shieldAccel"))
+                returnP.setShieldAccel( float(trim(data[0])) );
+            else if (line.equals("shieldMaxVel"))
+                returnP.setShieldMaxVel( float(trim(data[0])) );
             else if (line.equals("projMax"))
                 returnP.setProjMax( int(trim(data[0])) );
             else if (line.equals("percentF"))

@@ -316,6 +316,7 @@ class AIAttack implements AIState
         // Calculate the angle between the AI and the target
         PVector dis = PVector.sub(other.pos, self.pos);
         PVector ang = PVector.fromAngle(self.getAngle());
+        ang.rotate(-PI/2);
         
         float angle = PVector.angleBetween(dis, ang);
         
@@ -351,6 +352,8 @@ class AIAttack implements AIState
         self.projList.add(ptmp);
 
         self.projCount++;
+        
+        suppress = true;
     }
     
     public void suppress() {suppress=true;}

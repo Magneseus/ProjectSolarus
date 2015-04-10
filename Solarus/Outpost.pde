@@ -7,6 +7,7 @@
 */
 
 int outpostInd = 0;
+String saveFile = null;
 
 class Outpost
 {

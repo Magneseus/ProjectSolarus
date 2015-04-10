@@ -7,6 +7,11 @@
 :
 
 health = 100000
+healthMax = 100000
+
+shield = 10
+shieldMax = 10
+
 projMax = 0
 
 pos = 400,400

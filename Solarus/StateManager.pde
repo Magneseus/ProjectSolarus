@@ -75,11 +75,40 @@ class StateManager
         pause = false;
         options = false;
         
-        Outpost newOutpost = loadOutpostGraph("data/save.tgf");
-        
-        prevState = state;
-        state = states[1];
-        ((GIState)stateList[1]).init(newOutpost);
+        selectFolder("Select a save folder to load: ", "loadFolderSelect", dataFile("\\saves"));
+        int wait = 10000, start = millis();
+        while (saveFile == null)
+        {
+            if (millis() - start > wait)
+            {
+                println("You're taking a while there.");
+                start = millis();
+            }
+        }
+        if (saveFile.equals(""))
+        {
+            saveFile = null;
+            toast.pushToast("Load canceled.", 2000);
+        }
+        else
+        {
+            String[] folder = split(saveFile, '\\');
+            String saveName = folder[folder.length-1];
+            if (loadStrings(saveFile + "\\" + saveName + ".save") != null)
+            {
+                Outpost newOutpost = loadOutpostGraph(saveFile + "\\outpost.tgf");
+                
+                prevState = state;
+                state = states[1];
+                ((GIState)stateList[1]).init(newOutpost);
+                
+                toast.pushToast("Loaded.", 2000);
+            }
+            else
+                toast.pushToast("Load failed.", 2000);
+            
+            saveFile = null;
+        }
     }
     
     public void returnToPrev()
@@ -87,5 +116,34 @@ class StateManager
         pause = false;
         options = false;
         state = prevState;
+    }
+}
+
+public void loadFolderSelect(File selection)
+{
+    if (selection == null)
+    {
+        toast.pushToast("No folder selected.", 2000);
+        saveFile = "";
+    }
+    else
+    {
+        saveFile = selection.getAbsolutePath();
+    }
+}
+
+public void saveFolderSelect(File selection)
+{
+    if (selection == null)
+    {
+        toast.pushToast("No folder selected.", 2000);
+        saveFile = "";
+    }
+    else
+    {
+        saveFile = selection.getAbsolutePath();
+        String[] folder = split(saveFile, '\\');
+        String[] list = {folder[folder.length-1]};
+        saveStrings(saveFile + "\\" + list[0] + ".save", list);
     }
 }

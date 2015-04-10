@@ -7,6 +7,14 @@
 :
 
 health = 10
+healthMax = 10
+
+shield = 1000
+shieldMax = 1000
+shieldCool = 3000
+shieldAccel = 0.1
+shieldMaxVel = 5
+
 projMax = 5
 
 pos = 400,400
@@ -24,7 +32,7 @@ percentS = 30
 slow = 0.05
 rotThresh = 32
 
-AI.aggroDist = 1000
+AI.aggroDist = 2000
 AI.aggroPref = 200
 AI.aggroClose = 100
 
