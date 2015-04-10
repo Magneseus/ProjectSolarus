@@ -15,8 +15,9 @@ StateManager game;
 UIToast toast;
 
 //CHANGE
-PImage enemyP1, friendP1, friendP2, outpost1, outpost2, outpost3;
- 
+PImage enemyP1, friendP1, friendP2;
+PImage[] outpostImage;
+
 void setup()
 {
     // Initialize Screen and shape prefs
@@ -60,9 +61,12 @@ void setup()
     enemyP1 = loadImage("Images/proj_enemy1.png");
     friendP1 = loadImage("Images/proj_friend1.png");
     friendP2 = loadImage("Images/proj_friend2.png");
-    outpost1 = loadImage("Images/outpost_1.png");
-    outpost2 = loadImage("Images/outpost_2.png");
-    outpost3 = loadImage("Images/outpost_3.png");
+    PImage[] outposts2 = {loadImage("Images/outpost_1.png"),
+                          loadImage("Images/outpost_2.png"),
+                          loadImage("Images/outpost_3.png")};
+    outpostImage = outposts2;
+    for (PImage p : outpostImage)
+        p.resize(200,200);
     
     toast.pushToast("Welcome to Solarus.", 3000);
 }

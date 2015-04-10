@@ -32,7 +32,7 @@ public class GIState extends State
     PC control;
     int playerInd;
     
-    Outpost test;
+    Outpost outpostHead;
     
     public GIState(StateManager sm)
     {
@@ -40,6 +40,11 @@ public class GIState extends State
     }
     
     public void init()
+    {
+        init(null);
+    }
+    
+    public void init(Outpost outpostIn)
     {
         pause = false;
         options = false;
@@ -77,28 +82,13 @@ public class GIState extends State
         
         
         //Outposts
-        //CHANGE
-        int pick = (int)random(3);
-        PImage out = outpost1;
-        switch(pick)
+        if (outpostIn == null)
         {
-            case 0:
-            out = outpost1;
-            break;
-            
-            case 1:
-            out = outpost2;
-            break;
-            
-            case 3:
-            out = outpost3;
-            break;
+            PImage out = outpostImage[int(random(outpostImage.length))];
+            outpostHead = new Outpost(new PVector(random(width), random(height)), out);
         }
-        PGraphics out1 = createGraphics(200,200);
-        out1.beginDraw();
-        out1.image(out,0,0,200,200);
-        out1.endDraw();
-        test = new Outpost(new PVector(random(width), random(height)), "test", out1);
+        else
+            outpostHead = outpostIn;
         
         // HUD
         PGraphics statusFrame = createGraphics(900, 150);
@@ -159,7 +149,7 @@ public class GIState extends State
                 "Resume Game",
                 new unpause() ));
         
-        class tempSave implements Command { public void execute(){println("Saved Game.");} }
+        class tempSave implements Command { public void execute(){outpostHead.generateGraph("data/save.tgf");} }
         GIMenu.add(new UIButton(
                 new PVector(0, -75),
                 new PVector(400,100),
@@ -199,7 +189,7 @@ public class GIState extends State
         //If game is running
         if (!pause)
         {
-            if (test.update(control.pos))
+            if (outpostHead.update(control.pos))
             {
                 sm.changeState("GAME_MARKET");
             }
@@ -274,7 +264,7 @@ public class GIState extends State
         
         star.render(controlCoords, control.pos, 2);
         
-        test.render(controlCoords);
+        outpostHead.render(controlCoords);
         
         for (PC p : players)
             p.render(controlCoords);
@@ -421,14 +411,14 @@ public class MMState extends State
                 new PVector(0,0),
                 new PVector(500, 650),
                 tmpBack ));
-        class StartGame implements Command { public void execute(){sm.changeState("GAME_INSTANCE");} }
+        class StartGame implements Command { public void execute(){sm.changeState("GAME_INSTANCE"); outpostInd = 1;} }
         UIElements.add(new UIButton(
                 new PVector(0, -225),
                 new PVector(400,100),
                 "New Game",
                 new StartGame() ));
         
-        class LoadGame implements Command { public void execute(){println("Load Game Hit");} }
+        class LoadGame implements Command { public void execute(){sm.loadGame();} }
         UIElements.add(new UIButton(
                 new PVector(0, -75),
                 new PVector(400,100),

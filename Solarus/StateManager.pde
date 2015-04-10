@@ -5,7 +5,6 @@ class StateManager
     public final String[] states = {"MAIN_MENU", "GAME_INSTANCE", "GAME_MARKET", "LOADING"};
     public String state = states[0];
     public State[] stateList;
-    public State curState;
     public String prevState;
     
     protected UIGroup optionsMenu;
@@ -69,6 +68,18 @@ class StateManager
         prevState = state;
         state = states[ind];
         stateList[ind].init();
+    }
+    
+    public void loadGame()
+    {
+        pause = false;
+        options = false;
+        
+        Outpost newOutpost = loadOutpostGraph("data/save.tgf");
+        
+        prevState = state;
+        state = states[1];
+        ((GIState)stateList[1]).init(newOutpost);
     }
     
     public void returnToPrev()
