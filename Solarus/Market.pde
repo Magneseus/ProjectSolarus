@@ -21,14 +21,14 @@ public class Market extends State {
   public Market(StateManager sm) {
     super(sm);
 
-    TradeGoods[0] = new Resource("Platinum", 500, 65, 0, colours[0]);
-    TradeGoods[1] = new Resource("Titanium", 500, 80, PI-QUARTER_PI, colours[1]);
-    TradeGoods[2] = new Resource("Adamantium", 500, 70, PI+QUARTER_PI, colours[2]);
-    TradeGoods[3] = new Resource("Uranium", 500, 85, QUARTER_PI, colours[3]);
-    TradeGoods[4] = new Resource("Deuterium", 500, 60, TAU-QUARTER_PI, colours[4]);
-    TradeGoods[5] = new Resource("Tritium", 500, 95, HALF_PI, colours[5]);
-    TradeGoods[6] = new Resource("Food", 500, 100, TAU-HALF_PI, colours[6]);
-    TradeGoods[7] = new Resource("Water", 500, 90, PI, colours[7]);
+    TradeGoods[0] = new Resource("Polyvinyl Chloride", 500, 65, 0, colours[0]);
+    TradeGoods[1] = new Resource("Polycarbonate", 500, 80, PI-QUARTER_PI, colours[1]);
+    TradeGoods[2] = new Resource("Deuterium", 500, 70, PI+QUARTER_PI, colours[2]);
+    TradeGoods[3] = new Resource("Tritium", 500, 85, QUARTER_PI, colours[3]);
+    TradeGoods[4] = new Resource("Adamantium", 500, 60, TAU-QUARTER_PI, colours[4]);
+    TradeGoods[5] = new Resource("Titanium", 500, 95, HALF_PI, colours[5]);
+    TradeGoods[6] = new Resource("Water", 500, 100, TAU-HALF_PI, colours[6]);
+    TradeGoods[7] = new Resource("Food", 500, 90, PI, colours[7]);
 
     GMMenu = new UIGroup(new PVector(width/2, height/2), new PVector(0, 0));
   }
@@ -37,22 +37,22 @@ public class Market extends State {
 
     UIElements = new UIGroup(new PVector(width/2, height/2));
 
-    UIElements.add(new UIButton(new PVector(45, -311), new PVector(35, 20), "", new BuyGoods0(), color(0, 255, 0)));
-    UIElements.add(new UIButton(new PVector(85, -311), new PVector(35, 20), "", new SellGoods0(), color(255, 0, 0)));
-    UIElements.add(new UIButton(new PVector(45, -222), new PVector(35, 20), "", new BuyGoods1(), color(0, 255, 0)));
-    UIElements.add(new UIButton(new PVector(85, -222), new PVector(35, 20), "", new SellGoods1(), color(255, 0, 0)));
-    UIElements.add(new UIButton(new PVector(45, -133), new PVector(35, 20), "", new BuyGoods2(), color(0, 255, 0)));
-    UIElements.add(new UIButton(new PVector(85, -133), new PVector(35, 20), "", new SellGoods2(), color(255, 0, 0)));
-    UIElements.add(new UIButton(new PVector(45, -44), new PVector(35, 20), "", new BuyGoods3(), color(0, 255, 0)));
-    UIElements.add(new UIButton(new PVector(85, -44), new PVector(35, 20), "", new SellGoods3(), color(255, 0, 0)));
-    UIElements.add(new UIButton(new PVector(45, 45), new PVector(35, 20), "", new BuyGoods4(), color(0, 255, 0)));
-    UIElements.add(new UIButton(new PVector(85, 45), new PVector(35, 20), "", new SellGoods4(), color(255, 0, 0)));
-    UIElements.add(new UIButton(new PVector(45, 134), new PVector(35, 20), "", new BuyGoods5(), color(0, 255, 0)));
-    UIElements.add(new UIButton(new PVector(85, 134), new PVector(35, 20), "", new SellGoods5(), color(255, 0, 0)));
-    UIElements.add(new UIButton(new PVector(45, 223), new PVector(35, 20), "", new BuyGoods6(), color(0, 255, 0)));
-    UIElements.add(new UIButton(new PVector(85, 223), new PVector(35, 20), "", new SellGoods6(), color(255, 0, 0)));
-    UIElements.add(new UIButton(new PVector(45, 312), new PVector(35, 20), "", new BuyGoods7(), color(0, 255, 0)));
-    UIElements.add(new UIButton(new PVector(85, 312), new PVector(35, 20), "", new SellGoods7(), color(255, 0, 0)));
+    UIElements.add(new UIButton(new PVector(85, -311), new PVector(35, 20), "", new BuyGoods0(), color(0, 255, 0),color(75, 200, 255)));
+    UIElements.add(new UIButton(new PVector(125, -311), new PVector(35, 20), "", new SellGoods0(), color(255, 0, 0),color(75, 200, 255)));
+    UIElements.add(new UIButton(new PVector(85, -222), new PVector(35, 20), "", new BuyGoods1(), color(0, 255, 0),color(75, 200, 255)));
+    UIElements.add(new UIButton(new PVector(125, -222), new PVector(35, 20), "", new SellGoods1(), color(255, 0, 0),color(75, 200, 255)));
+    UIElements.add(new UIButton(new PVector(85, -133), new PVector(35, 20), "", new BuyGoods2(), color(0, 255, 0),color(75, 200, 255)));
+    UIElements.add(new UIButton(new PVector(125, -133), new PVector(35, 20), "", new SellGoods2(), color(255, 0, 0),color(75, 200, 255)));
+    UIElements.add(new UIButton(new PVector(85, -44), new PVector(35, 20), "", new BuyGoods3(), color(0, 255, 0),color(75, 200, 255)));
+    UIElements.add(new UIButton(new PVector(125, -44), new PVector(35, 20), "", new SellGoods3(), color(255, 0, 0),color(75, 200, 255)));
+    UIElements.add(new UIButton(new PVector(85, 45), new PVector(35, 20), "", new BuyGoods4(), color(0, 255, 0),color(75, 200, 255)));
+    UIElements.add(new UIButton(new PVector(125, 45), new PVector(35, 20), "", new SellGoods4(), color(255, 0, 0),color(75, 200, 255)));
+    UIElements.add(new UIButton(new PVector(85, 134), new PVector(35, 20), "", new BuyGoods5(), color(0, 255, 0),color(75, 200, 255)));
+    UIElements.add(new UIButton(new PVector(125, 134), new PVector(35, 20), "", new SellGoods5(), color(255, 0, 0),color(75, 200, 255)));
+    UIElements.add(new UIButton(new PVector(85, 223), new PVector(35, 20), "", new BuyGoods6(), color(0, 255, 0),color(75, 200, 255)));
+    UIElements.add(new UIButton(new PVector(125, 223), new PVector(35, 20), "", new SellGoods6(), color(255, 0, 0),color(75, 200, 255)));
+    UIElements.add(new UIButton(new PVector(85, 312), new PVector(35, 20), "", new BuyGoods7(), color(0, 255, 0),color(75, 200, 255)));
+    UIElements.add(new UIButton(new PVector(125, 312), new PVector(35, 20), "", new SellGoods7(), color(255, 0, 0),color(75, 200, 255)));
 
     for (int i=0; i<TradeGoods.length; i++)
     {
@@ -150,22 +150,22 @@ public class Market extends State {
     for (int i=0; i<TradeGoods.length; i++) {
       TradeGoods[i].render((i+1)*89);
       fill(TradeGoods[i].col);
-      text(TradeGoods[i].name, 60, ((i+1)*89)-2);
+      text(TradeGoods[i].name, 80, ((i+1)*89)-2);
       textSize(20);
-      text((TradeGoods[i].name+": "+GoodsStore[i]), 900, (200+((i+1)*30)));
+      text((TradeGoods[i].name+": "+GoodsStore[i]), 920, (200+((i+1)*30)));
     }
     stroke(75, 200, 255);
     noFill();
     rectMode(CORNERS);
-    rect(120, 76, 620, 725);
-    stroke(255, 0, 0);
-    line(145, 77, 145, 724);
+    rect(160, 76, 660, 725);
+    //stroke(255, 0, 0);
+    //line(185, 77, 185, 724);
 
     UIElements.render(new PVector(0, 0));
 
     textSize(20);
     fill(75, 200, 255);
-    text(("Money: "+Money), 900, 200); 
+    text(("Money: "+Money), 920, 200); 
 
     if (pause)
     {
