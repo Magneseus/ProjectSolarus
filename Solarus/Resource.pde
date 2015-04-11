@@ -41,21 +41,21 @@ public class Resource {
   public void render(int y) {
     if (value>valueOld+10) {
       rectMode(CORNERS);
-      stroke(75, 200, 255);
+      noStroke();
       fill(col);
       rect(160, y-12, 160+(value/2), y+12);
       fill(lerpColor(col, color(0), .5));
       rect(160, y-12, 160+(valueOld/2), y+12);
     } else if (value<valueOld-10) {
       rectMode(CORNERS);
-      stroke(75, 200, 255);
+      noStroke();
       fill(lerpColor(col, color(0), .5 ));
       rect(160, y-12, 160+(valueOld/2), y+12);
       fill(col);
       rect(160, y-12, 160+(value/2), y+12);
     } else {
       rectMode(CORNERS);
-      stroke(75, 200, 255);
+      noStroke();
       fill(col);
       rect(160, y-12, 160+(value/2), y+12);
     }
