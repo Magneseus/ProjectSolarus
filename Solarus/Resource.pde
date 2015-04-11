@@ -2,7 +2,7 @@ public class Resource {
 
   public int value;
   public int valueOld;
-  private color col;
+  public color col;
   public String name;
   private int volatility;
   private float shift;
@@ -43,21 +43,21 @@ public class Resource {
       rectMode(CORNERS);
       noStroke();
       fill(col);
-      rect(50, y-12, 50+(value/2), y+12);
+      rect(120, y-12, 120+(value/2), y+12);
       fill(lerpColor(col, color(0), .5));
-      rect(50, y-12, 50+(valueOld/2), y+12);
+      rect(120, y-12, 120+(valueOld/2), y+12);
     } else if (value<valueOld-10) {
       rectMode(CORNERS);
       noStroke();
       fill(lerpColor(col, color(0), .5 ));
-      rect(50, y-12, 50+(valueOld/2), y+12);
+      rect(120, y-12, 120+(valueOld/2), y+12);
       fill(col);
-      rect(50, y-12, 50+(value/2), y+12);
+      rect(120, y-12, 120+(value/2), y+12);
     } else {
       rectMode(CORNERS);
       noStroke();
       fill(col);
-      rect(50, y-12, 50+(value/2), y+12);
+      rect(120, y-12, 120+(value/2), y+12);
     }
   }
 }
