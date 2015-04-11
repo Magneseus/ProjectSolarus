@@ -98,9 +98,12 @@ class StateManager
             {
                 Outpost newOutpost = loadOutpostGraph(saveFile + "\\outpost.tgf");
                 
+                ArrayList<PC> f = loadFriendly(saveFile + "\\entities.save");
+                ArrayList<PC> e = loadEnemy(saveFile + "\\entities.save");
+                
                 prevState = state;
                 state = states[1];
-                ((GIState)stateList[1]).init(newOutpost);
+                ((GIState)stateList[1]).init(newOutpost, f, e);
                 
                 toast.pushToast("Loaded.", 2000);
             }

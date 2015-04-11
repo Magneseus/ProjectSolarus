@@ -270,11 +270,17 @@ class PC extends Entity
     
     public float getShieldMaxVel(){ return shieldMaxVel; }
     public void setShieldMaxVel(float shieldMaxVel){ this.shieldMaxVel = shieldMaxVel; }
-
+    
+    public String getLoadName(){ return "testFileName"; }
+    public PVector getPos(){ return pos; }
+    public int getImageInd(){ return 2; }
+    
     void setProjMax(int h)
     {
         projMax = h;
     }
+    
+    int getProjMax() { return projMax; }
 
     void setRotThresh(float f)
     {
@@ -305,6 +311,98 @@ class PC extends Entity
     {
         slow = f;
     }
+}
+
+ArrayList<PC> loadFriendly(String fileName)
+{
+    ArrayList<PC> friend = new ArrayList<PC>();
+    
+    String[] lines = loadStrings(fileName);
+    int ind = 0;
+    
+    while (lines[ind].charAt(0) != '#')
+    {
+        String[] data = split(lines[ind], ' ');
+        
+        PC p = parsePC(data[0]);
+        
+        PGraphics im = createGraphics(40,40);
+        im.beginDraw();
+        im.stroke(0,255,0);
+        im.fill(0,255,0);
+        im.triangle(0, 40, 20, 0, 40, 40);
+        im.endDraw();
+        p.setImage(im);
+        //p.setImage(playerImages[int(data[8])]);
+        
+        p.moveTo( new PVector(float(data[1]), float(data[2])) );
+        
+        p.setHealth( int(data[3]) );
+        p.setHealthMax( int(data[4]) );
+        p.setShield( new IntBox(int(data[5])) );
+        p.setShieldMax( new IntBox(int(data[6])) );
+        
+        p.setProjMax( int(data[7]) );
+        
+        boolean inCon = int(data[9]) == 1 ? true : false;
+        p.setControl(inCon);
+        
+        friend.add(p);
+        ind++;
+    }
+    
+    return friend;
+}
+
+ArrayList<PC> loadEnemy(String fileName)
+{
+    ArrayList<PC> enemy = new ArrayList<PC>();
+    
+    String[] lines = loadStrings(fileName);
+    int ind = 0;
+    
+    while (lines[ind].charAt(0) != '#')
+    {
+        ind++;
+    }
+    
+    ind++;
+    
+    for (int i = ind; i < lines.length; i++)
+    {
+        String[] data = split(lines[i], ' ');
+        
+        if (data.length < 5)
+            break;
+        
+        PC p = parsePC(data[0]);
+        
+        PGraphics im = createGraphics(40,40);
+        im.beginDraw();
+        im.stroke(255,0,0);
+        im.fill(255,0,0);
+        im.triangle(0, 40, 20, 0, 40, 40);
+        im.endDraw();
+        p.setImage(im);
+        //p.setImage(playerImages[int(data[8])]);
+        
+        p.moveTo( new PVector(float(data[1]), float(data[2])) );
+        
+        p.setHealth( int(data[3]) );
+        p.setHealthMax( int(data[4]) );
+        p.setShield( new IntBox(int(data[5])) );
+        p.setShieldMax( new IntBox(int(data[6])) );
+        
+        p.setProjMax( int(data[7]) );
+        
+        boolean inCon = int(data[9]) == 1 ? true : false;
+        p.setControl(inCon);
+        p.enemy = true;
+        
+        enemy.add(p);
+    }
+    
+    return enemy;
 }
 
 /**

@@ -44,10 +44,10 @@ public class GIState extends State
     
     public void init()
     {
-        init(null);
+        init(null, null, null);
     }
     
-    public void init(Outpost outpostIn)
+    public void init(Outpost outpostIn, ArrayList<PC> friend, ArrayList<PC> enemy)
     {
         pause = false;
         options = false;
@@ -65,23 +65,51 @@ public class GIState extends State
         enemies.clear();
         enemyProj.clear();
         
-        //Load a temp player
-        PC p;
-        p = parsePC("enemy_basic.player");
-        PGraphics im = createGraphics(40,40);
-        im.beginDraw();
-        im.stroke(0,255,0);
-        im.fill(0,255,0);
-        im.triangle(0, 40, 20, 0, 40, 40);
-        im.endDraw();
-        p.setImage(im);
-        p.moveTo(new PVector(0,0));
-        p.setControl(true);
-        control = p;
-        p.projList = playerProj;
-        p.enemyList = enemies;
-        players.add(p);
-        playerInd = 0;
+        if (friend == null)
+        {
+            //Load a temp player
+            PC p;
+            p = parsePC("enemy_basic.player");
+            PGraphics im = createGraphics(40,40);
+            im.beginDraw();
+            im.stroke(0,255,0);
+            im.fill(0,255,0);
+            im.triangle(0, 40, 20, 0, 40, 40);
+            im.endDraw();
+            p.setImage(im);
+            p.moveTo(new PVector(0,0));
+            p.setControl(true);
+            control = p;
+            p.projList = playerProj;
+            p.enemyList = enemies;
+            players.add(p);
+            playerInd = 0;
+        }
+        else
+        {
+            players = friend;
+            enemies = enemy;
+            
+            for (int i = 0; i < players.size(); i++)
+            {
+                PC p = players.get(i);
+                p.projList = playerProj;
+                p.enemyList = enemies;
+                
+                if (p.inControl)
+                {
+                    control = p;
+                    playerInd = i;
+                }
+            }
+            
+            for (int i = 0; i < enemies.size(); i++)
+            {
+                PC p = enemies.get(i);
+                p.projList = enemyProj;
+                p.enemyList = players;
+            }
+        }
         
         //Outposts
         if (outpostIn == null)
@@ -172,7 +200,56 @@ public class GIState extends State
                 }
                 else
                 {
+                    // Save the outpost graph system
                     outpostHead.generateGraph(saveFile + "\\outpost.tgf");
+                    
+                    // Save the entities
+                    String[] entityFileContents = new String[players.size() + enemies.size() + 1];
+                    for (int i = 0; i < players.size(); i++)
+                    {
+                        PC p = players.get(i);
+                        entityFileContents[i] = "";
+                        
+                        // Add vars
+                        entityFileContents[i] += p.getLoadName() + " ";
+                        entityFileContents[i] += int(p.getPos().x) + " ";
+                        entityFileContents[i] += int(p.getPos().y) + " ";
+                        entityFileContents[i] += p.getHealth().store + " ";
+                        entityFileContents[i] += p.getHealthMax().store + " ";
+                        entityFileContents[i] += p.getShield().store + " ";
+                        entityFileContents[i] += p.getShieldMax().store + " ";
+                        entityFileContents[i] += p.getProjMax() + " ";
+                        entityFileContents[i] += p.getImageInd() + " ";
+                        
+                        int inCon = p.inControl ? 1 : 0;
+                        entityFileContents[i] += inCon + " ";
+                    }
+                    
+                    entityFileContents[players.size()] = "#";
+                                        
+                    String[] enemehs = new String[enemies.size()];
+                    for (int i = players.size() + 1; i < players.size() + enemies.size() + 1; i++)
+                    {
+                        PC p = enemies.get(i - players.size() - 1);
+                        entityFileContents[i] = "";
+                        
+                        // Add vars
+                        entityFileContents[i] += p.getLoadName() + " ";
+                        entityFileContents[i] += int(p.getPos().x) + " ";
+                        entityFileContents[i] += int(p.getPos().y) + " ";
+                        entityFileContents[i] += p.getHealth().store + " ";
+                        entityFileContents[i] += p.getHealthMax().store + " ";
+                        entityFileContents[i] += p.getShield().store + " ";
+                        entityFileContents[i] += p.getShieldMax().store + " ";
+                        entityFileContents[i] += p.getProjMax() + " ";
+                        entityFileContents[i] += p.getImageInd() + " ";
+                        
+                        int inCon = p.inControl ? 1 : 0;
+                        entityFileContents[i] += inCon + " ";
+                    }
+                    
+                    saveStrings(saveFile + "\\entities.save", entityFileContents);
+                    
                     toast.pushToast("Saved.", 2000);
                     saveFile = null;
                 }
