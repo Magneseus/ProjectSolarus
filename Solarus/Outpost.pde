@@ -8,7 +8,7 @@
 
 int outpostInd = 0;
 String saveFile = null;
-Outpost recentOutpost;
+Outpost recentOutpost = null;
 
 class Outpost
 {

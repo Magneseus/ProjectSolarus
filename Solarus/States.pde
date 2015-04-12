@@ -67,7 +67,7 @@ public class GIState extends State
         
         if (friend == null)
         {
-            //Load a temp player
+            //Load a new player
             PC p;
             p = parsePC("enemy_basic.player");
 //            PGraphics im = createGraphics(40,40);
@@ -77,6 +77,8 @@ public class GIState extends State
 //            im.triangle(0, 40, 20, 0, 40, 40);
 //            im.endDraw();
 //            p.setImage(im);
+            p.setImage(playerImages[0]);
+            p.setImageInd(0);
             p.moveTo(new PVector(0,0));
             p.setControl(true);
             control = p;
@@ -430,7 +432,7 @@ public class GIState extends State
             
             pushMatrix();
             
-            translate(-x, -y);
+            translate(-x + width/2, -y + height/2);
             rotate(ang);
             
             noStroke();
@@ -439,7 +441,8 @@ public class GIState extends State
             else
                 fill(0,255,0);
             
-            triangle(-15, 0, -15, 0, 15, 0);
+            rotate(-PI/2);
+            triangle(-15, 0, 0, -15, 15, 0);
             
             popMatrix();
         }
@@ -464,13 +467,15 @@ public class GIState extends State
             //Load a temp player
             PC p;
             p = parsePC("enemy_basic.player");
-            PGraphics im = createGraphics(40,40);
-            im.beginDraw();
-            im.stroke(0,255,0);
-            im.fill(0,255,0);
-            im.triangle(0, 40, 20, 0, 40, 40);
-            im.endDraw();
-            p.setImage(im);
+//            PGraphics im = createGraphics(40,40);
+//            im.beginDraw();
+//            im.stroke(0,255,0);
+//            im.fill(0,255,0);
+//            im.triangle(0, 40, 20, 0, 40, 40);
+//            im.endDraw();
+//            p.setImage(im);
+            p.setImageInd(control.getImageInd());
+            p.setImage(playerImages[p.getImageInd()]);
             p.moveTo(new PVector(control.pos.x + random(-200,200),
                                  control.pos.y + random(-200,200)));
             p.projList = playerProj;
@@ -482,13 +487,15 @@ public class GIState extends State
              //Load a temp enemy
             PC p;
             p = parsePC("enemy_basic.player");
-            PGraphics im = createGraphics(40,40);
-            im.beginDraw();
-            im.stroke(255,0,0);
-            im.fill(255,0,0);
-            im.triangle(0, 40, 20, 0, 40, 40);
-            im.endDraw();
-            p.setImage(im);
+//            PGraphics im = createGraphics(40,40);
+//            im.beginDraw();
+//            im.stroke(255,0,0);
+//            im.fill(255,0,0);
+//            im.triangle(0, 40, 20, 0, 40, 40);
+//            im.endDraw();
+//            p.setImage(im);
+            p.setImageInd(control.getImageInd()+1);
+            p.setImage(playerImages[p.getImageInd()]);
             p.moveTo(new PVector(control.pos.x + random(-1000,1000),
                                  control.pos.y + random(-1000,1000)));
             p.projList = enemyProj;

@@ -429,7 +429,9 @@ PC parsePC(String fileName)
     String[] lines = loadStrings(fileName);
     PC returnP = new PC(null, null, null);
     returnP.initBase();
-
+    
+    returnP.setLoadName(fileName);
+    
     AIStop ai1 = new AIStop();
     AIWander ai2 = new AIWander();
     
