@@ -8,6 +8,7 @@
 
 int outpostInd = 0;
 String saveFile = null;
+Outpost recentOutpost;
 
 class Outpost
 {
@@ -245,6 +246,8 @@ class Outpost
     
     private void visit()
     {
+        recentOutpost = this;
+        
         if (!visited)
         {
             setVisited(true);
