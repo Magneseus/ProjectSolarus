@@ -207,9 +207,6 @@ class AIWander implements AIState
             self.vel.rotate(-PI/2);
             self.vel.setMag(self.maxVel);
             
-            fill(255,0,0);
-            ellipse(width/2 + target.x, height/2 + target.y, 30,30);
-            
             // If we're close enough to the target, start the cooldown
             if (dis.mag() < 50)
             {

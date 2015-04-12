@@ -70,13 +70,13 @@ public class GIState extends State
             //Load a temp player
             PC p;
             p = parsePC("enemy_basic.player");
-            PGraphics im = createGraphics(40,40);
-            im.beginDraw();
-            im.stroke(0,255,0);
-            im.fill(0,255,0);
-            im.triangle(0, 40, 20, 0, 40, 40);
-            im.endDraw();
-            p.setImage(im);
+//            PGraphics im = createGraphics(40,40);
+//            im.beginDraw();
+//            im.stroke(0,255,0);
+//            im.fill(0,255,0);
+//            im.triangle(0, 40, 20, 0, 40, 40);
+//            im.endDraw();
+//            p.setImage(im);
             p.moveTo(new PVector(0,0));
             p.setControl(true);
             control = p;

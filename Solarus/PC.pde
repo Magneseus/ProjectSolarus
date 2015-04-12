@@ -23,6 +23,9 @@ class PC extends Entity
     private int projCount, projMax;
     private boolean inControl;
     private float percentF, percentB, percentS, slow, rotThresh;
+    
+    private String loadName;
+    private int imageInd;
 
     private AI alf;
     //CHANGE
@@ -271,9 +274,12 @@ class PC extends Entity
     public float getShieldMaxVel(){ return shieldMaxVel; }
     public void setShieldMaxVel(float shieldMaxVel){ this.shieldMaxVel = shieldMaxVel; }
     
-    public String getLoadName(){ return "testFileName"; }
+    public void setLoadName(String loadName){ this.loadName = loadName; }
+    public String getLoadName(){ return loadName; }
     public PVector getPos(){ return pos; }
-    public int getImageInd(){ return 2; }
+    
+    public int getImageInd(){ return imageInd; }
+    public void setImageInd(int imageInd){ this.imageInd = imageInd; }
     
     void setProjMax(int h)
     {
@@ -326,14 +332,16 @@ ArrayList<PC> loadFriendly(String fileName)
         
         PC p = parsePC(data[0]);
         
-        PGraphics im = createGraphics(40,40);
-        im.beginDraw();
-        im.stroke(0,255,0);
-        im.fill(0,255,0);
-        im.triangle(0, 40, 20, 0, 40, 40);
-        im.endDraw();
-        p.setImage(im);
-        //p.setImage(playerImages[int(data[8])]);
+//        PGraphics im = createGraphics(40,40);
+//        im.beginDraw();
+//        im.stroke(0,255,0);
+//        im.fill(0,255,0);
+//        im.triangle(0, 40, 20, 0, 40, 40);
+//        im.endDraw();
+//        p.setImage(im);
+        p.setImage(playerImages[int(data[8])]);
+        p.setImageInd(int(data[8]));
+        p.setLoadName(data[0]);
         
         p.moveTo( new PVector(float(data[1]), float(data[2])) );
         
@@ -377,14 +385,16 @@ ArrayList<PC> loadEnemy(String fileName)
         
         PC p = parsePC(data[0]);
         
-        PGraphics im = createGraphics(40,40);
-        im.beginDraw();
-        im.stroke(255,0,0);
-        im.fill(255,0,0);
-        im.triangle(0, 40, 20, 0, 40, 40);
-        im.endDraw();
-        p.setImage(im);
-        //p.setImage(playerImages[int(data[8])]);
+//        PGraphics im = createGraphics(40,40);
+//        im.beginDraw();
+//        im.stroke(255,0,0);
+//        im.fill(255,0,0);
+//        im.triangle(0, 40, 20, 0, 40, 40);
+//        im.endDraw();
+//        p.setImage(im);
+        p.setImage(playerImages[int(data[8])]);
+        p.setImageInd(int(data[8]));
+        p.setLoadName(data[0]);
         
         p.moveTo( new PVector(float(data[1]), float(data[2])) );
         

@@ -245,33 +245,36 @@ class Outpost
     
     private void visit()
     {
-        setVisited(true);
-
-        PVector entrance = PVector.fromAngle(random(TWO_PI));
-        if (nodes.size() > 0)
-            entrance = PVector.sub(nodes.get(0).getPos(), getPos());
-        
-        PVector entrance2 = new PVector(entrance.x, entrance.y);
-
-        entrance.rotate(PI/2);
-        entrance.rotate(random(-PI/4, PI/4));
-        entrance.setMag(random(5000, 10000));
-        entrance.add(getPos());
-
-        Outpost o1 = new Outpost(entrance, 
-                outpostImage[int(random(outpostImage.length))]);
-        o1.addNode(this);
-        nodes.add(o1);
-
-        entrance2.rotate(-PI/2);
-        entrance2.rotate(random(-PI/4, PI/4));
-        entrance2.setMag(random(5000, 10000));
-        entrance2.add(getPos());
-
-        Outpost o2 = new Outpost(entrance2, 
-                outpostImage[int(random(outpostImage.length))]);
-        o2.addNode(this);
-        nodes.add(o2);
+        if (!visited)
+        {
+            setVisited(true);
+    
+            PVector entrance = PVector.fromAngle(random(TWO_PI));
+            if (nodes.size() > 0)
+                entrance = PVector.sub(nodes.get(0).getPos(), getPos());
+            
+            PVector entrance2 = new PVector(entrance.x, entrance.y);
+    
+            entrance.rotate(PI/2);
+            entrance.rotate(random(-PI/4, PI/4));
+            entrance.setMag(random(5000, 10000));
+            entrance.add(getPos());
+    
+            Outpost o1 = new Outpost(entrance, 
+                    outpostImage[int(random(outpostImage.length))]);
+            o1.addNode(this);
+            nodes.add(o1);
+    
+            entrance2.rotate(-PI/2);
+            entrance2.rotate(random(-PI/4, PI/4));
+            entrance2.setMag(random(5000, 10000));
+            entrance2.add(getPos());
+    
+            Outpost o2 = new Outpost(entrance2, 
+                    outpostImage[int(random(outpostImage.length))]);
+            o2.addNode(this);
+            nodes.add(o2);
+        }
     }
 
 

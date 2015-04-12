@@ -17,6 +17,7 @@ UIToast toast;
 //CHANGE
 PImage enemyP1, friendP1, friendP2;
 PImage[] outpostImage;
+PGraphics[] playerImages;
 
 void setup()
 {
@@ -61,12 +62,30 @@ void setup()
     enemyP1 = loadImage("Images/proj_enemy1.png");
     friendP1 = loadImage("Images/proj_friend1.png");
     friendP2 = loadImage("Images/proj_friend2.png");
+    
     PImage[] outposts2 = {loadImage("Images/outpost_1.png"),
                           loadImage("Images/outpost_2.png"),
                           loadImage("Images/outpost_3.png")};
+    PImage[] ships = {loadImage("Images/ship_1.png"),
+                      loadImage("Images/ship_2.png"),
+                      loadImage("Images/ship_3.png"),
+                      loadImage("Images/ship_4.png")};
+    playerImages = new PGraphics[ships.length];
+                      
     outpostImage = outposts2;
     for (PImage p : outpostImage)
         p.resize(200,200);
+    
+    for (int i = 0; i < ships.length; i++)
+    {
+        boolean xBound = ships[i].width > ships[i].height ? true : false;
+        float x = xBound ? 50.f : ships[i].width / (ships[i].height/50.f);
+        float y = xBound ? ships[i].height / (ships[i].width/50.f) : 50.f;
+        playerImages[i] = createGraphics((int)x,(int)y);
+        playerImages[i].beginDraw();
+        playerImages[i].image(ships[i], 0, 0, (int)x, (int)y);
+        playerImages[i].endDraw();
+    }
     
     toast.pushToast("Welcome to Solarus.", 3000);
 }
