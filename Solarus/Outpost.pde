@@ -112,13 +112,13 @@ class Outpost
 
         for (Outpost o : nodes)
         {
-            pushMatrix();
-            
-            translate(offset.x, offset.y);
-            stroke(255,0,0);
-            line(pos.x, pos.y, o.getPos().x, o.getPos().y);
-            
-            popMatrix();
+//            pushMatrix();
+//            
+//            translate(offset.x, offset.y);
+//            stroke(255,0,0);
+//            line(pos.x, pos.y, o.getPos().x, o.getPos().y);
+//            
+//            popMatrix();
             if (!ignore.contains(o))
                 o.render(offset, ignore);
         }
@@ -143,13 +143,13 @@ class Outpost
 
         for (Outpost o : nodes)
         {
-            pushMatrix();
-            
-            translate(offset.x, offset.y);
-            stroke(255,0,0);
-            line(pos.x, pos.y, o.getPos().x, o.getPos().y);
-            
-            popMatrix();
+//            pushMatrix();
+//            
+//            translate(offset.x, offset.y);
+//            stroke(255,0,0);
+//            line(pos.x, pos.y, o.getPos().x, o.getPos().y);
+//            
+//            popMatrix();
             if (!ignore.contains(o))
                o.render(offset, ignore);
         }
@@ -203,6 +203,8 @@ class Outpost
         
         for (String s : edgeList)
             output.println(s);
+        
+        output.println(recentOutpost.getInd());
         
         output.flush();
         output.close();
@@ -327,11 +329,9 @@ public Outpost loadOutpostGraph(String filename)
         nodes.add(o);
     }
     
-    for (int i = edgeInd; i < lines.length; i++)
+    for (int i = edgeInd; i < lines.length-1; i++)
     {
         String line = lines[i];
-        if (line.length() == 0)
-            break;
         String[] data = split(line, ' ');
         
         int ind1 = int(data[0]);
@@ -352,13 +352,17 @@ public Outpost loadOutpostGraph(String filename)
     }
     
     Outpost ret = null;
+    int lastOutpost = int(lines[lines.length-1]);
     
     for (Outpost o : nodes)
     {
         if (o.getInd() == 0)
         {
             ret = o;
-            break;
+        }
+        if (o.getInd() == lastOutpost)
+        {
+            recentOutpost = o;
         }
     }
     

@@ -1,13 +1,13 @@
-enemy_basic.player 2947 2840 10 10 1000 1000 5 0 1 
-enemy_basic.player 2527 2216 10 10 1000 1000 5 0 0 
-enemy_basic.player 2536 2238 10 10 1000 1000 5 0 0 
-enemy_basic.player 2576 2275 10 10 1000 1000 5 0 0 
-enemy_basic.player 2327 1989 2 10 1000 1000 5 0 0 
-enemy_basic.player 2477 2143 10 10 1000 1000 5 0 0 
-enemy_basic.player 2581 2330 10 10 1000 1000 5 0 0 
-enemy_basic.player 2673 2261 10 10 1000 1000 5 0 0 
-enemy_basic.player 2398 1994 10 10 1000 1000 5 0 0 
-enemy_basic.player 2651 2332 10 10 1000 1000 5 0 0 
-enemy_basic.player 2526 2344 10 10 1000 1000 5 0 0 
-enemy_basic.player 2594 2287 10 10 1000 1000 5 0 0 
+enemy_basic.player 3130 3122 10 10 1000 1000 5 0 1 
+enemy_basic.player 3306 3195 10 10 1000 1000 5 0 0 
+enemy_basic.player 2588 2839 10 10 1000 1000 5 0 0 
+enemy_basic.player 3106 3214 10 10 1000 1000 5 0 0 
+enemy_basic.player 3022 2925 2 10 1000 1000 5 0 0 
+enemy_basic.player 2736 2939 10 10 1000 1000 5 0 0 
+enemy_basic.player 2564 3014 10 10 1000 1000 5 0 0 
+enemy_basic.player 3268 2912 10 10 1000 1000 5 0 0 
+enemy_basic.player 3184 2914 10 10 1000 1000 5 0 0 
+enemy_basic.player 3167 3017 10 10 1000 1000 5 0 0 
+enemy_basic.player 2579 3197 10 10 1000 1000 5 0 0 
+enemy_basic.player 3134 3112 10 10 1000 1000 5 0 0 
 #
