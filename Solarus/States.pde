@@ -118,6 +118,7 @@ public class GIState extends State
         {
             PImage out = outpostImage[int(random(outpostImage.length))];
             outpostHead = new Outpost(new PVector(random(width), random(height)), out);
+            recentOutpost = null;
         }
         else
             outpostHead = outpostIn;
@@ -394,6 +395,41 @@ public class GIState extends State
             for (Outpost o : recentOutpost.getNodes())
             {
                 PVector dis = PVector.sub(o.getPos(), control.getPos());
+                
+                if (dis.x < -width/2 || dis.x > width/2 || dis.y < -height/2 || dis.y > height/2)
+                {
+                    dis.mult(-1);
+                    float ang = dis.heading();
+                    
+                    int mod = ang > -(PI/2) && ang < (PI/2) ? 1 : -1;
+                    
+                    float x = mod * ( (a*b) / sqrt( (b*b) + ( (a*a)*(tan(ang)*tan(ang)) ) ) );
+                    float y = tan(ang) * x;
+                    
+                    pushMatrix();
+                    
+                    translate(-x + width/2, -y + height/2);
+                    rotate(ang);
+                    
+                    noStroke();
+                    if (o.getVisited())
+                        fill(0,0,255);
+                    else
+                        fill(0,255,0);
+                    
+                    rotate(-PI/2);
+                    triangle(-15, 0, 0, -15, 15, 0);
+                    
+                    popMatrix();
+                }
+            }
+        }
+        else
+        {
+            PVector dis = PVector.sub(outpostHead.getPos(), control.getPos());
+            
+            if (dis.x < -width/2 || dis.x > width/2 || dis.y < -height/2 || dis.y > height/2)
+            {
                 dis.mult(-1);
                 float ang = dis.heading();
                 
@@ -408,7 +444,7 @@ public class GIState extends State
                 rotate(ang);
                 
                 noStroke();
-                if (o.getVisited())
+                if (outpostHead.getVisited())
                     fill(0,0,255);
                 else
                     fill(0,255,0);
@@ -418,33 +454,6 @@ public class GIState extends State
                 
                 popMatrix();
             }
-        }
-        else
-        {
-            PVector dis = PVector.sub(outpostHead.getPos(), control.getPos());
-            dis.mult(-1);
-            float ang = dis.heading();
-            
-            int mod = ang > -(PI/2) && ang < (PI/2) ? 1 : -1;
-            
-            float x = mod * ( (a*b) / sqrt( (b*b) + ( (a*a)*(tan(ang)*tan(ang)) ) ) );
-            float y = tan(ang) * x;
-            
-            pushMatrix();
-            
-            translate(-x + width/2, -y + height/2);
-            rotate(ang);
-            
-            noStroke();
-            if (outpostHead.getVisited())
-                fill(0,0,255);
-            else
-                fill(0,255,0);
-            
-            rotate(-PI/2);
-            triangle(-15, 0, 0, -15, 15, 0);
-            
-            popMatrix();
         }
         
         if (pause)
