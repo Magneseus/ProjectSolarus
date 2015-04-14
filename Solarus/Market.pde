@@ -1,9 +1,10 @@
 public class Market extends State {
 
   private UIGroup GMMenu;
-  private UIGroup UIElements;
+  private UIGroup BSButtons;
+  private UIGroup UpButtons;
 
-  public Resource[] TradeGoods = new Resource[8];
+  private Resource[] TradeGoods = new Resource[8];
   private color[] colours = {
     color(255, 0, 0), 
     color(255, 128, 0), 
@@ -15,8 +16,8 @@ public class Market extends State {
     color(255, 0, 255)
   };
 
-  public int[] GoodsStore = new int[8];
-  public int Money = 500;
+  private int[] GoodsStore = new int[8];
+  private int Money = 500;
 
   public Market(StateManager sm) {
     super(sm);
@@ -35,24 +36,30 @@ public class Market extends State {
 
   public void init() {
 
-    UIElements = new UIGroup(new PVector(width/2, height/2));
+    BSButtons = new UIGroup(new PVector(width/2, height/2));
 
-    UIElements.add(new UIButton(new PVector(85, -311), new PVector(35, 20), "", new BuyGoods0(), color(0, 255, 0),color(75, 200, 255)));
-    UIElements.add(new UIButton(new PVector(125, -311), new PVector(35, 20), "", new SellGoods0(), color(255, 0, 0),color(75, 200, 255)));
-    UIElements.add(new UIButton(new PVector(85, -222), new PVector(35, 20), "", new BuyGoods1(), color(0, 255, 0),color(75, 200, 255)));
-    UIElements.add(new UIButton(new PVector(125, -222), new PVector(35, 20), "", new SellGoods1(), color(255, 0, 0),color(75, 200, 255)));
-    UIElements.add(new UIButton(new PVector(85, -133), new PVector(35, 20), "", new BuyGoods2(), color(0, 255, 0),color(75, 200, 255)));
-    UIElements.add(new UIButton(new PVector(125, -133), new PVector(35, 20), "", new SellGoods2(), color(255, 0, 0),color(75, 200, 255)));
-    UIElements.add(new UIButton(new PVector(85, -44), new PVector(35, 20), "", new BuyGoods3(), color(0, 255, 0),color(75, 200, 255)));
-    UIElements.add(new UIButton(new PVector(125, -44), new PVector(35, 20), "", new SellGoods3(), color(255, 0, 0),color(75, 200, 255)));
-    UIElements.add(new UIButton(new PVector(85, 45), new PVector(35, 20), "", new BuyGoods4(), color(0, 255, 0),color(75, 200, 255)));
-    UIElements.add(new UIButton(new PVector(125, 45), new PVector(35, 20), "", new SellGoods4(), color(255, 0, 0),color(75, 200, 255)));
-    UIElements.add(new UIButton(new PVector(85, 134), new PVector(35, 20), "", new BuyGoods5(), color(0, 255, 0),color(75, 200, 255)));
-    UIElements.add(new UIButton(new PVector(125, 134), new PVector(35, 20), "", new SellGoods5(), color(255, 0, 0),color(75, 200, 255)));
-    UIElements.add(new UIButton(new PVector(85, 223), new PVector(35, 20), "", new BuyGoods6(), color(0, 255, 0),color(75, 200, 255)));
-    UIElements.add(new UIButton(new PVector(125, 223), new PVector(35, 20), "", new SellGoods6(), color(255, 0, 0),color(75, 200, 255)));
-    UIElements.add(new UIButton(new PVector(85, 312), new PVector(35, 20), "", new BuyGoods7(), color(0, 255, 0),color(75, 200, 255)));
-    UIElements.add(new UIButton(new PVector(125, 312), new PVector(35, 20), "", new SellGoods7(), color(255, 0, 0),color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(85, -311), new PVector(35, 20), "", new BuyGoods0(), color(0, 255, 0),color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(125, -311), new PVector(35, 20), "", new SellGoods0(), color(255, 0, 0),color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(85, -271), new PVector(35, 20), "", new BuyGoods1(), color(0, 255, 0),color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(125, -271), new PVector(35, 20), "", new SellGoods1(), color(255, 0, 0),color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(85, -231), new PVector(35, 20), "", new BuyGoods2(), color(0, 255, 0),color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(125, -231), new PVector(35, 20), "", new SellGoods2(), color(255, 0, 0),color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(85, -192), new PVector(35, 20), "", new BuyGoods3(), color(0, 255, 0),color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(125, -192), new PVector(35, 20), "", new SellGoods3(), color(255, 0, 0),color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(85, -153), new PVector(35, 20), "", new BuyGoods4(), color(0, 255, 0),color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(125, -153), new PVector(35, 20), "", new SellGoods4(), color(255, 0, 0),color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(85, -114), new PVector(35, 20), "", new BuyGoods5(), color(0, 255, 0),color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(125, -114), new PVector(35, 20), "", new SellGoods5(), color(255, 0, 0),color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(85, -75), new PVector(35, 20), "", new BuyGoods6(), color(0, 255, 0),color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(125, -75), new PVector(35, 20), "", new SellGoods6(), color(255, 0, 0),color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(85, -36), new PVector(35, 20), "", new BuyGoods7(), color(0, 255, 0),color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(125, -36), new PVector(35, 20), "", new SellGoods7(), color(255, 0, 0),color(75, 200, 255)));
+    
+    UpButtons = new UIGroup(new PVector(0,0));
+    UpButtons.add(new UIButton(new PVector(173, 570), new PVector(112, 112), "", new BuyHealth(), color(0,0,0,0),color(75, 200, 255)));
+    UpButtons.add(new UIButton(new PVector(393, 570), new PVector(112, 112), "", new BuyDamage(), color(0,0,0,0),color(75, 200, 255)));
+    UpButtons.add(new UIButton(new PVector(613, 570), new PVector(112, 112), "", new BuyShield(), color(0,0,0,0),color(75, 200, 255)));
+    UpButtons.add(new UIButton(new PVector(833, 570), new PVector(112, 112), "", new BuyRepair(), color(0,0,0,0),color(75, 200, 255)));
 
     for (int i=0; i<TradeGoods.length; i++)
     {
@@ -119,7 +126,7 @@ public class Market extends State {
   public boolean update() {
     if (!pause)
     {
-      UIElements.update();
+      BSButtons.update();
     }
     //If menu is up
     else
@@ -148,24 +155,47 @@ public class Market extends State {
   public void render() {
     background(0);
     for (int i=0; i<TradeGoods.length; i++) {
-      TradeGoods[i].render((i+1)*89);
+      TradeGoods[i].render(((i+1)*40)+49);
       fill(TradeGoods[i].col);
-      text(TradeGoods[i].name, 80, ((i+1)*89)-2);
+      text(TradeGoods[i].name, 80, ((i+1)*40)+47);
       textSize(20);
-      text((TradeGoods[i].name+": "+GoodsStore[i]), 920, (200+((i+1)*30)));
+      text((TradeGoods[i].name+": "+GoodsStore[i]), 920, (120+((i+1)*30)));
     }
     stroke(75, 200, 255);
     noFill();
     rectMode(CORNERS);
-    rect(160, 76, 660, 725);
+    rect(160, 76, 660, 380);
     //stroke(255, 0, 0);
     //line(185, 77, 185, 724);
 
-    UIElements.render(new PVector(0, 0));
+    BSButtons.render(new PVector(0,0));
+    UpButtons.render(new PVector(0,0));
+    
+    noStroke();
+    fill(0,255,0);
+    rect(160, 520,186,620);
+    rect(123,557,223,583);
+    text("Health",173,640);
+    
+    fill(255,0,0);
+    triangle(393,520,340,620,448,620);
+    fill(0);
+    triangle(393,565,364,620,423,620);
+    fill(255,0,0);
+    text("Damage",393,640);
+    
+    fill(0,0,255);
+    ellipse(613,570,35,50);
+    text("Sheild",613,640);
+    
+    fill(255,255,0);
+    rect(820, 520,846,620);
+    rect(783,557,883,583);
+    text("Repair",833,640);
 
     textSize(20);
     fill(75, 200, 255);
-    text(("Money: "+Money), 920, 200); 
+    text(("Money: "+Money), 920, 95); 
 
     if (pause)
     {
@@ -321,6 +351,30 @@ public class Market extends State {
         GoodsStore[7]--;
         Money+=TradeGoods[7].value;
       }
+    }
+  }
+  class BuyHealth implements Command {
+    public void execute()
+    {
+      println("Health Upgrade Bought");
+    }
+  }
+  class BuyDamage implements Command {
+    public void execute()
+    {
+      println("Damage Upgrade Bought");
+    }
+  }
+  class BuyShield implements Command {
+    public void execute()
+    {
+      println("Shield Upgrade Bought");
+    }
+  }
+  class BuyRepair implements Command {
+    public void execute()
+    {
+      println("Repairs Bought");
     }
   }
 }
