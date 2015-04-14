@@ -1,5 +1,5 @@
 boolean fRun = true;
-boolean tut = false;
+boolean tut = true;
 
 public abstract class State
 {
@@ -31,11 +31,13 @@ public class GIState extends State
     ArrayList<PC> enemies;
     ArrayList<Proj> enemyProj;
     PC control;
-    IntBox fuel = new IntBox(1000);
-    IntBox fuelMax = new IntBox(1000);
+    IntBox money = new IntBox(1000);
+    IntBox moneyMax = new IntBox(1000);
     int playerInd;
     
     Outpost outpostHead;
+    
+    int spawnTime, spawnWait, spawnCount;
     
     public GIState(StateManager sm)
     {
@@ -44,13 +46,26 @@ public class GIState extends State
     
     public void init()
     {
-        init(null, null, null);
+        init(null, null, null, null);
     }
     
-    public void init(Outpost outpostIn, ArrayList<PC> friend, ArrayList<PC> enemy)
+    public void init(Outpost outpostIn, ArrayList<PC> friend, ArrayList<PC> enemy, int[] spawns)
     {
         pause = false;
         options = false;
+        
+        if (spawns == null)
+        {
+            spawnWait = 5000;
+            spawnTime = millis();
+            spawnCount = 2;
+        }
+        else
+        {
+            spawnWait = spawns[0];
+            spawnCount = spawns[1];
+            spawnTime = millis();
+        }
         
         HUD = new UIGroup(new PVector(0,0));
         GIMenu = new UIGroup(new PVector(width/2, height/2));
@@ -149,8 +164,8 @@ public class GIState extends State
         HUD.add(new UIStatusBar(
                 new PVector(width/2, height-40),
                 new PVector(250,15),
-                fuel,
-                fuelMax,
+                money,
+                moneyMax,
                 color(0,255,0) ));
         
         // Game Menu
@@ -176,11 +191,12 @@ public class GIState extends State
                 new PVector(width, height),
                 tmpBack2 ));
         
+        class unpauseNew implements Command { public void execute(){pause=false; spawnTime=millis();} }
         GIMenu.add(new UIButton(
                 new PVector(0, -225),
                 new PVector(400,100),
                 "Resume Game",
-                new unpause() ));
+                new unpauseNew() ));
         
         class saveFunc implements Command
         { 
@@ -253,6 +269,11 @@ public class GIState extends State
                     
                     saveStrings(saveFile + "\\entities.save", entityFileContents);
                     
+                    String[] spawnData = new String[2];
+                    spawnData[0] = "" + spawnWait;
+                    spawnData[1] = "" + spawnCount;
+                    saveStrings(saveFile + "\\spawn.save", spawnData);
+                    
                     toast.pushToast("Saved.", 2000);
                     saveFile = null;
                 }
@@ -282,7 +303,6 @@ public class GIState extends State
             toast.pushToast("Use WASD to move.", 4000);
             toast.pushToast("Movement is relative to the cursor.", 4000);
             toast.pushToast("Click the mouse to fire.", 4000);
-            toast.pushToast("Press 1 & 2 to spawn AI.", 4000);
             toast.pushToast("Press Q & E to switch ships.", 4000);
             toast.pushToast("Press the '~' key for the menu.", 4000);
             toast.pushToast("Press F when over a planet for the market.", 4000);
@@ -297,6 +317,8 @@ public class GIState extends State
         //If game is running
         if (!pause)
         {
+            boolean preOh = outpostHead.getVisited();
+            
             if (outpostHead.update(control.pos))
             {
                 sm.changeState("GAME_MARKET");
@@ -304,6 +326,51 @@ public class GIState extends State
             
             playerSwitchCheck();
             cheatsCheck(); //REMOVE LATER
+            
+            if (!preOh && outpostHead.getVisited())
+            {
+                spawnTime = millis();
+            }
+            
+            if (enemies.size() > 0)
+            {
+                spawnTime = millis();
+            }
+            
+            if (outpostHead.getVisited() && millis() - spawnTime > spawnWait)
+            {
+                int picNum = (int)random(playerImages.length);
+                while (picNum == control.getImageInd())
+                    picNum = (int)random(playerImages.length);
+                
+                for (int i = 0; i < spawnCount; i++)
+                {
+                    PC p;
+                    p = parsePC("enemy_basic.player");
+//                    PGraphics im = createGraphics(40,40);
+//                    im.beginDraw();
+//                    im.stroke(255,0,0);
+//                    im.fill(255,0,0);
+//                    im.triangle(0, 40, 20, 0, 40, 40);
+//                    im.endDraw();
+//                    p.setImage(im);
+                    p.setImageInd(picNum);
+                    p.setImage(playerImages[picNum]);
+                    PVector spawn = PVector.fromAngle(random(TWO_PI));
+                    spawn.setMag(random(dist(0,0,width/2,height/2), dist(0,0,width/2,height/2) + 1000));
+                    p.moveTo(spawn);
+                    p.projList = enemyProj;
+                    p.enemyList = players;
+                    p.enemy = true;
+                    enemies.add(p);
+                }
+                
+                spawnTime = millis();
+                spawnWait -= 50;
+                spawnWait = spawnWait < 2000 ? 2000 : spawnWait;
+                if ((spawnWait / 50) % 2 == 0)
+                    spawnCount++;
+            }
             
             for (int i = 0; i < players.size(); i++)
             {
@@ -600,7 +667,7 @@ public class MMState extends State
                 new PVector(0,0),
                 new PVector(500, 650),
                 tmpBack ));
-        class StartGame implements Command { public void execute(){sm.changeState("GAME_INSTANCE"); outpostInd = 1;} }
+        class StartGame implements Command { public void execute(){sm.changeState("GAME_INSTANCE"); outpostInd = 1; fRun = false;} }
         UIElements.add(new UIButton(
                 new PVector(0, -225),
                 new PVector(400,100),

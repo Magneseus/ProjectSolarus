@@ -32,7 +32,7 @@ percentS = 30
 slow = 0.05
 rotThresh = 32
 
-AI.aggroDist = 2000
+AI.aggroDist = 10000
 AI.aggroPref = 200
 AI.aggroClose = 100
 

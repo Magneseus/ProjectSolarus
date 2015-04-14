@@ -72,6 +72,7 @@ class StateManager
     
     public void loadGame()
     {
+        fRun = false;
         pause = false;
         options = false;
         
@@ -101,9 +102,14 @@ class StateManager
                 ArrayList<PC> f = loadFriendly(saveFile + "\\entities.save");
                 ArrayList<PC> e = loadEnemy(saveFile + "\\entities.save");
                 
+                int[] spawnData = new int[2];
+                String[] spawnRead = loadStrings(saveFile + "\\spawn.save");
+                spawnData[0] = int(spawnRead[0]);
+                spawnData[1] = int(spawnData[1]);
+                
                 prevState = state;
                 state = states[1];
-                ((GIState)stateList[1]).init(newOutpost, f, e);
+                ((GIState)stateList[1]).init(newOutpost, f, e, spawnData);
                 
                 toast.pushToast("Loaded.", 2000);
             }
