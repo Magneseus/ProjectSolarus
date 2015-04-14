@@ -331,6 +331,8 @@ class AIAttack implements AIState
         ptmp.vel = PVector.fromAngle(self.getAngle()-PI/2);
         ptmp.vel.setMag(ptmp.maxVel);
         
+        ptmp.setDamage(self.getDamage());
+        
         if (PVector.angleBetween(ptmp.vel, self.vel) < PI/2)
             ptmp.vel.add(self.vel);
         
