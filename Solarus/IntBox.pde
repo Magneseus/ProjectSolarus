@@ -12,4 +12,14 @@ class IntBox
     {
         store = newStore;
     }
+    
+    public void add(int x)
+    {
+        store += x;
+    }
+    
+    public void sub(int x)
+    {
+        store -= x;
+    }
 }
