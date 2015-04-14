@@ -397,6 +397,9 @@ public class Market extends State {
     {
       if (Money>=100) {
         println("Damage Upgrade Bought");
+        for (int i=0; i<gameRef.players.size (); i++) {
+          gameRef.players.get(i).setDamage(gameRef.players.get(i).getDamage()+1);
+        }
         Money -= 100;
       }
     }
