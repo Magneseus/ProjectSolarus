@@ -20,7 +20,7 @@ public class Market extends State {
 
   //set up the Goods inventory and money 
   private int[] GoodsStore = new int[8];
-  private int Money = 500;
+  private int Money;
 
   //Constructor calls super and initalizes the availiable resources
   public Market(StateManager sm) {
@@ -34,6 +34,8 @@ public class Market extends State {
     TradeGoods[5] = new Resource("Titanium", 500, 95, HALF_PI, colours[5]);
     TradeGoods[6] = new Resource("Water", 500, 100, TAU-HALF_PI, colours[6]);
     TradeGoods[7] = new Resource("Food", 500, 90, PI, colours[7]);
+
+    Money = 500;
 
     GMMenu = new UIGroup(new PVector(width/2, height/2), new PVector(0, 0));
   }
@@ -384,7 +386,7 @@ public class Market extends State {
       if (Money>=100) {
         println("Health Upgrade Bought");
         for (int i=0; i<gameRef.players.size (); i++) {
-          gameRef.players.get(i).setHealthMax(players.get(i).getHealthMax().add(5));
+          gameRef.players.get(i).getHealthMax().add(5);
         }
         Money -= 100;
       }
@@ -405,7 +407,7 @@ public class Market extends State {
       if (Money>=100) {
         println("Shield Upgrade Bought");
         for (int i=0; i<gameRef.players.size (); i++) {
-          gameRef.players.get(i).setShiedlMax(players.get(i).getShieldMax().add(200));
+          gameRef.players.get(i).getShieldMax().add(200);
         }
         Money -= 100;
       }
@@ -417,7 +419,7 @@ public class Market extends State {
       if (Money>=100) {
         println("Repairs Bought");
         for (int i=0; i<gameRef.players.size (); i++) {
-          gameRef.players.get(i).setHealth(players.get(i).getHealth().add(5));
+          gameRef.players.get(i).getHealth().add(5);
         }
         Money -= 100;
       }
@@ -441,8 +443,8 @@ public class Market extends State {
         p.setImage(playerImages[p.getImageInd()]);
         p.moveTo(new PVector(gameRef.control.pos.x + random(-200, 200), 
         gameRef.control.pos.y + random(-200, 200)));
-        p.projList = playerProj;
-        p.enemyList = enemies;
+        p.projList = gameRef.playerProj;
+        p.enemyList = gameRef.enemies;
         gameRef.players.add(p);
         Money -= 100;
       }
