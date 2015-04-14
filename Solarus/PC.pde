@@ -255,9 +255,9 @@ class PC extends Entity
         img = i;
     }
 
-    public void setHealth(int h){ health = new IntBox(h); }
+    public void setHealth(IntBox h){ health = h; }
     public IntBox getHealth(){ return health; }
-    public void setHealthMax(int h){ healthMax = new IntBox(h); }
+    public void setHealthMax(IntBox h){ healthMax = h; }
     public IntBox getHealthMax(){ return healthMax; }
     
     public IntBox getShield(){ return shield; }
@@ -345,8 +345,8 @@ ArrayList<PC> loadFriendly(String fileName)
         
         p.moveTo( new PVector(float(data[1]), float(data[2])) );
         
-        p.setHealth( int(data[3]) );
-        p.setHealthMax( int(data[4]) );
+        p.setHealth( new IntBox(int(data[3])) );
+        p.setHealthMax( new IntBox(int(data[4])) );
         p.setShield( new IntBox(int(data[5])) );
         p.setShieldMax( new IntBox(int(data[6])) );
         
@@ -398,8 +398,8 @@ ArrayList<PC> loadEnemy(String fileName)
         
         p.moveTo( new PVector(float(data[1]), float(data[2])) );
         
-        p.setHealth( int(data[3]) );
-        p.setHealthMax( int(data[4]) );
+        p.setHealth( new IntBox(int(data[3])) );
+        p.setHealthMax( new IntBox(int(data[4])) );
         p.setShield( new IntBox(int(data[5])) );
         p.setShieldMax( new IntBox(int(data[6])) );
         
@@ -549,9 +549,9 @@ PC parsePC(String fileName)
             else if (line.equals("maxRot"))
                 returnP.maxRot = float(trim(data[0]));
             else if (line.equals("health"))
-                returnP.setHealth( int(trim(data[0])) );
+                returnP.setHealth( new IntBox(int(trim(data[0]))) );
             else if (line.equals("healthMax"))
-                returnP.setHealthMax( int(trim(data[0])) );
+                returnP.setHealthMax( new IntBox(int(trim(data[0]))) );
             else if (line.equals("shield"))
                 returnP.setShield( new IntBox(int(trim(data[0]))) );
             else if (line.equals("shieldMax"))
