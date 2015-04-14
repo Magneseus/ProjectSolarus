@@ -1,10 +1,13 @@
-
 class Stars
 {
+    // Members
     private ArrayList<ArrayList<PImage>> tileList;
     private ArrayList<int[][]> mapList;
     private FloatList offsetList;
     
+    /**
+     * Creates a new Star class, just initializes the lists.
+     */
     Stars()
     {
         tileList = new ArrayList<ArrayList<PImage>>();
@@ -12,20 +15,33 @@ class Stars
         offsetList = new FloatList();
     }
     
+    /**
+     * Renders the background to the screen.
+     * 
+     * @param trans The offset we want to move the background by
+     * @param playerCoord The player coordinates to find which tiles to render
+     * @param radius The number of tiles around the player to render (4x4, etc)
+     */
     void render(PVector trans, PVector playerCoord, int radius)
     {
-        int c = 0;
+        // Iterate through all the tiles we have selected to render
         for (int i = 0; i < mapList.size(); i++)
         {
+            // Calculate the position of the tiles on the screen as well
+            // as which tiles to display
             PVector tilePos = PVector.mult(playerCoord, offsetList.get(i));
             PVector tilePosCor = PVector.sub(playerCoord, tilePos);
             
+            // Get the dimensions
             int w = (int) tileList.get(i).get(0).width;//getDimensions().x;
             int h = (int) tileList.get(i).get(0).height;//getDimensions().y;
             
+            // Get the positions
             int sx = mapList.get(i).length * w;
             int sy = mapList.get(i)[0].length * h;
             
+            // Do some crazy calculations that I should've documented when
+            // I wrote this in the first place
             float ofx = 0, ofy = 0;
             if (tilePosCor.x < 0)
                 ofx = -w;
@@ -40,6 +56,7 @@ class Stars
             sx /= w;
             sy /= h;
             
+            // Render all the tiles in the radius
             for (int x = -radius; x <= radius; x++)
             {
                 for (int y = -radius; y <= radius; y++)
@@ -54,13 +71,23 @@ class Stars
                     //PImage tile = tileList.get(i).get(ind);
                     
                     //tile.render(PVector.add(pos,trans));
-                    image(tileList.get(i).get(ind), trans.x+pos.x, trans.y+pos.y);
+                    image(tileList.get(i).get(ind), (int)(trans.x+pos.x), (int)(trans.y+pos.y));
                 }
             }
             
         }
     }
     
+    /**
+     * Adds another layer to the Map list.
+     * <p>
+     * The map list is the 2D array of integers that dictate which tile to
+     * render in which position.
+     * 
+     * @param size How many tiles to map (X*Y tile list)
+     * @param numTiles The number of unique tiles there will be (1-n)
+     * @param offset Don't remember what this is for :/
+     */
     void addMapLayer(PVector size, int numTiles, float offset)
     {
         int[][] tempMap = new int[(int)size.x][(int)size.y];
@@ -76,6 +103,18 @@ class Stars
         offsetList.append(offset);
     }
     
+    /**
+     * Adds another layer to the Tile List.
+     * <p>
+     * The tile list is the 1D array of unique tile images that the map list
+     * can select from.
+     * 
+     * @param dimensions The size of the image tiles (X*Y)
+     * @param starSize The size of each star, stars are squares
+     * @param percentFill The percentage of the tile to fill with stars
+     * @param starColor The color of the stars
+     * @param numTiles The number of unique tiles to create (should be same as map)
+     */
     void addTileLayer(PVector dimensions, float starSize, float percentFill, color starColor, int numTiles)
     {
         ArrayList<PImage> tempTiles = new ArrayList<PImage>();
@@ -89,6 +128,15 @@ class Stars
         tileList.add(tempTiles);
     }
     
+    /**
+     *  This is for use when rendering tiles, caps the number off at a certain
+     *  value, with some more slightly complicated implications to deal with
+     *  negative values and other shit.
+     *  
+     * @param num Given number to check
+     * @param cap The cap, pretty self-explanatory
+     * @return The fixed number
+     */
     float fixNum(float num, float cap)
     {
         if (abs(num) >= cap)
@@ -102,6 +150,10 @@ class Stars
     
 }
 
+// The class that contains a singular tile
+// This is not in use anymore, as storing each star as a PVector is clearly
+// not efficient in any way, but was originally considered when there 
+// were weird rendering effects with the PImages
 class StarTile
 {
     private ArrayList<PVector> stars;
@@ -151,6 +203,15 @@ class StarTile
     }
 }
 
+/**
+ * Generates a new image tile.
+ * 
+ * @param dimensions The size of the tile (X*Y)
+ * @param starSize The size of each star (stars are squares)
+ * @param percentFill The percentage of the tile to fill with stars
+ * @param starColor The color of the stars
+ * @return The newly generated image tile
+ */
 PImage genTile(PVector dimensions, float starSize, float percentFill, color starColor)
 {
     PImage starTile = createImage((int)dimensions.x, (int)dimensions.y, ARGB);

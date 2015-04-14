@@ -1,0 +1,41 @@
+# Player test file
+
+:collision:
+	Rect1 = -1,-20, 1,-20, 20,20, -20,20
+	ct = 0,0
+	Center = 0,0
+:
+
+health = 100000
+healthMax = 100000
+
+shield = 10
+shieldMax = 10
+
+projMax = 0
+
+pos = 400,400
+vel = 0,0
+accel = 0,0
+
+maxVel = 10
+maxAccel = 0.5
+maxRot = 4
+
+percentF = 50
+percentB = 20
+percentS = 30
+
+slow = 0.1
+rotThresh = 32
+
+AI.aggroDist = 10000
+AI.aggroPref = 200
+AI.aggroClose = 100
+
+AI.followDist = 1000
+AI.followClose = 50
+
+AI.attackChance = 200
+
+# End Player test file

@@ -1,4 +1,14 @@
-
+/**
+ * Projectile class that uses the Entity class as a parent.
+ * <p>
+ * Contains:
+ * - a reference to the parent PC that created it, so it can inform upon it's destruction
+ * - A list of targets (for future use, in case of homing missiles or some such thing)
+ * - lifeTime, amount of time it can last
+ * - damage done to enemy PC
+ * @author Matt
+ *
+ */
 class Proj extends Entity
 {
     //Vars
@@ -9,6 +19,13 @@ class Proj extends Entity
     private int damage;
     private boolean dead;
     
+    /**
+     * Creates a new projectile with a given image, lifespan, etc,
+     * @param pos Position vector
+     * @param img Image to display (PGraphics)
+     * @param c Collision box of projectile
+     * @param originator Origin PC
+     */
     Proj (PVector pos, PGraphics img, Collision c, PC originator)
     {
         initBase();
@@ -24,6 +41,9 @@ class Proj extends Entity
         startTime = millis();
     }
     
+    /**
+     * Updates the Kinetic stuff, checks for life time, etc.
+     */
     boolean update(float delta)
     {
         updateKin(delta);
@@ -34,7 +54,7 @@ class Proj extends Entity
             {
                 if (p.collide(this))
                 {
-                    p.health -= damage;
+                    p.damage(damage);
                     originator.projCount--;
                     
                     dead = true;
@@ -51,6 +71,8 @@ class Proj extends Entity
         
         return !dead;
     }
+    
+    // GETTERS AND SETTERS
     
     void setLifeTime(int d)
     {
@@ -74,7 +96,13 @@ class Proj extends Entity
     
 }
 
-
+/**
+ * Same ridiculous parsing method, just for projectiles this time.
+ * <p>
+ * TODO: Describe how to use THIS filetype
+ * @param fileName File to parse
+ * @return Created Proj.
+ */
 Proj parseProj(String fileName)
 {
     String[] lines = loadStrings(fileName);

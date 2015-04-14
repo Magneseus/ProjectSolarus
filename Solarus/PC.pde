@@ -1,24 +1,65 @@
-
+/**
+ * Main class used for both the player and the AI ships.
+ * <p>
+ * Contains:
+ * - IntBox for health storage
+ * - projectile count and maximum
+ * - inControl variable, if True the PC will take keyboard and mouse input
+ * - percentF/S/B: percentage amounts for the speed in each direction of movement
+ * - slow: the percentage to slow velocity when no movement keys are pressed
+ * - rotThresh: the furthest angle the PC can be facing it's target and not rotate any more
+ * 
+ * - alf: Alf, your personal AI assistant
+ * 
+ * - projList, enemyList: projectile and enemy lists
+ * @author Matt
+ *
+ */
 class PC extends Entity
 {
-    private int health, projCount, projMax;
+    private IntBox health, shield, healthMax, shieldMax;
+    private int shieldTimer = 0, shieldCool;
+    private float shieldAccel, shieldVel, shieldMaxVel;
+    private int projCount, projMax;
     private boolean inControl;
     private float percentF, percentB, percentS, slow, rotThresh;
+    
+    private String loadName;
+    private int imageInd;
 
     private AI alf;
+    //CHANGE
+    public boolean enemy = false;
 
     public ArrayList<Proj> projList;
     public ArrayList<PC> enemyList;
 
+    /**
+     * Creates a brand new PC.
+     * @param pos Center position to start at
+     * @param img The PGraphic to display
+     * @param c The collision box of the Entity
+     */
     PC (PVector pos, PGraphics img, Collision c)
     {
         initBase();
+        enemy = false;
 
         this.pos = pos;
         this.img = img;
         this.col = c;
 
-        health = 0;
+        health = new IntBox(0);
+        shield = new IntBox(0);
+        healthMax = new IntBox(0);
+        shieldMax = new IntBox(0);
+        
+        shieldTimer = millis();
+        shieldCool = 0;
+        shieldAccel = 0;
+        shieldVel = 0;
+        shieldMaxVel = 0;
+        
         projCount = 0;
         inControl = false;
 
@@ -28,16 +69,25 @@ class PC extends Entity
 
         rotThresh = 32;
 
-        alf = new AI(null);
+        alf = new AI(null, null);
     }
 
+    /**
+     * Updates the kinetic parts, and if in control the user input.
+     * If not in control, but the AI is active, the AI will act as the user input.
+     * 
+     * @param delta The timescale to multiply kinetic actions by.
+     * @return False, if the PC is out of health
+     */
     boolean update(float delta)
     {
+        //Update kinetic stuff
         updateKin(delta);
 
         //Check key and mouse presses
         if (inControl)
         {
+            //Find angle to match due to mouse position
             PVector mouseCoords = new PVector(mouseX, mouseY);
             PVector dis = PVector.sub(mouseCoords, new PVector(width/2, height/2));
             PVector ang = PVector.fromAngle(angle);
@@ -84,7 +134,8 @@ class PC extends Entity
                 two = PVector.fromAngle(angle);
                 two.mult(10 * percentS);
             }
-
+            
+            //If not moving, slow the entity down
             if (!keys[0] && !keys[1] && !keys[2] && !keys[3])
             {
                 accel = new PVector(vel.x, vel.y);
@@ -96,9 +147,10 @@ class PC extends Entity
                 accel = new PVector(a.x, a.y);
             }
 
-            //Mouse
+            //Projectiles
             if (mousePressed && mouseS)
             {
+                //If we can make more projectiles, do so
                 if (projCount < projMax)
                 {
                     Proj ptmp = parseProj("test.bullet");
@@ -114,8 +166,7 @@ class PC extends Entity
 
                     PGraphics im = createGraphics(30, 30);
                     im.beginDraw();
-                    im.fill(0, 0, 255);
-                    im.ellipse(15, 15, 15, 15);
+                    im.image(friendP1, 0, 0, 30, 30);
                     im.endDraw();
 
                     ptmp.setImage(im);
@@ -126,35 +177,67 @@ class PC extends Entity
                 }
                 mouseS = false;
             }
-        } else
-        {
-            alf.update(this);
         }
-
-        if (health <= 0)
+        
+        //If we're dead, tell 'em
+        if (health.store <= 0)
             return false;
+        
+        // If the shield cooldown is over, recharge shields
+        if (millis() - shieldTimer > shieldCool)
+        {
+            shieldVel += shieldAccel * delta;
+            shieldVel = shieldVel > shieldMaxVel ? shieldMaxVel : shieldVel;
+            
+            shield.store += shieldVel;
+            shield.store = shield.store > shieldMax.store ? shieldMax.store : shield.store;
+        }
+        else
+        {
+            shieldVel = 0;
+        }
 
         return true;
     }
-
+    
+    public boolean update(float delta, PC con)
+    {
+        if (!inControl)
+            alf.update(con);
+        
+        return update(delta);
+    }
+    
+    /**
+     * Called when a projectile destroys itself, decrement the count
+     */
     void removeProj()
     {
         projCount--;
     }
-
+    
+    // Called when a projectile hits
+    void damage(int damage)
+    {
+        // Damage the shields first
+        shield.store -= damage * 100;
+        // Start the shield recover cooldown
+        shieldTimer = millis();
+        
+        // If damage has extended past the shields
+        if (shield.store < 0)
+        {
+            int damPen = (int)((float)shield.store / 100.f);
+            shield.store = 0;
+            
+            health.store += damPen;
+        }
+    }
+    
+    // GETTERS AND SETTERS
     void setControl(boolean c)
     {
         inControl = c;
-    }
-
-    void setAITargets(ArrayList<PC> targ)
-    {
-        alf.setTargets(targ);
-    }
-
-    void setAIInfo(HashMap<String, Integer> info)
-    {
-        alf.setInfo(info);
     }
 
     void setAI(AI a)
@@ -172,15 +255,38 @@ class PC extends Entity
         img = i;
     }
 
-    void setHealth(int h)
-    {
-        health = h;
-    }
-
+    public void setHealth(IntBox h){ health = h; }
+    public IntBox getHealth(){ return health; }
+    public void setHealthMax(IntBox h){ healthMax = h; }
+    public IntBox getHealthMax(){ return healthMax; }
+    
+    public IntBox getShield(){ return shield; }
+    public void setShield(IntBox shield){ this.shield = shield; }
+    public IntBox getShieldMax(){ return shieldMax; }
+    public void setShieldMax(IntBox shieldMax){ this.shieldMax = shieldMax; }
+    
+    public int getShieldCool(){ return shieldCool; }
+    public void setShieldCool(int shieldCool){ this.shieldCool = shieldCool; }
+    
+    public float getShieldAccel(){ return shieldAccel; }
+    public void setShieldAccel(float shieldAccel){ this.shieldAccel = shieldAccel; }
+    
+    public float getShieldMaxVel(){ return shieldMaxVel; }
+    public void setShieldMaxVel(float shieldMaxVel){ this.shieldMaxVel = shieldMaxVel; }
+    
+    public void setLoadName(String loadName){ this.loadName = loadName; }
+    public String getLoadName(){ return loadName; }
+    public PVector getPos(){ return pos; }
+    
+    public int getImageInd(){ return imageInd; }
+    public void setImageInd(int imageInd){ this.imageInd = imageInd; }
+    
     void setProjMax(int h)
     {
         projMax = h;
     }
+    
+    int getProjMax() { return projMax; }
 
     void setRotThresh(float f)
     {
@@ -213,13 +319,130 @@ class PC extends Entity
     }
 }
 
+ArrayList<PC> loadFriendly(String fileName)
+{
+    ArrayList<PC> friend = new ArrayList<PC>();
+    
+    String[] lines = loadStrings(fileName);
+    int ind = 0;
+    
+    while (lines[ind].charAt(0) != '#')
+    {
+        String[] data = split(lines[ind], ' ');
+        
+        PC p = parsePC(data[0]);
+        
+//        PGraphics im = createGraphics(40,40);
+//        im.beginDraw();
+//        im.stroke(0,255,0);
+//        im.fill(0,255,0);
+//        im.triangle(0, 40, 20, 0, 40, 40);
+//        im.endDraw();
+//        p.setImage(im);
+        p.setImage(playerImages[int(data[8])]);
+        p.setImageInd(int(data[8]));
+        p.setLoadName(data[0]);
+        
+        p.moveTo( new PVector(float(data[1]), float(data[2])) );
+        
+        p.setHealth( new IntBox(int(data[3])) );
+        p.setHealthMax( new IntBox(int(data[4])) );
+        p.setShield( new IntBox(int(data[5])) );
+        p.setShieldMax( new IntBox(int(data[6])) );
+        
+        p.setProjMax( int(data[7]) );
+        
+        boolean inCon = int(data[9]) == 1 ? true : false;
+        p.setControl(inCon);
+        
+        friend.add(p);
+        ind++;
+    }
+    
+    return friend;
+}
+
+ArrayList<PC> loadEnemy(String fileName)
+{
+    ArrayList<PC> enemy = new ArrayList<PC>();
+    
+    String[] lines = loadStrings(fileName);
+    int ind = 0;
+    
+    while (lines[ind].charAt(0) != '#')
+    {
+        ind++;
+    }
+    
+    ind++;
+    
+    for (int i = ind; i < lines.length; i++)
+    {
+        String[] data = split(lines[i], ' ');
+        
+        if (data.length < 5)
+            break;
+        
+        PC p = parsePC(data[0]);
+        
+//        PGraphics im = createGraphics(40,40);
+//        im.beginDraw();
+//        im.stroke(255,0,0);
+//        im.fill(255,0,0);
+//        im.triangle(0, 40, 20, 0, 40, 40);
+//        im.endDraw();
+//        p.setImage(im);
+        p.setImage(playerImages[int(data[8])]);
+        p.setImageInd(int(data[8]));
+        p.setLoadName(data[0]);
+        
+        p.moveTo( new PVector(float(data[1]), float(data[2])) );
+        
+        p.setHealth( new IntBox(int(data[3])) );
+        p.setHealthMax( new IntBox(int(data[4])) );
+        p.setShield( new IntBox(int(data[5])) );
+        p.setShieldMax( new IntBox(int(data[6])) );
+        
+        p.setProjMax( int(data[7]) );
+        
+        boolean inCon = int(data[9]) == 1 ? true : false;
+        p.setControl(inCon);
+        p.enemy = true;
+        
+        enemy.add(p);
+    }
+    
+    return enemy;
+}
+
+/**
+ * The worst function I've ever made in my life.
+ * <p>
+ * Parses a text file for information on the PC. Not even gonna bother describing this one.
+ * <p>
+ * TODO: Describe how to use the file properly to create PCs.
+ * @param fileName File to load from.
+ * @return The created PC.
+ */
 PC parsePC(String fileName)
 {
     String[] lines = loadStrings(fileName);
     PC returnP = new PC(null, null, null);
     returnP.initBase();
-
-    HashMap<String, Integer> aiInfo = new HashMap<String, Integer>();
+    
+    returnP.setLoadName(fileName);
+    
+    AIStop ai1 = new AIStop();
+    AIWander ai2 = new AIWander();
+    
+    AIAggro ai3;
+    float agDist = 0, agPref = 0, agClose = 0;
+    
+    AIAttack ai4;
+    int chance = 0;
+    
+    AIFollow ai5;
+    float foDist = 0, foClose = 0;
 
     for (int i = 0; i < lines.length; i++)
     {
@@ -326,7 +549,19 @@ PC parsePC(String fileName)
             else if (line.equals("maxRot"))
                 returnP.maxRot = float(trim(data[0]));
             else if (line.equals("health"))
-                returnP.setHealth( int(trim(data[0])) );
+                returnP.setHealth( new IntBox(int(trim(data[0]))) );
+            else if (line.equals("healthMax"))
+                returnP.setHealthMax( new IntBox(int(trim(data[0]))) );
+            else if (line.equals("shield"))
+                returnP.setShield( new IntBox(int(trim(data[0]))) );
+            else if (line.equals("shieldMax"))
+                returnP.setShieldMax( new IntBox(int(trim(data[0]))) );
+            else if (line.equals("shieldCool"))
+                returnP.setShieldCool( int(trim(data[0])) );
+            else if (line.equals("shieldAccel"))
+                returnP.setShieldAccel( float(trim(data[0])) );
+            else if (line.equals("shieldMaxVel"))
+                returnP.setShieldMaxVel( float(trim(data[0])) );
             else if (line.equals("projMax"))
                 returnP.setProjMax( int(trim(data[0])) );
             else if (line.equals("percentF"))
@@ -339,17 +574,33 @@ PC parsePC(String fileName)
                 returnP.setSlow(float(trim(data[0])) );
             else if (line.equals("rotThresh"))
                 returnP.setRotThresh(float(trim(data[0])) );
-            else if (line.equals("AI.aggro"))
-                aiInfo.put( "aggro", int(trim(data[0])) );
-            else if (line.equals("AI.attack"))
-                aiInfo.put( "attack", int(trim(data[0])) );
-            else if (line.equals("AI.close"))
-                aiInfo.put( "close", int(trim(data[0])) );
+            else if (line.equals("AI.aggroDist"))
+                agDist = float(trim(data[0]));
+            else if (line.equals("AI.aggroPref"))
+                agPref = float(trim(data[0]));
+            else if (line.equals("AI.aggroClose"))
+                agClose = float(trim(data[0]));
+            else if (line.equals("AI.followDist"))
+                foDist = float(trim(data[0]));
+            else if (line.equals("AI.followClose"))
+                foClose = float(trim(data[0]));
+            else if (line.equals("AI.attackChance"))
+                chance = int(trim(data[0]));
         }
     }
 
-    returnP.setAIInfo(aiInfo);
+    ai3 = new AIAggro(agDist, agClose, agPref);
+    ai4 = new AIAttack(chance);
+    ai5 = new AIFollow(foDist, foClose);
+    
+    ArrayList<AIState> st = new ArrayList<AIState>();
+    st.add(ai1);
+    st.add(ai2);
+    st.add(ai3);
+    st.add(ai4);
+    st.add(ai5);
+    
+    returnP.setAI(new AI(returnP, st));
 
     return returnP;
 }
-

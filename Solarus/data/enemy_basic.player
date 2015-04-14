@@ -7,6 +7,14 @@
 :
 
 health = 10
+healthMax = 10
+
+shield = 1000
+shieldMax = 1000
+shieldCool = 3000
+shieldAccel = 0.1
+shieldMaxVel = 5
+
 projMax = 5
 
 pos = 400,400
@@ -21,11 +29,16 @@ percentF = 50
 percentB = 20
 percentS = 30
 
-slow = 0.1
+slow = 0.05
 rotThresh = 32
 
-AI.aggro = 1000
-AI.attack = 500
-AI.close = 100
+AI.aggroDist = 10000
+AI.aggroPref = 200
+AI.aggroClose = 100
+
+AI.followDist = 600
+AI.followClose = 10
+
+AI.attackChance = 10
 
 # End Player test file

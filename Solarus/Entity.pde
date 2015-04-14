@@ -1,4 +1,20 @@
 
+/**
+ * Abstract Entity class that will parent any and all objects within the game
+ * that have a physical body.
+ * <p>
+ * Contains:
+ * - collision box
+ * - AI module
+ * - position, velocity and acceleration vectors
+ * - maximum velocity, acceleration and rotational velocity caps
+ * - angle
+ * - PGraphics to store images
+ * - toggle hitbox with showHitBox boolean
+ * 
+ * @author Matt
+ *
+ */
 abstract class Entity
 {
     protected Collision col;
@@ -10,6 +26,11 @@ abstract class Entity
     
     public abstract boolean update(float delta);
     
+    /**
+     * Updates the kinetic parts of the entity (pos, vel, accel, rot)
+     * 
+     * @param delta The timescale to multiply by
+     */
     protected void updateKin(float delta)
     {
         vel.add(PVector.mult(accel, delta));
@@ -24,6 +45,9 @@ abstract class Entity
         col.move(pos);
     }
     
+    /**
+     * Initializes a blank Entity to add to.
+     */
     protected void initBase()
     {
         col = null;
@@ -41,11 +65,22 @@ abstract class Entity
         showHitBox = false;
     }
     
+    /**
+     * Calculates the distance to another Entity.
+     * 
+     * @param other The Entity to check
+     * @return The float distance to that Entity
+     */
     public float distance(Entity other)
     {
         return dist(pos.x, pos.y, other.pos.x, other.pos.y);
     }
     
+    /**
+     * Moves the entity (and it's collision box) to the specified pos
+     * 
+     * @param pos The position vector to move to
+     */
     public void moveTo(PVector pos)
     {
         this.pos = pos;
@@ -53,6 +88,10 @@ abstract class Entity
         col.moveTo(pos);
     }
     
+    /**
+     * Rotates the entity (and it's collision box) by the specified angle
+     * @param x The angle (in radians) to rotate by
+     */
     public void rot(float x)
     {
         angle += x;
@@ -64,6 +103,10 @@ abstract class Entity
         col.rot(x);
     }
     
+    /**
+     * Rotates the entity (and it's collision box) to the specified angle
+     * @param x The angle (in radians) to rotate to
+     */
     public void rotTo(float x)
     {
         angle = x;
@@ -71,6 +114,10 @@ abstract class Entity
         col.rotTo(x);
     }
     
+    /**
+     * Renders the image in the center of the Entity
+     * @param trans The offset to render it at.
+     */
     public void render(PVector trans)
     {
         pushMatrix();
@@ -88,21 +135,35 @@ abstract class Entity
         popMatrix();
     }
     
+    /**
+     * Collide this entity with another entity.
+     * @param e Entity to check collision with.
+     * @return True if colliding
+     */
     public boolean collide(Entity e)
     {
         return col.collide(e.col);
     }
     
+    /**
+     * Toggles the visibility of the hitbox
+     */
     public void toggleHitBox()
     {
         showHitBox = !showHitBox;
     }
     
+    /**
+     * @return The reference to the PGraphics image.
+     */
     public PGraphics getImage()
     {
         return img;
     }
     
+    /**
+     * @return The current angle (in radians)
+     */
     public float getAngle()
     {
         return angle;
