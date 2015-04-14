@@ -164,9 +164,9 @@ public class GIState extends State
         HUD.add(new UIStatusBar(
                 new PVector(width/2, height-40),
                 new PVector(250,15),
-                money,
-                moneyMax,
-                color(0,255,0) ));
+                new IntBox(mon),
+                new IntBox(monMax),
+                color(#D1C326) ));
         
         // Game Menu
         PGraphics tmpBack = createGraphics(500,650);
@@ -306,6 +306,7 @@ public class GIState extends State
             toast.pushToast("Press Q & E to switch ships.", 4000);
             toast.pushToast("Press the '~' key for the menu.", 4000);
             toast.pushToast("Press F when over a planet for the market.", 4000);
+            toast.pushToast("Good luck!.", 4000);
             fRun = false;
         }
     }
@@ -313,6 +314,23 @@ public class GIState extends State
     public boolean update()
     {
         float delta = 30 / frameRate;
+        
+        UIStatusBar x = (UIStatusBar)HUD.getElements().get(3);
+        x.setVal(new IntBox(mon));
+        
+        if (players.size() == 0)
+        {
+            sm.changeState("MAIN_MENU");
+            toast.pushToast("GAME OVER.", 2000);
+            toast.pushToast("Score: " + mon, 2000);
+        }
+        
+        if (mon >= monMax)
+        {
+            sm.changeState("MAIN_MENU");
+            toast.pushToast("YOU WIN.", 2000);
+            toast.pushToast("Score: " + mon, 2000);
+        }
         
         //If game is running
         if (!pause)

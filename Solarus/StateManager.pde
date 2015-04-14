@@ -1,4 +1,6 @@
 GIState gameRef;
+int mon = 0;
+int monMax = 50000;
 
 class StateManager
 {
@@ -38,7 +40,9 @@ class StateManager
     
     public boolean run()
     {
-        boolean finalRun = true;   
+        boolean finalRun = true;
+        
+        mon = ((Market)stateList[2]).getMoney();
         
         // Main Menu
         for (int i = 0; i < stateList.length; i++)

@@ -39,6 +39,8 @@ public class Market extends State {
 
     GMMenu = new UIGroup(new PVector(width/2, height/2), new PVector(0, 0));
   }
+  
+  public int getMoney(){return Money;}
 
   //initializes state upon entering
   public void init() {
