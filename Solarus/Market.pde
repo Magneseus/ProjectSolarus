@@ -38,28 +38,29 @@ public class Market extends State {
 
     BSButtons = new UIGroup(new PVector(width/2, height/2));
 
-    BSButtons.add(new UIButton(new PVector(85, -311), new PVector(35, 20), "", new BuyGoods0(), color(0, 255, 0),color(75, 200, 255)));
-    BSButtons.add(new UIButton(new PVector(125, -311), new PVector(35, 20), "", new SellGoods0(), color(255, 0, 0),color(75, 200, 255)));
-    BSButtons.add(new UIButton(new PVector(85, -271), new PVector(35, 20), "", new BuyGoods1(), color(0, 255, 0),color(75, 200, 255)));
-    BSButtons.add(new UIButton(new PVector(125, -271), new PVector(35, 20), "", new SellGoods1(), color(255, 0, 0),color(75, 200, 255)));
-    BSButtons.add(new UIButton(new PVector(85, -231), new PVector(35, 20), "", new BuyGoods2(), color(0, 255, 0),color(75, 200, 255)));
-    BSButtons.add(new UIButton(new PVector(125, -231), new PVector(35, 20), "", new SellGoods2(), color(255, 0, 0),color(75, 200, 255)));
-    BSButtons.add(new UIButton(new PVector(85, -192), new PVector(35, 20), "", new BuyGoods3(), color(0, 255, 0),color(75, 200, 255)));
-    BSButtons.add(new UIButton(new PVector(125, -192), new PVector(35, 20), "", new SellGoods3(), color(255, 0, 0),color(75, 200, 255)));
-    BSButtons.add(new UIButton(new PVector(85, -153), new PVector(35, 20), "", new BuyGoods4(), color(0, 255, 0),color(75, 200, 255)));
-    BSButtons.add(new UIButton(new PVector(125, -153), new PVector(35, 20), "", new SellGoods4(), color(255, 0, 0),color(75, 200, 255)));
-    BSButtons.add(new UIButton(new PVector(85, -114), new PVector(35, 20), "", new BuyGoods5(), color(0, 255, 0),color(75, 200, 255)));
-    BSButtons.add(new UIButton(new PVector(125, -114), new PVector(35, 20), "", new SellGoods5(), color(255, 0, 0),color(75, 200, 255)));
-    BSButtons.add(new UIButton(new PVector(85, -75), new PVector(35, 20), "", new BuyGoods6(), color(0, 255, 0),color(75, 200, 255)));
-    BSButtons.add(new UIButton(new PVector(125, -75), new PVector(35, 20), "", new SellGoods6(), color(255, 0, 0),color(75, 200, 255)));
-    BSButtons.add(new UIButton(new PVector(85, -36), new PVector(35, 20), "", new BuyGoods7(), color(0, 255, 0),color(75, 200, 255)));
-    BSButtons.add(new UIButton(new PVector(125, -36), new PVector(35, 20), "", new SellGoods7(), color(255, 0, 0),color(75, 200, 255)));
-    
-    UpButtons = new UIGroup(new PVector(0,0));
-    UpButtons.add(new UIButton(new PVector(173, 570), new PVector(112, 112), "", new BuyHealth(), color(0,0,0,0),color(75, 200, 255)));
-    UpButtons.add(new UIButton(new PVector(393, 570), new PVector(112, 112), "", new BuyDamage(), color(0,0,0,0),color(75, 200, 255)));
-    UpButtons.add(new UIButton(new PVector(613, 570), new PVector(112, 112), "", new BuyShield(), color(0,0,0,0),color(75, 200, 255)));
-    UpButtons.add(new UIButton(new PVector(833, 570), new PVector(112, 112), "", new BuyRepair(), color(0,0,0,0),color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(395, -405), new PVector(35, 20), "", new BuyGoods0(), color(0, 255, 0), color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(435, -405), new PVector(35, 20), "", new SellGoods0(), color(255, 0, 0), color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(395, -310), new PVector(35, 20), "", new BuyGoods1(), color(0, 255, 0), color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(435, -310), new PVector(35, 20), "", new SellGoods1(), color(255, 0, 0), color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(395, -215), new PVector(35, 20), "", new BuyGoods2(), color(0, 255, 0), color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(435, -215), new PVector(35, 20), "", new SellGoods2(), color(255, 0, 0), color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(395, -120), new PVector(35, 20), "", new BuyGoods3(), color(0, 255, 0), color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(435, -120), new PVector(35, 20), "", new SellGoods3(), color(255, 0, 0), color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(395, -25), new PVector(35, 20), "", new BuyGoods4(), color(0, 255, 0), color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(435, -25), new PVector(35, 20), "", new SellGoods4(), color(255, 0, 0), color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(395, 70), new PVector(35, 20), "", new BuyGoods5(), color(0, 255, 0), color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(435, 70), new PVector(35, 20), "", new SellGoods5(), color(255, 0, 0), color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(395, 165), new PVector(35, 20), "", new BuyGoods6(), color(0, 255, 0), color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(435, 165), new PVector(35, 20), "", new SellGoods6(), color(255, 0, 0), color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(395, 260), new PVector(35, 20), "", new BuyGoods7(), color(0, 255, 0), color(75, 200, 255)));
+    BSButtons.add(new UIButton(new PVector(435, 260), new PVector(35, 20), "", new SellGoods7(), color(255, 0, 0), color(75, 200, 255)));
+
+    UpButtons = new UIGroup(new PVector(0, 0));
+    UpButtons.add(new UIButton(new PVector(470, 870), new PVector(112, 112), "", new BuyHealth(), color(0, 0, 0, 0), color(75, 200, 255)));
+    UpButtons.add(new UIButton(new PVector(635, 870), new PVector(112, 112), "", new BuyDamage(), color(0, 0, 0, 0), color(75, 200, 255)));
+    UpButtons.add(new UIButton(new PVector(800, 870), new PVector(112, 112), "", new BuyShield(), color(0, 0, 0, 0), color(75, 200, 255)));
+    UpButtons.add(new UIButton(new PVector(965, 870), new PVector(112, 112), "", new BuyRepair(), color(0, 0, 0, 0), color(75, 200, 255)));
+    UpButtons.add(new UIButton(new PVector(1130, 870), new PVector(112, 112), "", new BuyShip(), color(0, 0, 0, 0), color(75, 200, 255)));
 
     for (int i=0; i<TradeGoods.length; i++)
     {
@@ -127,6 +128,7 @@ public class Market extends State {
     if (!pause)
     {
       BSButtons.update();
+      UpButtons.update();
     }
     //If menu is up
     else
@@ -155,47 +157,53 @@ public class Market extends State {
   public void render() {
     background(0);
     for (int i=0; i<TradeGoods.length; i++) {
-      TradeGoods[i].render(((i+1)*40)+49);
+      TradeGoods[i].render((i+1)*95);
       fill(TradeGoods[i].col);
-      text(TradeGoods[i].name, 80, ((i+1)*40)+47);
+      text(TradeGoods[i].name, 85, ((i+1)*95)-4);
       textSize(20);
-      text((TradeGoods[i].name+": "+GoodsStore[i]), 920, (120+((i+1)*30)));
+      text((TradeGoods[i].name+": "+GoodsStore[i]), 1418, (350+((i+1)*30)));
     }
     stroke(75, 200, 255);
     noFill();
     rectMode(CORNERS);
-    rect(160, 76, 660, 380);
+    rect(170, 83, 1170, 772);
     //stroke(255, 0, 0);
     //line(185, 77, 185, 724);
 
-    BSButtons.render(new PVector(0,0));
-    UpButtons.render(new PVector(0,0));
-    
+    BSButtons.render(new PVector(0, 0));
+    UpButtons.render(new PVector(0, 0));
+
+    textSize(20);
     noStroke();
-    fill(0,255,0);
-    rect(160, 520,186,620);
-    rect(123,557,223,583);
-    text("Health",173,640);
-    
-    fill(255,0,0);
-    triangle(393,520,340,620,448,620);
+    fill(0, 255, 0);
+    rect(457, 820, 483, 920);
+    rect(420, 857, 520, 883);
+    text("Health", 470, 940);
+
+    fill(255, 0, 0);
+    triangle(635, 820, 582, 920, 690, 920);
     fill(0);
-    triangle(393,565,364,620,423,620);
-    fill(255,0,0);
-    text("Damage",393,640);
-    
-    fill(0,0,255);
-    ellipse(613,570,35,50);
-    text("Sheild",613,640);
-    
-    fill(255,255,0);
-    rect(820, 520,846,620);
-    rect(783,557,883,583);
-    text("Repair",833,640);
+    triangle(635, 865, 606, 920, 665, 920);
+    fill(255, 0, 0);
+    text("Damage", 635, 940);
+
+    fill(0, 0, 255);
+    ellipse(800, 870, 35, 50);
+    text("Sheild", 800, 940);
+
+    fill(255, 255, 0);
+    rect(952, 820, 978, 920);
+    rect(915, 857, 1017, 883);
+    text("Repair", 965, 940);
+
+    fill(255);
+    rect(1117, 820, 1143, 920);
+    rect(1080, 857, 1180, 883);
+    text("Ship", 1130, 940);
 
     textSize(20);
     fill(75, 200, 255);
-    text(("Money: "+Money), 920, 95); 
+    text(("Money: "+Money), 1418, 190); 
 
     if (pause)
     {
@@ -377,6 +385,11 @@ public class Market extends State {
       println("Repairs Bought");
     }
   }
+  class BuyShip implements Command {
+    public void execute()
+    {
+      println("Ship Bought");
+    }
+  }
 }
-
 
