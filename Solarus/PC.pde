@@ -21,6 +21,7 @@ class PC extends Entity
     private int shieldTimer = 0, shieldCool;
     private float shieldAccel, shieldVel, shieldMaxVel;
     private int projCount, projMax;
+    public int pDamage;
     private boolean inControl;
     private float percentF, percentB, percentS, slow, rotThresh;
     
@@ -62,6 +63,7 @@ class PC extends Entity
         
         projCount = 0;
         inControl = false;
+        pDamage = 1;
 
         percentF = 1;
         percentS = 1;
@@ -280,6 +282,9 @@ class PC extends Entity
     
     public int getImageInd(){ return imageInd; }
     public void setImageInd(int imageInd){ this.imageInd = imageInd; }
+    
+    public void setDamage(int d) {pDamage = d;}
+    public int getDamage() {return pDamage;}
     
     void setProjMax(int h)
     {

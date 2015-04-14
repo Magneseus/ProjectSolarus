@@ -1,4 +1,6 @@
-
+GIState gameRef;
+int mon = 0;
+int monMax = 50000;
 
 class StateManager
 {
@@ -16,6 +18,8 @@ class StateManager
         stateList[0].init();
         stateList[1] = new GIState(this);
         stateList[2] = new Market(this);
+        
+        gameRef = (GIState)stateList[1];
         
         optionsMenu = new UIGroup(new PVector(width/2, height/2), new PVector(0,0));
         
@@ -36,7 +40,9 @@ class StateManager
     
     public boolean run()
     {
-        boolean finalRun = true;   
+        boolean finalRun = true;
+        
+        mon = ((Market)stateList[2]).getMoney();
         
         // Main Menu
         for (int i = 0; i < stateList.length; i++)
