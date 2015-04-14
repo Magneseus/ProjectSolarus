@@ -1,9 +1,11 @@
 public class Market extends State {
 
+  //set up UIGroups
   private UIGroup GMMenu;
   private UIGroup BSButtons;
   private UIGroup UpButtons;
 
+  //Set up The Availiabel Resources and thier colours
   private Resource[] TradeGoods = new Resource[8];
   private color[] colours = {
     color(255, 0, 0), 
@@ -16,9 +18,11 @@ public class Market extends State {
     color(255, 0, 255)
   };
 
+  //set up the Goods inventory and money 
   private int[] GoodsStore = new int[8];
   private int Money = 500;
 
+  //Constructor calls super and initalizes the availiable resources
   public Market(StateManager sm) {
     super(sm);
 
@@ -34,10 +38,11 @@ public class Market extends State {
     GMMenu = new UIGroup(new PVector(width/2, height/2), new PVector(0, 0));
   }
 
+  //initializes state upon entering
   public void init() {
 
+    //buttons for both buying/selling resources and upgrades
     BSButtons = new UIGroup(new PVector(width/2, height/2));
-
     BSButtons.add(new UIButton(new PVector(395, -405), new PVector(35, 20), "", new BuyGoods0(), color(0, 255, 0), color(75, 200, 255)));
     BSButtons.add(new UIButton(new PVector(435, -405), new PVector(35, 20), "", new SellGoods0(), color(255, 0, 0), color(75, 200, 255)));
     BSButtons.add(new UIButton(new PVector(395, -310), new PVector(35, 20), "", new BuyGoods1(), color(0, 255, 0), color(75, 200, 255)));
@@ -62,11 +67,14 @@ public class Market extends State {
     UpButtons.add(new UIButton(new PVector(965, 870), new PVector(112, 112), "", new BuyRepair(), color(0, 0, 0, 0), color(75, 200, 255)));
     UpButtons.add(new UIButton(new PVector(1130, 870), new PVector(112, 112), "", new BuyShip(), color(0, 0, 0, 0), color(75, 200, 255)));
 
+
+    //updates the values of the availible resources
     for (int i=0; i<TradeGoods.length; i++)
     {
       TradeGoods[i].update();
     }
 
+    //pause menu
     PGraphics tmpBack = createGraphics(500, 650);
     tmpBack.beginDraw();
     tmpBack.fill(50, 50, 50, 150);
@@ -124,6 +132,7 @@ public class Market extends State {
     new ReturnToLevel() ));
   }
 
+  //updates buttons in pause menu or market screen
   public boolean update() {
     if (!pause)
     {
@@ -153,9 +162,10 @@ public class Market extends State {
 
     return true;
   }
-
+  //renders the market screen or pause menu
   public void render() {
     background(0);
+    //renders gaph
     for (int i=0; i<TradeGoods.length; i++) {
       TradeGoods[i].render((i+1)*95);
       fill(TradeGoods[i].col);
@@ -167,12 +177,17 @@ public class Market extends State {
     noFill();
     rectMode(CORNERS);
     rect(170, 83, 1170, 772);
+    for (int i=1; i<5; i++) {
+      line(170+(i*200), 83, 170+(i*200), 772);
+    }
     //stroke(255, 0, 0);
     //line(185, 77, 185, 724);
 
+    //renders buttons
     BSButtons.render(new PVector(0, 0));
     UpButtons.render(new PVector(0, 0));
 
+    //redners upgrade button graphics
     textSize(20);
     noStroke();
     fill(0, 255, 0);
@@ -205,6 +220,7 @@ public class Market extends State {
     fill(75, 200, 255);
     text(("Money: "+Money), 1418, 190); 
 
+    //renders pause menu
     if (pause)
     {
       if (options)
@@ -216,7 +232,7 @@ public class Market extends State {
       }
     }
   }
-
+  //buy/sell button functions
   class BuyGoods0 implements Command {
     public void execute()
     {
@@ -361,34 +377,75 @@ public class Market extends State {
       }
     }
   }
+  //buy upgrade button functions
   class BuyHealth implements Command {
     public void execute()
     {
-      println("Health Upgrade Bought");
+      if (Money>=100) {
+        println("Health Upgrade Bought");
+        for (int i=0; i<gameRef.players.size (); i++) {
+          gameRef.players.get(i).setHealthMax(players.get(i).getHealthMax().add(5));
+        }
+        Money -= 100;
+      }
     }
   }
   class BuyDamage implements Command {
     public void execute()
     {
-      println("Damage Upgrade Bought");
+      if (Money>=100) {
+        println("Damage Upgrade Bought");
+        Money -= 100;
+      }
     }
   }
   class BuyShield implements Command {
     public void execute()
     {
-      println("Shield Upgrade Bought");
+      if (Money>=100) {
+        println("Shield Upgrade Bought");
+        for (int i=0; i<gameRef.players.size (); i++) {
+          gameRef.players.get(i).setShiedlMax(players.get(i).getShieldMax().add(200));
+        }
+        Money -= 100;
+      }
     }
   }
   class BuyRepair implements Command {
     public void execute()
     {
-      println("Repairs Bought");
+      if (Money>=100) {
+        println("Repairs Bought");
+        for (int i=0; i<gameRef.players.size (); i++) {
+          gameRef.players.get(i).setHealth(players.get(i).getHealth().add(5));
+        }
+        Money -= 100;
+      }
     }
   }
   class BuyShip implements Command {
     public void execute()
     {
-      println("Ship Bought");
+      if (Money>=100) {
+        println("Ship Bought");
+        PC p;
+        p = parsePC("enemy_basic.player");
+        //PGraphics im = createGraphics(40,40);
+        //im.beginDraw();
+        //im.stroke(0,255,0);
+        //im.fill(0,255,0);
+        //im.triangle(0, 40, 20, 0, 40, 40);
+        //im.endDraw();
+        //p.setImage(im);
+        p.setImageInd(gameRef.control.getImageInd());
+        p.setImage(playerImages[p.getImageInd()]);
+        p.moveTo(new PVector(gameRef.control.pos.x + random(-200, 200), 
+        gameRef.control.pos.y + random(-200, 200)));
+        p.projList = playerProj;
+        p.enemyList = enemies;
+        gameRef.players.add(p);
+        Money -= 100;
+      }
     }
   }
 }

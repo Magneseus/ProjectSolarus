@@ -1,4 +1,4 @@
-
+GIState gameRef;
 
 class StateManager
 {
@@ -16,6 +16,8 @@ class StateManager
         stateList[0].init();
         stateList[1] = new GIState(this);
         stateList[2] = new Market(this);
+        
+        gameRef = stateList[1];
         
         optionsMenu = new UIGroup(new PVector(width/2, height/2), new PVector(0,0));
         
