@@ -58,7 +58,7 @@ class UIButton extends UI
     {
         if (!enabled)
             return;
-
+        
         super.render(off);
 
         fill(col);

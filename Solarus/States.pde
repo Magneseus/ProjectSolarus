@@ -1,4 +1,5 @@
 boolean fRun = true;
+boolean tut = true;
 
 public abstract class State
 {
@@ -30,9 +31,13 @@ public class GIState extends State
     ArrayList<PC> enemies;
     ArrayList<Proj> enemyProj;
     PC control;
+    IntBox money = new IntBox(1000);
+    IntBox moneyMax = new IntBox(1000);
     int playerInd;
     
-    Outpost test;
+    Outpost outpostHead;
+    
+    int spawnTime, spawnWait, spawnCount;
     
     public GIState(StateManager sm)
     {
@@ -41,8 +46,26 @@ public class GIState extends State
     
     public void init()
     {
+        init(null, null, null, null);
+    }
+    
+    public void init(Outpost outpostIn, ArrayList<PC> friend, ArrayList<PC> enemy, int[] spawns)
+    {
         pause = false;
         options = false;
+        
+        if (spawns == null)
+        {
+            spawnWait = 5000;
+            spawnTime = millis();
+            spawnCount = 2;
+        }
+        else
+        {
+            spawnWait = spawns[0];
+            spawnCount = spawns[1];
+            spawnTime = millis();
+        }
         
         HUD = new UIGroup(new PVector(0,0));
         GIMenu = new UIGroup(new PVector(width/2, height/2));
@@ -57,49 +80,63 @@ public class GIState extends State
         enemies.clear();
         enemyProj.clear();
         
-        //Load a temp player
-        PC p;
-        p = parsePC("enemy_basic.player");
-        PGraphics im = createGraphics(40,40);
-        im.beginDraw();
-        im.stroke(0,255,0);
-        im.fill(0,255,0);
-        im.triangle(0, 40, 20, 0, 40, 40);
-        im.endDraw();
-        p.setImage(im);
-        p.moveTo(new PVector(width/2, height/2));
-        p.setControl(true);
-        control = p;
-        p.setAIFriend(players);
-        p.setAITargets(enemies);
-        p.projList = playerProj;
-        players.add(p);
-        playerInd = 0;
-        
+        if (friend == null)
+        {
+            //Load a new player
+            PC p;
+            p = parsePC("enemy_basic.player");
+//            PGraphics im = createGraphics(40,40);
+//            im.beginDraw();
+//            im.stroke(0,255,0);
+//            im.fill(0,255,0);
+//            im.triangle(0, 40, 20, 0, 40, 40);
+//            im.endDraw();
+//            p.setImage(im);
+            p.setImage(playerImages[0]);
+            p.setImageInd(0);
+            p.moveTo(new PVector(0,0));
+            p.setControl(true);
+            control = p;
+            p.projList = playerProj;
+            p.enemyList = enemies;
+            players.add(p);
+            playerInd = 0;
+        }
+        else
+        {
+            players = friend;
+            enemies = enemy;
+            
+            for (int i = 0; i < players.size(); i++)
+            {
+                PC p = players.get(i);
+                p.projList = playerProj;
+                p.enemyList = enemies;
+                
+                if (p.inControl)
+                {
+                    control = p;
+                    playerInd = i;
+                }
+            }
+            
+            for (int i = 0; i < enemies.size(); i++)
+            {
+                PC p = enemies.get(i);
+                p.projList = enemyProj;
+                p.enemyList = players;
+            }
+        }
         
         //Outposts
-        //CHANGE
-        int pick = (int)random(3);
-        PImage out = outpost1;
-        switch(pick)
+        if (outpostIn == null)
         {
-            case 0:
-            out = outpost1;
-            break;
-            
-            case 1:
-            out = outpost2;
-            break;
-            
-            case 3:
-            out = outpost3;
-            break;
+            PImage out = outpostImage[int(random(outpostImage.length))];
+            outpostHead = new Outpost(new PVector(random(width), random(height)), out);
+            recentOutpost = null;
         }
-        PGraphics out1 = createGraphics(200,200);
-        out1.beginDraw();
-        out1.image(out,0,0,200,200);
-        out1.endDraw();
-        test = new Outpost(new PVector(random(width), random(height)), "test", out1);
+        else
+            outpostHead = outpostIn;
         
         // HUD
         PGraphics statusFrame = createGraphics(900, 150);
@@ -116,19 +153,19 @@ public class GIState extends State
                 new PVector(width/2, height-80),
                 new PVector(250,15),
                 control.getHealth(),
-                new IntBox(10),
+                control.getHealthMax(),
                 color(255,0,0) ));
         HUD.add(new UIStatusBar(
                 new PVector(width/2, height-60),
                 new PVector(250,15),
-                new IntBox(10),
-                new IntBox(10),
+                control.getShield(),
+                control.getShield(),
                 color(0,0,255) ));
         HUD.add(new UIStatusBar(
                 new PVector(width/2, height-40),
                 new PVector(250,15),
-                new IntBox(67),
-                new IntBox(100),
+                money,
+                moneyMax,
                 color(0,255,0) ));
         
         // Game Menu
@@ -154,18 +191,99 @@ public class GIState extends State
                 new PVector(width, height),
                 tmpBack2 ));
         
+        class unpauseNew implements Command { public void execute(){pause=false; spawnTime=millis();} }
         GIMenu.add(new UIButton(
                 new PVector(0, -225),
                 new PVector(400,100),
                 "Resume Game",
-                new unpause() ));
+                new unpauseNew() ));
         
-        class tempSave implements Command { public void execute(){println("Saved Game.");} }
+        class saveFunc implements Command
+        { 
+            public void execute()
+            {
+                selectFolder("Select or create a save folder: ", "saveFolderSelect", dataFile("\\saves"));
+                int wait = 10000, start = millis();
+                while (saveFile == null)
+                {
+                    if (millis() - start > wait)
+                    {
+                        println("You're taking a while there.");
+                        start = millis();
+                    }
+                }
+                if (saveFile.equals(""))
+                {
+                    saveFile = null;
+                    toast.pushToast("Save canceled.", 2000);
+                }
+                else
+                {
+                    // Save the outpost graph system
+                    outpostHead.generateGraph(saveFile + "\\outpost.tgf");
+                    
+                    // Save the entities
+                    String[] entityFileContents = new String[players.size() + enemies.size() + 1];
+                    for (int i = 0; i < players.size(); i++)
+                    {
+                        PC p = players.get(i);
+                        entityFileContents[i] = "";
+                        
+                        // Add vars
+                        entityFileContents[i] += p.getLoadName() + " ";
+                        entityFileContents[i] += int(p.getPos().x) + " ";
+                        entityFileContents[i] += int(p.getPos().y) + " ";
+                        entityFileContents[i] += p.getHealth().store + " ";
+                        entityFileContents[i] += p.getHealthMax().store + " ";
+                        entityFileContents[i] += p.getShield().store + " ";
+                        entityFileContents[i] += p.getShieldMax().store + " ";
+                        entityFileContents[i] += p.getProjMax() + " ";
+                        entityFileContents[i] += p.getImageInd() + " ";
+                        
+                        int inCon = p.inControl ? 1 : 0;
+                        entityFileContents[i] += inCon + " ";
+                    }
+                    
+                    entityFileContents[players.size()] = "#";
+                                        
+                    String[] enemehs = new String[enemies.size()];
+                    for (int i = players.size() + 1; i < players.size() + enemies.size() + 1; i++)
+                    {
+                        PC p = enemies.get(i - players.size() - 1);
+                        entityFileContents[i] = "";
+                        
+                        // Add vars
+                        entityFileContents[i] += p.getLoadName() + " ";
+                        entityFileContents[i] += int(p.getPos().x) + " ";
+                        entityFileContents[i] += int(p.getPos().y) + " ";
+                        entityFileContents[i] += p.getHealth().store + " ";
+                        entityFileContents[i] += p.getHealthMax().store + " ";
+                        entityFileContents[i] += p.getShield().store + " ";
+                        entityFileContents[i] += p.getShieldMax().store + " ";
+                        entityFileContents[i] += p.getProjMax() + " ";
+                        entityFileContents[i] += p.getImageInd() + " ";
+                        
+                        int inCon = p.inControl ? 1 : 0;
+                        entityFileContents[i] += inCon + " ";
+                    }
+                    
+                    saveStrings(saveFile + "\\entities.save", entityFileContents);
+                    
+                    String[] spawnData = new String[2];
+                    spawnData[0] = "" + spawnWait;
+                    spawnData[1] = "" + spawnCount;
+                    saveStrings(saveFile + "\\spawn.save", spawnData);
+                    
+                    toast.pushToast("Saved.", 2000);
+                    saveFile = null;
+                }
+            }
+        }
         GIMenu.add(new UIButton(
                 new PVector(0, -75),
                 new PVector(400,100),
                 "Save Game",
-                new tempSave() ));
+                new saveFunc() ));
         
         GIMenu.add(new UIButton(
                 new PVector(0, 75),
@@ -180,12 +298,11 @@ public class GIState extends State
                 "Return to Main Menu",
                 new ReturnToMenu() ));
         
-        if (fRun)
+        if (fRun && tut)
         {
             toast.pushToast("Use WASD to move.", 4000);
             toast.pushToast("Movement is relative to the cursor.", 4000);
             toast.pushToast("Click the mouse to fire.", 4000);
-            toast.pushToast("Press 1 & 2 to spawn AI.", 4000);
             toast.pushToast("Press Q & E to switch ships.", 4000);
             toast.pushToast("Press the '~' key for the menu.", 4000);
             toast.pushToast("Press F when over a planet for the market.", 4000);
@@ -200,7 +317,9 @@ public class GIState extends State
         //If game is running
         if (!pause)
         {
-            if (test.update(control.pos))
+            boolean preOh = outpostHead.getVisited();
+            
+            if (outpostHead.update(control.pos))
             {
                 sm.changeState("GAME_MARKET");
             }
@@ -208,9 +327,54 @@ public class GIState extends State
             playerSwitchCheck();
             cheatsCheck(); //REMOVE LATER
             
+            if (!preOh && outpostHead.getVisited())
+            {
+                spawnTime = millis();
+            }
+            
+            if (enemies.size() > 0)
+            {
+                spawnTime = millis();
+            }
+            
+            if (outpostHead.getVisited() && millis() - spawnTime > spawnWait)
+            {
+                int picNum = (int)random(playerImages.length);
+                while (picNum == control.getImageInd())
+                    picNum = (int)random(playerImages.length);
+                
+                for (int i = 0; i < spawnCount; i++)
+                {
+                    PC p;
+                    p = parsePC("enemy_basic.player");
+//                    PGraphics im = createGraphics(40,40);
+//                    im.beginDraw();
+//                    im.stroke(255,0,0);
+//                    im.fill(255,0,0);
+//                    im.triangle(0, 40, 20, 0, 40, 40);
+//                    im.endDraw();
+//                    p.setImage(im);
+                    p.setImageInd(picNum);
+                    p.setImage(playerImages[picNum]);
+                    PVector spawn = PVector.fromAngle(random(TWO_PI));
+                    spawn.setMag(random(dist(0,0,width/2,height/2), dist(0,0,width/2,height/2) + 1000));
+                    p.moveTo(spawn);
+                    p.projList = enemyProj;
+                    p.enemyList = players;
+                    p.enemy = true;
+                    enemies.add(p);
+                }
+                
+                spawnTime = millis();
+                spawnWait -= 50;
+                spawnWait = spawnWait < 2000 ? 2000 : spawnWait;
+                if ((spawnWait / 50) % 2 == 0)
+                    spawnCount++;
+            }
+            
             for (int i = 0; i < players.size(); i++)
             {
-                if (!players.get(i).update(delta))
+                if (!players.get(i).update(delta, control))
                 {
                     players.remove(i);
                     i--;
@@ -219,7 +383,7 @@ public class GIState extends State
             
             for (int i = 0; i < enemies.size(); i++)
             {
-                if (!enemies.get(i).update(delta))
+                if (!enemies.get(i).update(delta, null))
                 {
                     enemies.remove(i);
                     i--;
@@ -275,7 +439,7 @@ public class GIState extends State
         
         star.render(controlCoords, control.pos, 2);
         
-        test.render(controlCoords);
+        outpostHead.render(controlCoords);
         
         for (PC p : players)
             p.render(controlCoords);
@@ -289,6 +453,75 @@ public class GIState extends State
         
         
         HUD.render(new PVector(0,0));
+        
+        float a = 500, b = 300;
+        
+        // Render waypoint(s)
+        if (recentOutpost != null)
+        {
+            for (Outpost o : recentOutpost.getNodes())
+            {
+                PVector dis = PVector.sub(o.getPos(), control.getPos());
+                
+                if (dis.x < -width/2 || dis.x > width/2 || dis.y < -height/2 || dis.y > height/2)
+                {
+                    dis.mult(-1);
+                    float ang = dis.heading();
+                    
+                    int mod = ang > -(PI/2) && ang < (PI/2) ? 1 : -1;
+                    
+                    float x = mod * ( (a*b) / sqrt( (b*b) + ( (a*a)*(tan(ang)*tan(ang)) ) ) );
+                    float y = tan(ang) * x;
+                    
+                    pushMatrix();
+                    
+                    translate(-x + width/2, -y + height/2);
+                    rotate(ang);
+                    
+                    noStroke();
+                    if (o.getVisited())
+                        fill(0,0,255);
+                    else
+                        fill(0,255,0);
+                    
+                    rotate(-PI/2);
+                    triangle(-15, 0, 0, -15, 15, 0);
+                    
+                    popMatrix();
+                }
+            }
+        }
+        else
+        {
+            PVector dis = PVector.sub(outpostHead.getPos(), control.getPos());
+            
+            if (dis.x < -width/2 || dis.x > width/2 || dis.y < -height/2 || dis.y > height/2)
+            {
+                dis.mult(-1);
+                float ang = dis.heading();
+                
+                int mod = ang > -(PI/2) && ang < (PI/2) ? 1 : -1;
+                
+                float x = mod * ( (a*b) / sqrt( (b*b) + ( (a*a)*(tan(ang)*tan(ang)) ) ) );
+                float y = tan(ang) * x;
+                
+                pushMatrix();
+                
+                translate(-x + width/2, -y + height/2);
+                rotate(ang);
+                
+                noStroke();
+                if (outpostHead.getVisited())
+                    fill(0,0,255);
+                else
+                    fill(0,255,0);
+                
+                rotate(-PI/2);
+                triangle(-15, 0, 0, -15, 15, 0);
+                
+                popMatrix();
+            }
+        }
         
         if (pause)
         {
@@ -310,18 +543,19 @@ public class GIState extends State
             //Load a temp player
             PC p;
             p = parsePC("enemy_basic.player");
-            PGraphics im = createGraphics(40,40);
-            im.beginDraw();
-            im.stroke(0,255,0);
-            im.fill(0,255,0);
-            im.triangle(0, 40, 20, 0, 40, 40);
-            im.endDraw();
-            p.setImage(im);
+//            PGraphics im = createGraphics(40,40);
+//            im.beginDraw();
+//            im.stroke(0,255,0);
+//            im.fill(0,255,0);
+//            im.triangle(0, 40, 20, 0, 40, 40);
+//            im.endDraw();
+//            p.setImage(im);
+            p.setImageInd(control.getImageInd());
+            p.setImage(playerImages[p.getImageInd()]);
             p.moveTo(new PVector(control.pos.x + random(-200,200),
                                  control.pos.y + random(-200,200)));
             p.projList = playerProj;
-            p.setAIFriend(players);
-            p.setAITargets(enemies);
+            p.enemyList = enemies;
             players.add(p);
         }
         else if (keys[8] && keysS[8])
@@ -329,18 +563,19 @@ public class GIState extends State
              //Load a temp enemy
             PC p;
             p = parsePC("enemy_basic.player");
-            PGraphics im = createGraphics(40,40);
-            im.beginDraw();
-            im.stroke(255,0,0);
-            im.fill(255,0,0);
-            im.triangle(0, 40, 20, 0, 40, 40);
-            im.endDraw();
-            p.setImage(im);
+//            PGraphics im = createGraphics(40,40);
+//            im.beginDraw();
+//            im.stroke(255,0,0);
+//            im.fill(255,0,0);
+//            im.triangle(0, 40, 20, 0, 40, 40);
+//            im.endDraw();
+//            p.setImage(im);
+            p.setImageInd(control.getImageInd()+1);
+            p.setImage(playerImages[p.getImageInd()]);
             p.moveTo(new PVector(control.pos.x + random(-1000,1000),
                                  control.pos.y + random(-1000,1000)));
             p.projList = enemyProj;
-            p.setAIFriend(enemies);
-            p.setAITargets(players);
+            p.enemyList = players;
             p.enemy = true;
             enemies.add(p);
         }
@@ -363,6 +598,10 @@ public class GIState extends State
                 control.setControl(true);
                 
                 ((UIStatusBar)HUD.elements.get(1)).setVal(control.getHealth());
+                ((UIStatusBar)HUD.elements.get(1)).setMaxVal(control.getHealthMax());
+                
+                ((UIStatusBar)HUD.elements.get(2)).setVal(control.getShield());
+                ((UIStatusBar)HUD.elements.get(2)).setMaxVal(control.getShieldMax());
             }
             
             keysS[4] = false;
@@ -381,6 +620,10 @@ public class GIState extends State
                 control.setControl(true);
                 
                 ((UIStatusBar)HUD.elements.get(1)).setVal(control.getHealth());
+                ((UIStatusBar)HUD.elements.get(1)).setMaxVal(control.getHealthMax());
+                
+                ((UIStatusBar)HUD.elements.get(2)).setVal(control.getShield());
+                ((UIStatusBar)HUD.elements.get(2)).setMaxVal(control.getShieldMax());
             }
             
             keysS[5] = false;
@@ -424,14 +667,14 @@ public class MMState extends State
                 new PVector(0,0),
                 new PVector(500, 650),
                 tmpBack ));
-        class StartGame implements Command { public void execute(){sm.changeState("GAME_INSTANCE");} }
+        class StartGame implements Command { public void execute(){sm.changeState("GAME_INSTANCE"); outpostInd = 1; fRun = false;} }
         UIElements.add(new UIButton(
                 new PVector(0, -225),
                 new PVector(400,100),
                 "New Game",
                 new StartGame() ));
         
-        class LoadGame implements Command { public void execute(){println("Load Game Hit");} }
+        class LoadGame implements Command { public void execute(){sm.loadGame();} }
         UIElements.add(new UIButton(
                 new PVector(0, -75),
                 new PVector(400,100),
@@ -454,7 +697,7 @@ public class MMState extends State
         targ.add(parsePC("data/menuChase.player"));
         targ.get(0).pos = new PVector(random(-1000,1000), random(-1000,1000));
         
-        camera.setAITargets(targ);
+        camera.enemyList = targ;
     }
     
     public void render()
@@ -479,7 +722,7 @@ public class MMState extends State
         else
             sm.optionsMenu.update();
         
-        camera.update(30.f/frameRate);
+        camera.update(30.f/frameRate, null);
         
         if (random(10) <= 1)
             targ.get(0).pos = new PVector(camera.pos.x + random(-1000,1000), 
